@@ -11,6 +11,15 @@
 #include "parenttable.h"
 #include "nut/namedtype.h"
 
+void checkExpressions()
+{
+    auto q1 = SampleTableModel2.id == 23;
+
+    auto q2 = SampleTableModel2.id = 4;
+    auto q3 = SampleTableModel2.id == 4 && SampleTableModel2.point == QPoint(1, 2);
+    auto order = SampleTableModel2.id | !SampleTableModel2.ps;
+
+}
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -19,6 +28,7 @@ int main(int argc, char *argv[])
 
     SampleTableModel model;
     SampleTableTable table;
+//    model.pn == model.id;
 
     table.ps = QString("hamed");
     qDebug() << table.ps;
@@ -45,11 +55,11 @@ int main(int argc, char *argv[])
         qDebug() << "*** Table ***";
 
         for (auto const &f: qAsConst(t->fields())) {
-            qDebug() << "name: " << f->_name;
-            qDebug() << "   is primary key: " << f->_isPrimaryKey;
-            qDebug() << "   max len is: " << f->_maxLen;
-            qDebug() << "   len is: " << f->_len;
-            qDebug() << "   auto increment: " << f->_autoIncrement.first << f->_autoIncrement.second;
+            qDebug() << "name: " << f->name();
+            qDebug() << "   is primary key: " << f->isPrimaryKey();
+            qDebug() << "   max len is: " << f->maxLen();
+            qDebug() << "   len is: " << f->len();
+            qDebug() << "   auto increment: " << f->autoIncrementStart() << f->autoIncrementStep();
         }
     }
 
@@ -59,7 +69,9 @@ int main(int argc, char *argv[])
     tbl->setFieldValue("id", 2);
     qDebug() << tbl->id << tbl->fieldvalue("id");
 
+
     ParentTableModel mm;
+    mm.t().id;
     auto b = mm.t().id;
     Q_UNUSED(b)
 

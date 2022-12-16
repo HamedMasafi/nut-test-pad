@@ -5,14 +5,19 @@
 #include <QDebug>
 #include "../namedtype.h"
 #include "../global.h"
+#include "../core/tablebase.h"
 
 namespace Nut {
 
+constexpr void addToParent(const char *name, Table<RuntimeChecker> *parent);
 class FieldCheckerBase
 {
 protected:
 
-    void addToParent(const QString &name, Table<RuntimeChecker> *parent);
+//    constexpr void addToParent(const char *name, Table<RuntimeChecker> *parent)
+//    {
+//        parent->k = true;
+//    }
 
 public:
 
@@ -41,7 +46,11 @@ public:
         pick<std::pair<int, int> >("AutoIncrement", &_autoIncrement, args...);
         pick<bool>("PrimaryKey", &_isPrimaryKey, args...);
 
-        addToParent(name, parent);
+        if (_isPrimaryKey) {
+//            static_assert(_isPrimaryKey && parent->k, "fuck");
+            parent->k = true;
+        }
+//            addToParent(name, parent);
     }
 };
 

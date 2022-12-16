@@ -3,6 +3,7 @@
 
 #include "nut/table.h"
 #include "nut/foreignkey.h"
+#include "phrases/numericphrase.h"
 
 NUT_FORWARD_DECLARE_TABLE(SampleTable)
 
@@ -18,7 +19,7 @@ public:
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
 
-    ForeignKeyC(SampleTable, int, t);
+    ForeignKey(SampleTable, int, t);
 };
 
 NUT_DECLARE_TABLE(ParentTable);

@@ -13,6 +13,12 @@ enum TableType {
     RuntimeChecker
 };
 
+template<template<Nut::TableType> class T>
+T<Nut::TableTypeModel> *createModel()
+{
+    return nullptr;
+}
+
 template <TableType _Type>
 class Table;
 using TableMain = Table<TableTypeMain>;

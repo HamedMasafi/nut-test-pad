@@ -24,7 +24,7 @@ public:
     Property<QString, AllowNull> ps{this, "ps", AllowNull(true)};
 
 //    Property2<QString, _Type> ps2{this, "ps2"};
-    FieldB<QString, _Type> salam{this, "D", 2};
+//    FieldB<QString, _Type> salam{this, "D", 2};
 };
 
 NUT_DECLARE_TABLE(SampleTable)

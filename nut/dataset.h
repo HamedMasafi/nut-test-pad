@@ -26,13 +26,13 @@ public:
     Dataset(Database *parent, const char *name) : DatasetBase(parent, name)
     {}
 
-    TableMain *createTable() const override
+    T<TableTypeMain> *createTable() const override
     {
         return new T<TableTypeMain>();
     }
-    TableModel *createModel() const override
+    T<TableTypeModel> *createModel() const override
     {
-        return new T<TableTypeModel>;
+        return Nut::createModel<T>();
     }
 };
 

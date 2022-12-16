@@ -3,16 +3,16 @@
 
 namespace Nut {
 
-void FieldCheckerBase::addToParent(const QString &name, Table<RuntimeChecker> *parent)
+constexpr void addToParent(const char *name, Table<RuntimeChecker> *parent)
 {
     Q_UNUSED(name)
-    auto link = new Table<RuntimeChecker>::Link;
-    link->data = this;
-
-    if (!parent->first)
-        parent->first = link;
-
-    parent->last = link;
+    parent->k = true;
 }
+
+
+//constexpr void FieldCheckerBase::addToParent(const char *name, Table<RuntimeChecker> *parent)
+//{
+//    Q_UNUSED(name)
+//}
 
 } // namespace Nut

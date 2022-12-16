@@ -35,6 +35,11 @@ public:
     constexpr inline NamedParam(const char *name, std::pair<int, int> value) : name{name}, pair{value}
     {}
 };
+template <typename T>
+class NamedParamType {
+public:
+    const char *name;
+};
 
 template <typename T>
 constexpr inline T get(const Nut::Model::NamedParam &d) {
@@ -160,8 +165,8 @@ struct no_unique<T, UU...> : std::integral_constant<size_t, is_unique<T, UU...>:
 class AutoIncrement : public Nut::Model::NamedParam
 {
 public:
-    AutoIncrement(int from, int to)
-        : Nut::Model::NamedParam("AutoIncrement", std::make_pair(from, to))
+    AutoIncrement(int from, int step)
+        : Nut::Model::NamedParam("AutoIncrement", std::make_pair(from, step))
     {}
 };
 

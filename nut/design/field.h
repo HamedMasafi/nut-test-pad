@@ -1,8 +1,9 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include "../core/fieldbase.h"
-#include "../namedtype.h"
+#include "core/fieldbase.h"
+#include "namedtype.h"
+#include "global.h"
 
 namespace Nut {
 

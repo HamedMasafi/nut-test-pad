@@ -1,5 +1,4 @@
-#ifndef TABLE_H
-#define TABLE_H
+#pragma once
 
 #include "global.h"
 #include "field2.h"
@@ -11,6 +10,8 @@
 #include <QJsonObject>
 #include <QLinkedList>
 #include "design/field.h"
+#include "core/tablebase.h"
+#include "phrases/fieldphrase.h"
 
 #define NUT_FORWARD_DECLARE_TABLE(name)                                                            \
     template<Nut::TableType _Type>                                                                 \
@@ -43,7 +44,7 @@ struct PropertyTypeHelper<T, TableTypeMain, Types...> {
 
 template <typename T, typename... Types>
 struct PropertyTypeHelper<T, TableTypeModel, Types...> {
-    using type = ::Nut::FieldModel<T>;
+    using type = ::Nut::FieldPhrase<T>;
 };
 
 template <typename T, typename... Types>
@@ -121,91 +122,28 @@ struct Property2<T, RuntimeChecker, Types...> {
 
 #define NUT_DECLARE_TABLE(name)                                                                    \
     typedef name<Nut::TableTypeMain> name##Table;                                                  \
-    typedef name<Nut::TableTypeModel> name##Model;
-
-//    typedef name<Nut::TableTypeFieldPhrases> name##Fields;
-//    extern name<Nut::TableTypeModel> name##Model2;
-//    extern name<Nut::RuntimeChecker> name##Checker;
-
-#define NUT_IMPLEMENT_TABLE(name)
-//    name<Nut::TableTypeModel> name##Model2;
-//    name<Nut::RuntimeChecker> name##Checker;
-
-#define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
-#define ForeignKeyC(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}
-
-template<TableType _Type>
-class Table
-{
-public:
-    Table() = default;
-
-    friend class FieldBase;
-};
-
-using TableClassBase = Table<TableTypeMain>;
-using ModelClassBase = Table<TableTypeModel>;
-
-template<>
-class Table<TableTypeMain>
-{
-    QString keyField;
-    QMap<QString, FieldBase*> _fields;
-    QSet<QString> _changedFields;
-public:
-
-    Table() = default;
-
-    friend class FieldBase;
-
-    void setFieldValue(const QString &name, const QVariant &value);
-    QVariant fieldvalue(const QString &name) const;
-
-    QVariant key() const;
-    void setKey(const QVariant &value);
-    const QSet<QString> &changedFields() const;
-};
-
-template <>
-class Table<TableTypeModel>
-{
-    QMap<QString, FieldModelBase*> _fields;
-    QMap<QString, ForeignKeyModelBase*> _foreignKeys;
-public:
-    Table() = default;
-
-    QJsonObject toJson() const;
-
-    const QMap<QString, FieldModelBase *> &fields() const;
-
-    friend class FieldModelBase;
-    friend class ForeignKeyModelBase;
-};
-
-
-template <>
-class Table<RuntimeChecker>
-{
-    std::array<FieldCheckerBase*, 0> _fields;
-    FieldCheckerBase *d{nullptr};
-
-    struct Link {
-        FieldCheckerBase *data;
-        Link *next {nullptr};
-    };
-    Link *first{nullptr};
-    Link *last{nullptr};
-
-public:
-    constexpr Table() {
-        if (first != nullptr)
-            throw std::logic_error( "is not null");
+    typedef name<Nut::TableTypeModel> name##Model;                                                 \
+    extern name<Nut::RuntimeChecker> name##Checker;                                                \
+    extern name<Nut::TableTypeModel> name##Model2;                                                 \
+    namespace Nut {                                                                                \
+    template<>                                                                                     \
+    name<Nut::TableTypeModel> *createModel<name>();                                                \
     }
 
-    friend class FieldCheckerBase;
-};
+//    typedef name<Nut::TableTypeFieldPhrases> name##Fields;
 
+#define NUT_IMPLEMENT_TABLE(name)                                                                  \
+    name<Nut::RuntimeChecker> name##Checker;                                                       \
+    name<Nut::TableTypeModel> name##Model2;                                                        \
+    namespace Nut {                                                                                \
+    template<>                                                                                     \
+    name<Nut::TableTypeModel> *createModel<name>()                                                 \
+    {                                                                                              \
+        return &name##Model2;                                                                      \
+    }                                                                                              \
+    }
+
+#define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
+#define ForeignKey(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}
 
 }
-
-#endif // TABLE_H
