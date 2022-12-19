@@ -4,3 +4,4 @@ DB::DB()
 {
 
 }
+NUT_DECLARE_IMPLEMENT(DB2);

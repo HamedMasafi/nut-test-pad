@@ -14,31 +14,25 @@
 ** GNU Lesser General Public License for more details.
 **
 ** You should have received a copy of the GNU Lesser General Public License
-** along with Nut.  If not, see <http://www.gnu.org/licenses/>.
+** along with Nut.  If not, see <http://www.gnu.org/licenses/".
 **
 **************************************************************************/
 
-#ifndef PHRASE_H
-#define PHRASE_H
+#pragma once
 
 #include <QtGlobal>
 
 
-#include <QtNut/nut_global.h>
-#include <QtNut/conditionalphrase.h>
-#include <QtNut/abstractfieldphrase.h>
-#include <QtNut/fieldphrase.h>
-#include <QtNut/phraselist.h>
-#include <QtNut/assignmentphraselist.h>
-#include <QtNut/phrasedatalist.h>
-#include <QtNut/phrasedata.h>
-#include <QtNut/assignmentphrase.h>
-#include <QtNut/numericphrase.h>
-#include <QtNut/fieldphrase_date.h>
-#include <QtNut/fieldphrase_qstring.h>
-#include <QtNut/fieldphrase_bool.h>
-
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
-
-#endif // PHRASE_H
+#include "global.h"
+#include "phrases/conditionalphrase.h"
+#include "phrases/abstractfieldphrase.h"
+#include "phrases/fieldphrase.h"
+#include "phrases/phraselist.h"
+#include "phrases/assignmentphraselist.h"
+#include "phrases/phrasedatalist.h"
+#include "phrases/phrasedata.h"
+#include "phrases/assignmentphrase.h"
+#include "phrases/fieldphrase_numeric.h"
+#include "phrases/fieldphrase_date.h"
+#include "phrases/fieldphrase_qstring.h"
+#include "phrases/fieldphrase_bool.h"

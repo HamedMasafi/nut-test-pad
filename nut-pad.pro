@@ -15,12 +15,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     db.h \
     parenttable.h \
-    sampletable.h
+    sampletable.h \
+    simplegenerator.h
 
 SOURCES += \
     db.cpp \
     main.cpp \
     parenttable.cpp \
-    sampletable.cpp
+    sampletable.cpp \
+    simplegenerator.cpp
 
 include(nut/nut.pri)

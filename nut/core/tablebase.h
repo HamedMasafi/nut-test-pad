@@ -4,6 +4,7 @@
 #include "../global.h"
 
 #include "../runtimecheckers/tablechecker.h"
+#include "abstracttable.h"
 
 #include <QMap>
 #include <QSet>
@@ -15,6 +16,8 @@ class FieldBase;
 class ForeignKeyModelBase;
 class FieldCheckerBase;
 class AbstractFieldPhrase;
+template<Nut::TableType _Type>
+class Database2;
 
 template<TableType _Type>
 class Table
@@ -31,6 +34,7 @@ using ModelClassBase = Table<TableTypeModel>;
 template<>
 class Table<TableTypeMain>
 {
+protected:
     QString keyField;
     QMap<QString, FieldBase*> _fields;
     QSet<QString> _changedFields;
@@ -51,17 +55,35 @@ public:
 template <>
 class Table<TableTypeModel>
 {
+protected:
     QMap<QString, AbstractFieldPhrase*> _fields;
     QMap<QString, ForeignKeyModelBase*> _foreignKeys;
 public:
     Table() = default;
+    Table(Database2<TableTypeModel> *parent, const char *name);
 
     QJsonObject toJson() const;
 
-    const QMap<QString, AbstractFieldPhrase *> &fields() const;
-
+    friend class DatasetBase;
     friend class AbstractFieldPhrase;
     friend class ForeignKeyModelBase;
 };
+
+
+template<NUT_TABLE_TEMPLATE T>
+class ModelBase : public AbstractModel, public T<TableTypeModel>
+{
+public:
+    ModelBase(Nut::Database2<TableTypeModel> *parent, const char *name)
+        : AbstractModel(parent, name)
+    {}
+    const QMap<QString, AbstractFieldPhrase *> &fields() override{
+        return T<TableTypeModel>::_fields;
+    }
+    const QMap<QString, ForeignKeyModelBase*> &foreignKeys() override{
+        return T<TableTypeModel>::_foreignKeys;
+    }
+};
+
 }
 #endif // TABLEBASE_H

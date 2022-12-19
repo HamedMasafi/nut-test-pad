@@ -14,6 +14,7 @@ qmake = ""
 qtif_path = ""
 output_file_name = ""
 msgctl = msg.message_controller()
+pro_file = ""
 
 def run_proc(p, ccwd="build/cache", showElapsed = False):
     name = ntpath.basename(p[0])
@@ -43,11 +44,13 @@ def run_proc(p, ccwd="build/cache", showElapsed = False):
 def create_paths():
     file.mkdir("build")
     file.mkdir("build/cache")
-    # file.mkdir(dir_build_packages)
     file.mkdir("build/logs")
-    # file.mkdir(dir_build_repo)
     file.mkdir("build/package")
+    file.mkdir("build/package/main")
+    file.mkdir("build/package/main/data")
+    file.mkdir("build/package/main/meta")
     file.mkdir("build/output")
+    file.mkdir("build/prepare")
     return True
 
 def readParams():
@@ -57,12 +60,14 @@ def readParams():
     global qmake
     global qtif_path
     global output_file_name
+    global pro_file
     qmake = j["qmake"]
     qtif_path = j["qtif_path"]
     output_file_name = j["output_file_name"]
+    pro_file = j["pro_file"]
 
 def build():
-    run_proc([qmake, '../../../nut-pad.pro'])
+    run_proc([qmake, f"../../../{pro_file}"])
     run_proc(["make"])
 
 def run_cqtdeployer():
@@ -73,7 +78,7 @@ def run_cqtdeployer():
     
     p =[
         "cqtdeployer",
-        "-bin", f"build/package/{output_file_name}",
+        "-bin", f"build/prepare/{output_file_name}",
 
         # "-qmlDir", self.qml_dir,
         "-qmake", qmake,
@@ -90,10 +95,13 @@ def run_cqtdeployer():
         "-trOut", "output/translations",
 
         "-verbose", '3',
-        "-targetDir", "build/output",
+        "-targetDir", "build/package/main/data",
     ]
+    msgctl.print("Run cqtdeployer")
     with open(f"build/logs/CQtDeployer.txt","w") as f:
         subprocess.run(p, stdin=None, input=None, stdout=f, stderr=f)
+
+    msgctl.result(True)
     # pp = self.deploy_tool_bin
     # for param in p:
     #     pp += " " + param
@@ -114,13 +122,33 @@ def run_copy_file(src, dst):
     shutil.copyfile(src, dst)
     msgctl.result(os.path.exists(dst))
 
+def build_setup():
+    run_proc([f"{qtif_path}/bin/binarycreator", "--offline-only", "--config", "assets/config.xml", "--packages", "build/package", f"build/output/setup"], "")
+
+def make_sh_file():
+    run_copy_file("assets/Perticon.sh", "build/package/main/data/Perticon.sh")
+    msgctl.print("Set path in sh file")
+    
+    file.replace("build/package/main/data/Perticon.sh", "%TORCH_PATH%", f"{os.path.expanduser('~')}/libtorch")
+    msgctl.result(True)
+
 def init_packages():
-    run_copy_file(f"build/cache/{output_file_name}", f"build/package/{output_file_name}")
+    run_copy_file("assets/installscript.qs", "build/package/main/meta/installscript.qs")
+    run_copy_file(f"build/cache/{output_file_name}", f"build/prepare/{output_file_name}")
+    run_copy_file("assets/package.xml", "build/package/main/meta/package.xml")
 
 if __name__ == "__main__":
+    print("Befor starting make sure you did these two ")
+    print("     1. Download and install CQtDeployer from address below:")
+    print("        https://github.com/QuasarApp/CQtDeployer/releases")
+    print("     2. Open data.json file and set variable and paths to correct values")
+    print()
+
     readParams()
     print(f"qmake is : {qmake}")
     create_paths()
     build()
     init_packages()
     run_cqtdeployer()
+    make_sh_file()
+    build_setup()

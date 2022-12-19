@@ -18,14 +18,14 @@
 **
 **************************************************************************/
 
-#ifndef PHRASEDATA_H
-#define PHRASEDATA_H
+#pragma once
 
-#include <QtNut/nut_global.h>
+#include "global.h"
+#include <QString>
+#include <QVariant>
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 class NUT_EXPORT PhraseData
 {
@@ -81,8 +81,8 @@ public:
         DatePartMinute,
         DatePartSecond,
         DatePartMilisecond
-//        // special types
-//        Distance
+        //        // special types
+        //        Distance
     };
 
     enum Type { Field, WithVariant, WithOther, WithoutOperand };
@@ -99,7 +99,12 @@ public:
 
     QVariant operand;
     bool isNot;
-//    quint16 parents;
+    //    quint16 parents;
+
+    int maxLen{};
+    int len{};
+    bool isPrimaryKey{false};
+    std::pair<int, int> autoIncrement{std::make_pair(0, 0)};
 
     mutable QAtomicInt ref;
 
@@ -122,8 +127,4 @@ private:
     void cleanUp(PhraseData *d);
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // PHRASEDATA_H
+}

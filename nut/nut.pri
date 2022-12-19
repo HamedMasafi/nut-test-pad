@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/abstracttable.h \
     $$PWD/core/fieldbase.h \
     $$PWD/core/tablebase.h \
     $$PWD/database.h \
@@ -16,6 +17,7 @@ HEADERS += \
     $$PWD/models/modelstorage.h \
     $$PWD/namedtype.h \
     $$PWD/phrase.h \
+    $$PWD/phrases/fieldphrase_numeric.h \
     $$PWD/runtimecheckers/fieldchecker.h \
     $$PWD/runtimecheckers/foreignkeychecker.h \
     $$PWD/runtimecheckers/tablechecker.h \
@@ -27,13 +29,13 @@ HEADERS += \
     $$PWD/phrases/fieldphrase_bool.h \
     $$PWD/phrases/fieldphrase_date.h \
     $$PWD/phrases/fieldphrase_qstring.h \
-    $$PWD/phrases/numericphrase.h \
     $$PWD/phrases/phrasedata.h \
     $$PWD/phrases/phrasedatalist.h \
     $$PWD/phrases/phraselist.h \
     $$PWD/table.h
 
 SOURCES += \
+    $$PWD/abstracttable.cpp \
     $$PWD/core/fieldbase.cpp \
     $$PWD/core/tablebase.cpp \
     $$PWD/database.cpp \
@@ -48,6 +50,7 @@ SOURCES += \
     $$PWD/models/modelstorage.cpp \
     $$PWD/namedtype.cpp \
     $$PWD/phrase.cpp \
+    $$PWD/phrases/fieldphrase_numeric.cpp \
     $$PWD/runtimecheckers/fieldchecker.cpp \
     $$PWD/runtimecheckers/foreignkeychecker.cpp \
     $$PWD/runtimecheckers/tablechecker.cpp \
@@ -59,7 +62,6 @@ SOURCES += \
     $$PWD/phrases/fieldphrase_bool.cpp \
     $$PWD/phrases/fieldphrase_date.cpp \
     $$PWD/phrases/fieldphrase_qstring.cpp \
-    $$PWD/phrases/numericphrase.cpp \
     $$PWD/phrases/phrasedata.cpp \
     $$PWD/phrases/phrasedatalist.cpp \
     $$PWD/phrases/phraselist.cpp \

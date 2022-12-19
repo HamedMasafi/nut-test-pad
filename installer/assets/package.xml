@@ -1,0 +1,10 @@
+<Package>
+    <DisplayName>Perticon</DisplayName>
+    <Description>Main app</Description>
+    <Version>0.1</Version>
+    <ReleaseDate>2022-12-16</ReleaseDate>
+	<Default>true</Default>
+    <Required>true</Required>
+    <Script>installscript.qs</Script>
+    <RequiresAdminRights>false</RequiresAdminRights>
+</Package>

@@ -3,7 +3,7 @@
 
 #include "nut/table.h"
 #include "nut/foreignkey.h"
-#include "phrases/numericphrase.h"
+#include "phrases/fieldphrase_numeric.h"
 
 NUT_FORWARD_DECLARE_TABLE(SampleTable)
 

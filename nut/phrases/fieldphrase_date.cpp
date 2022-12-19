@@ -20,13 +20,8 @@
 
 #include "fieldphrase_date.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
-
-FieldPhrase<QDate>::FieldPhrase(const char *className, const char *s) :
-    AbstractFieldPhrase(className, s)
-{}
+namespace Nut
+{
 
 ConditionalPhrase FieldPhrase<QDate>::addYears(int years) {
     return ConditionalPhrase(this, PhraseData::AddYears, years);
@@ -51,11 +46,6 @@ ConditionalPhrase FieldPhrase<QDate>::month() {
 ConditionalPhrase FieldPhrase<QDate>::day() {
     return ConditionalPhrase(this, PhraseData::DatePartDay);
 }
-
-FieldPhrase<QTime>::FieldPhrase(const char *className, const char *s) :
-    AbstractFieldPhrase(className, s)
-{}
-
 
 ConditionalPhrase FieldPhrase<QTime>::addHours(int hours) {
     return ConditionalPhrase(this, PhraseData::AddHours, hours);
@@ -85,9 +75,6 @@ ConditionalPhrase FieldPhrase<QTime>::msec() {
     return ConditionalPhrase(this, PhraseData::DatePartMilisecond);
 }
 
-FieldPhrase<QDateTime>::FieldPhrase(const char *className, const char *s) :
-    AbstractFieldPhrase(className, s)
-{}
 
 ConditionalPhrase FieldPhrase<QDateTime>::addYears(int years) {
     return ConditionalPhrase(this, PhraseData::AddYearsDateTime, years);
@@ -146,6 +133,4 @@ COMMON_OPERATORS_IMPL(QDate)
 COMMON_OPERATORS_IMPL(QTime)
 COMMON_OPERATORS_IMPL(QDateTime)
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
+} // namespace Nut

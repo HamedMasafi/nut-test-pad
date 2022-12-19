@@ -1,21 +1,22 @@
-#ifndef NUT_FIELDPHRASE_QSTRING_H
-#define NUT_FIELDPHRASE_QSTRING_H
+#pragma once
 
-#include <QtNut/nut_global.h>
-#include <QtNut/abstractfieldphrase.h>
-#include <QtNut/fieldphrase.h>
+#include "global.h"
+#include "abstractfieldphrase.h"
+#include "fieldphrase.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 template<>
 class FieldPhrase<QString> : public AbstractFieldPhrase
 {
 public:
-    FieldPhrase(const char *className, const char *s)
-        : AbstractFieldPhrase(className, s)
-    {}
+    template<typename... Types>
+    constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
+        : AbstractFieldPhrase("", name)
+    {
+        init(parent, name, args...);
+    }
 
     ConditionalPhrase like(const QString &term)
     {
@@ -36,8 +37,4 @@ public:
     }
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // NUT_FIELDPHRASE_QSTRING_H
+}

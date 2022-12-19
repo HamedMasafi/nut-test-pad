@@ -18,16 +18,17 @@
 **
 **************************************************************************/
 
-#ifndef ASSIGNMENTPHRASE_H
-#define ASSIGNMENTPHRASE_H
+#pragma once
 
-#include <QtNut/nut_global.h>
-#include <QtNut/assignmentphraselist.h>
-#include <QtNut/NutGlobal>
+#include "assignmentphraselist.h"
+#include "global.h"
+
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 class PhraseData;
 class AbstractFieldPhrase;
@@ -47,7 +48,4 @@ public:
 
 };
 
-NUT_END_NAMESPACE
-QT_END_NAMESPACE
-
-#endif // ASSIGNMENTPHRASE_H
+} // namespace Nut

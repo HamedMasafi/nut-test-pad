@@ -4,6 +4,7 @@
 #include "models/modelstorage.h"
 
 #include <QDebug>
+#include <QJsonObject>
 
 namespace Nut {
 
@@ -38,6 +39,16 @@ QJsonObject Database::jsonModel() const
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {
         auto o = i.value()->createModel();
         model.insert(i.key(), o->toJson());
+    }
+    return model;
+}
+
+QJsonObject Nut::Database2<TableTypeModel>::jsonModel() const
+{
+    QJsonObject model;
+    for (auto i = _tables.begin(); i != _tables.end(); ++i) {
+//        auto o = i.value()->createModel();
+        model.insert((*i)->name(), (*i)->toJson());
     }
     return model;
 }

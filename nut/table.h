@@ -8,10 +8,10 @@
 #include "runtimecheckers/fieldchecker.h"
 #include "runtimecheckers/foreignkeychecker.h"
 #include <QJsonObject>
-#include <QLinkedList>
+
 #include "design/field.h"
 #include "core/tablebase.h"
-#include "phrases/fieldphrase.h"
+#include "phrase.h"
 
 #define NUT_FORWARD_DECLARE_TABLE(name)                                                            \
     template<Nut::TableType _Type>                                                                 \

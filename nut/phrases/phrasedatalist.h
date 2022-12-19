@@ -18,14 +18,14 @@
 **
 **************************************************************************/
 
-#ifndef PHRASEDATALIST_H
-#define PHRASEDATALIST_H
+#pragma once
 
-#include <QtNut/phrasedata.h>
+#include "phrasedata.h"
 
-QT_BEGIN_NAMESPACE
+#include <QList>
 
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 class NUT_EXPORT PhraseDataList : public QList<PhraseData*>
 {
@@ -37,8 +37,4 @@ public:
     virtual ~PhraseDataList();
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // PHRASEDATALIST_H
+}

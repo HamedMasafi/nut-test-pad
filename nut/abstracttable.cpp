@@ -1,27 +1,24 @@
-
-#include <QJsonObject>
-#include <QJsonValue>
-
-#include "table.h"
+#include "abstracttable.h"
+#include "database.h"
 #include "phrases/abstractfieldphrase.h"
+
 
 namespace Nut {
 
-void Table<TableTypeMain>::setFieldValue(const QString &name, const QVariant &value)
+QString AbstractModel::name() const
 {
-    if (_fields.contains(name))
-        _fields.value(name)->fromVariant(value);
+    return _name;
 }
 
-QVariant Table<TableTypeMain>::fieldvalue(const QString &name) const
+AbstractModel::AbstractModel(Database2<TableTypeModel> *parent, const char *name)
+    : _name{name}
 {
-    if (!_fields.contains(name))
-        return QVariant();
-    return _fields.value(name)->toVariant();
+    parent->_tables.append(this);
 }
 
-QJsonObject Table<TableTypeModel>::toJson() const
+QJsonObject AbstractModel::toJson()
 {
+    auto _fields = fields();
     QJsonObject fieldsObject;
     for (auto i = _fields.begin(); i != _fields.end(); ++i) {
         QJsonObject fieldObject;
@@ -36,6 +33,7 @@ QJsonObject Table<TableTypeModel>::toJson() const
 
         fieldsObject.insert(i.key(), fieldObject);
     }
+    auto _foreignKeys = foreignKeys();
     QJsonObject foreignKeysObject;
     for (auto i = _foreignKeys.begin(); i != _foreignKeys.end(); ++i) {
         QJsonObject foreignKeyObject;
@@ -50,24 +48,5 @@ QJsonObject Table<TableTypeModel>::toJson() const
     return o;
 }
 
-QVariant Table<TableTypeMain>::key() const
-{
-    return _fields.value(keyField)->toVariant();
 }
 
-void Table<TableTypeMain>::setKey(const QVariant &value)
-{
-    _fields.value(keyField)->fromVariant(value);
-}
-
-//const QMap<QString, AbstractFieldPhrase *> &Table<TableTypeModel>::fields() const
-//{
-//    return _fields;
-//}
-
-const QSet<QString> &Table<TableTypeMain>::changedFields() const
-{
-    return _changedFields;
-}
-
-} // namespace Nut

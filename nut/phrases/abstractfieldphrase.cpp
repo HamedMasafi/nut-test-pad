@@ -22,9 +22,8 @@
 #include <QDebug>
 #include "../table.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 AbstractFieldPhrase::AbstractFieldPhrase(PhraseData *d) : data(d)
 { }
@@ -181,6 +180,4 @@ int AbstractFieldPhrase::autoIncrementStep() const
     return data->autoIncrement.second;
 }
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
+} // namespace Nut

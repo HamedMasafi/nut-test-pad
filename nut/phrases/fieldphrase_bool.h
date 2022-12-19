@@ -1,33 +1,37 @@
-#ifndef NUT_FIELDPHRASE_BOOL_H
-#define NUT_FIELDPHRASE_BOOL_H
+#pragma once
 
-#include <QtNut/nut_global.h>
-#include <QtNut/fieldphrase.h>
-#include <QtNut/fieldphrase.h>
+#include "global.h"
+#include "phrases/fieldphrase.h"
+#include "phrases/abstractfieldphrase.h"
+#include "table.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 template<>
 class FieldPhrase<bool> : public AbstractFieldPhrase
 {
+    TableModel *_parent;
 public:
-    FieldPhrase(const char *className, const char *s) :
-          AbstractFieldPhrase(className, s)
-    {}
+    template<typename... Types>
+        constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
+        : AbstractFieldPhrase("", name), _parent(parent)
+    {
+        init(parent, name, args...);
+    }
 
     AssignmentPhrase operator =(const bool &other) {
         return AssignmentPhrase(this, other);
     }
 
-    FieldPhrase<bool> operator !()
-    {
-        FieldPhrase<bool> f(data->className, data->fieldName);
-        //        f.data = new PhraseData(data);
-        f.data->isNot = !data->isNot;
-        return f;
-    }
+//    FieldPhrase<bool> operator !()
+//    {
+////        auto c  = data->clone()
+//        FieldPhrase<bool> f(_parent, data->className, data->fieldName);
+//        f.data = new PhraseData(data);
+//        f.data->isNot = !data->isNot;
+//        return f;
+//    }
 
     operator ConditionalPhrase()
     {
@@ -35,8 +39,4 @@ public:
     }
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // NUT_FIELDPHRASE_BOOL_H
+}

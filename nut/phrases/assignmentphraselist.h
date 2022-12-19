@@ -18,18 +18,17 @@
 **
 **************************************************************************/
 
-#ifndef ASSIGNMENTPHRASELIST_H
-#define ASSIGNMENTPHRASELIST_H
+#pragma once
 
-#include <QtNut/nut_global.h>
+#include <QList>
+#include <QtGlobal>
+#include "global.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut {
 
 class PhraseData;
 class AssignmentPhrase;
-class NUT_EXPORT AssignmentPhraseList
+class AssignmentPhraseList
 {
 public:
     QList<PhraseData*> data;
@@ -47,8 +46,4 @@ private:
     void incAllDataParents();
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // ASSIGNMENTPHRASELIST_H
+}

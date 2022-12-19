@@ -18,15 +18,12 @@
 **
 **************************************************************************/
 
-#ifndef PHRASELIST_H
-#define PHRASELIST_H
+#pragma once
 
-#include <QtNut/nut_global.h>
-#include <QtNut/phrasedatalist.h>
+#include "phrases/phrasedatalist.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 class AbstractFieldPhrase;
 class NUT_EXPORT PhraseList
@@ -51,8 +48,4 @@ private:
     void incAllDataParents();
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // PHRASELIST_H
+} // namespace Nut

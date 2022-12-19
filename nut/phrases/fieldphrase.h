@@ -20,14 +20,13 @@
 
 #pragma once
 
-#include <QtNut/nut_global.h>
+#include "global.h"
 #include "abstractfieldphrase.h"
 #include "../global.h"
 #include "../namedtype.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 template<typename T>
 class FieldPhrase : public AbstractFieldPhrase
@@ -86,6 +85,4 @@ Q_OUTOFLINE_TEMPLATE ConditionalPhrase FieldPhrase<T>::operator ==(const QVarian
     }
 
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
+}

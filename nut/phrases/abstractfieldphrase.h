@@ -18,19 +18,17 @@
 **
 **************************************************************************/
 
-#ifndef ABSTRACTFIELDPHRASE_H
-#define ABSTRACTFIELDPHRASE_H
+#pragma once
 
-#include <QtNut/nut_global.h>
+#include <qdebug.h>
 #include "namedtype.h"
 #include "assignmentphrase.h"
 #include "conditionalphrase.h"
 #include "phraselist.h"
 #include "../global.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 #define PHRASE_CONSTRUCTOR(cls) \
     template<typename... Types> \
@@ -131,6 +129,7 @@ protected:
         pick<int>("Len", &data->len, args...);
         pick<std::pair<int, int> >("AutoIncrement", &data->autoIncrement, args...);
         pick<bool>("PrimaryKey", &data->isPrimaryKey, args...);
+        qDebug() << "AbstractFieldPhrase read values" << data->fieldName << data->maxLen << data->len << data->isPrimaryKey;
 
         addToParent(name, parent);
 
@@ -138,8 +137,4 @@ protected:
     void addToParent(const QString &name, Table<TableTypeModel> *parent);
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // ABSTRACTFIELDPHRASE_H
+}

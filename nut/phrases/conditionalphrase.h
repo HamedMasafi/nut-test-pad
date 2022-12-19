@@ -18,14 +18,12 @@
 **
 **************************************************************************/
 
-#ifndef CONDITIONALPHRASE_H
-#define CONDITIONALPHRASE_H
+#pragma once
 
-#include <QtNut/phrasedata.h>
+#include "phrases/phrasedata.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 class PhraseData;
 class AbstractFieldPhrase;
@@ -91,8 +89,4 @@ ConditionalPhrase NUT_EXPORT operator <=(ConditionalPhrase &&l, ConditionalPhras
 ConditionalPhrase NUT_EXPORT operator >(ConditionalPhrase &&l, ConditionalPhrase &&r);
 ConditionalPhrase NUT_EXPORT operator >=(ConditionalPhrase &&l, ConditionalPhrase &&r);
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // CONDITIONALPHRASE_H
+}

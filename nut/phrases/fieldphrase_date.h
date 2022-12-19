@@ -18,17 +18,15 @@
 **
 **************************************************************************/
 
-#ifndef DATEPHRASE_H
-#define DATEPHRASE_H
+#pragma once
 
 #include <QtCore/QDateTime>
 #include <type_traits>
 
-#include <QtNut/fieldphrase.h>
+#include "fieldphrase.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 #define COMMON_OPERATORS_DECL(T) \
     AssignmentPhrase operator =(const T &other); \
@@ -64,7 +62,13 @@ template<>
 class NUT_EXPORT FieldPhrase<QDate> : public AbstractFieldPhrase
 {
 public:
-    FieldPhrase(const char *className, const char *s);
+    template<typename... Types>
+    constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
+        : AbstractFieldPhrase("", name)
+    {
+        init(parent, name, args...);
+    }
+
 
     COMMON_OPERATORS_DECL(QDate)
 
@@ -81,7 +85,13 @@ template<>
 class NUT_EXPORT FieldPhrase<QTime> : public AbstractFieldPhrase
 {
 public:
-    FieldPhrase(const char *className, const char *s);
+    template<typename... Types>
+    constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
+        : AbstractFieldPhrase("", name)
+    {
+        init(parent, name, args...);
+    }
+
 
     COMMON_OPERATORS_DECL(QTime)
 
@@ -99,7 +109,13 @@ template<>
 class NUT_EXPORT FieldPhrase<QDateTime> : public AbstractFieldPhrase
 {
 public:
-    FieldPhrase(const char *className, const char *s);
+    template<typename... Types>
+    constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
+        : AbstractFieldPhrase("", name)
+    {
+        init(parent, name, args...);
+    }
+
 
     COMMON_OPERATORS_DECL(QDateTime)
 
@@ -121,8 +137,4 @@ public:
     ConditionalPhrase msec();
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // DATEPHRASE_H
+} // namespace Nut

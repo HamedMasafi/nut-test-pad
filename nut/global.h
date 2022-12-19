@@ -27,6 +27,9 @@ using TableModel = Table<TableTypeModel>;
 template<template<TableType _Type> class T>
 using Table_T = T<TableTypeMain>;
 
+#define NUT_ENTITY template<TableType _Type>
 } // namespace Nut
+
+#define NUT_EXPORT
 
 #endif // GLOBAL_H

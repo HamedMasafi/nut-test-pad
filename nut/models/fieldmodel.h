@@ -63,6 +63,7 @@ public:
         pick<std::pair<int, int> >("AutoIncrement", &d->autoIncrement, args...);
         pick<bool>("PrimaryKey", &d->isPrimaryKey, args...);
 
+        qDebug() << "read values" << d->name << d->maxLen << d->len << d->isPrimaryKey;
         addToParent(name, parent);
 
     }

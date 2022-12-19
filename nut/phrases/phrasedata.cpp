@@ -20,9 +20,8 @@
 
 #include "phrasedata.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 PhraseData::PhraseData()
     : className(""), fieldName(""), type(Field), operatorCond(NotAssign),
@@ -116,6 +115,4 @@ void PhraseData::cleanUp(PhraseData *d)
         cleanUp(d->right);
 }
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
+} // namespace Nut
