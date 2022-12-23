@@ -3,10 +3,10 @@
 
 namespace Nut {
 
-DatasetBase::DatasetBase(Database *parent, const char *name)
-{
-    parent->_tables.insert(name, this);
-}
+//DatasetBase::DatasetBase(Database *parent, const char *name)
+//{
+//    parent->_tables.insert(name, this);
+//}
 
 
 } // namespace Nut

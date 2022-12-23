@@ -44,14 +44,14 @@ struct TableTypeHelper<C, RuntimeChecker>{
 
 class DatasetBase;
 
-class Database
+class Database3
 {
 
 public:
     QMap<QString, DatasetBase*> _tables;
 
     Q_DECL_DEPRECATED
-    Database();
+    Database3();
 
     TableMain *createTable(const QString &name) const;
     QList<TableModel*> model() const;
@@ -60,18 +60,18 @@ public:
 };
 
 template<Nut::TableType _Type>
-class Database2
+class Database
 {
 
 };
 
 template<>
-class Database2<TableTypeMain>
+class Database<TableTypeMain>
 {
 };
 
 template<>
-class Database2<TableTypeModel>
+class Database<TableTypeModel>
 {
     QList<AbstractModel*> _tables;
 public:
@@ -81,19 +81,20 @@ public:
     friend class AbstractModel;
 };
 
-#define NutDatabaseBase Nut::Database2<_Type>
+#define NutDatabaseBase Nut::Database<_Type>
 #define NUT_DATABASE \
 template<template<Nut::TableType _T> class T> \
     using Tableset = typename Nut::TableTypeHelper<T, _Type>::type;
 
 #define NUT_DECLARE_DATABASE(name) \
-extern name<Nut::TableTypeModel> name##Model;
+    extern name<Nut::TableTypeModel> name##Model; \
+    using name##Database = name<Nut::TableTypeMain>;
 
 #define NUT_DECLARE_IMPLEMENT(name) \
-name<Nut::TableTypeModel> name##Model;
+    name<Nut::TableTypeModel> name##Model;
 
 #define Nut_TableSet2(type, name) Tableset<type> name{this, #name}
-//Nut::Database2<T>::Tableset<type> name{this, #name}
+//Nut::Database<T>::Tableset<type> name{this, #name}
 
 } // namespace Nut
 

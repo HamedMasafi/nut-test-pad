@@ -1,11 +1,9 @@
 #include "tablebase.h"
 #include "database.h"
+#include <algorithm>
+#include <phrases/abstractfieldphrase.h>
 
 namespace Nut {
 
-Table<TableTypeModel>::Table(Database2<TableTypeModel> *parent, const char *name)
-{
-
-}
 
 }

@@ -87,6 +87,7 @@ public:
 
     enum Type { Field, WithVariant, WithOther, WithoutOperand };
 
+    QString tableName;
     const char *className;
     const char *fieldName;
 

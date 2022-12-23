@@ -1,5 +1,6 @@
 #include "abstracttable.h"
 #include "database.h"
+#include "models/foreignkeymodel.h"
 #include "phrases/abstractfieldphrase.h"
 
 
@@ -10,7 +11,7 @@ QString AbstractModel::name() const
     return _name;
 }
 
-AbstractModel::AbstractModel(Database2<TableTypeModel> *parent, const char *name)
+AbstractModel::AbstractModel(Database<TableTypeModel> *parent, const char *name)
     : _name{name}
 {
     parent->_tables.append(this);
@@ -34,12 +35,15 @@ QJsonObject AbstractModel::toJson()
         fieldsObject.insert(i.key(), fieldObject);
     }
     auto _foreignKeys = foreignKeys();
+    qDebug() << "_foreignKeys " << _foreignKeys.size();
     QJsonObject foreignKeysObject;
     for (auto i = _foreignKeys.begin(); i != _foreignKeys.end(); ++i) {
         QJsonObject foreignKeyObject;
 
+        foreignKeyObject.insert("table", (*i)->tableNae());
+        foreignKeyObject.insert("keytype", (*i)->keyType());
 
-        foreignKeyObject.insert(i.key(), foreignKeyObject);
+        foreignKeysObject.insert(i.key(), foreignKeyObject);
     }
 
     QJsonObject o;

@@ -11,21 +11,36 @@
 #include "parenttable.h"
 #include "nut/namedtype.h"
 
+#define print(x) qDebug() << #x "=" << (x)
 void f() {
-    DB2<Nut::TableTypeModel> d;
-    d.table10.fields();
+    DBModel.table20.t().id;
 
-//    SampleTableModel2.id
-//    Database2<TableTypeMain>::Tableset<SampleTable> ff();
+    auto f = SampleTableModel2.feild("id");
+    qDebug() << "f.name" << f->name() << f->tableName();
+    //    Database<TableTypeMain>::Tableset<SampleTable> ff();
 }
 
 void printModel()
 {
-    DB2<Nut::TableTypeModel> model;
+    DB<Nut::TableTypeModel> model;
     auto t = model.table10.id == model.table20.id;
     QJsonDocument doc(model.jsonModel());
     qDebug() << "===Model===";
     qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+}
+
+void changedTest()
+{
+    SampleTableTable t;
+    t.id = 3;
+    t.pn = 4;
+    t.point = QPoint(1, 2);
+
+
+    qDebug() << t.changedFields().contains("id");
+    qDebug() << t.changedFields().contains("pn");
+    qDebug() << t.changedFields().contains("point");
+    print(t.changedFields());
 }
 
 void checkExpressions()
@@ -36,7 +51,7 @@ void checkExpressions()
     auto q3 = SampleTableModel2.id == 4 && SampleTableModel2.point == QPoint(1, 2);
     auto order = SampleTableModel2.id | !SampleTableModel2.ps;
 
-    auto q4 = DB2Model.table10.id == DB2Model.table20.id;
+    auto q4 = DBModel.table10.id == DBModel.table20.id;
 }
 int main(int argc, char *argv[])
 {
@@ -64,31 +79,6 @@ int main(int argc, char *argv[])
     qDebug() << "Changed fields" << table.changedFields();
 
 
-    DB _database;
-    DB _database2;
-
-    qDebug() << " ====== MODEL ====== " << SampleTableModel2.id.name() << SampleTableModel2.id.data->className;
-
-    auto dbmodel = _database.model();
-    for (auto const &t: qAsConst(dbmodel)) {
-        qDebug() << "*** Table ***";
-
-//        for (auto const &f: qAsConst(t->fields())) {
-//            qDebug() << "name: " << f->name();
-//            qDebug() << "   is primary key: " << f->isPrimaryKey();
-//            qDebug() << "   max len is: " << f->maxLen();
-//            qDebug() << "   len is: " << f->len();
-//            qDebug() << "   auto increment: " << f->autoIncrementStart() << f->autoIncrementStep();
-//        }
-    }
-
-    QJsonDocument doc(_database.jsonModel());
-    qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
-    auto tbl = reinterpret_cast<SampleTableTable*>(_database.createTable("table1"));
-    tbl->setFieldValue("id", 2);
-    qDebug() << tbl->id << tbl->fieldvalue("id");
-
-
     ParentTableModel mm;
     mm.t().id;
     auto b = mm.t().id;
@@ -99,5 +89,7 @@ int main(int argc, char *argv[])
     Q_UNUSED(ttt)
 
     printModel();
+    f();
+    changedTest();
     return EXIT_SUCCESS;
 }

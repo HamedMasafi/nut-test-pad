@@ -111,6 +111,8 @@ void AbstractFieldPhrase::detach()
 void AbstractFieldPhrase::addToParent(const QString &name, Table<TableTypeModel> *parent)
 {
     parent->_fields.insert(name, this);
+    data->tableName = parent->name();
+    qDebug() << "parent name is" << parent->name();
 }
 
 #define AbstractFieldPhraseOperatorVariant(class, op, cond) \
@@ -153,6 +155,11 @@ AbstractFieldPhrase AbstractFieldPhrase::operator !()
 const char *AbstractFieldPhrase::name() const
 {
     return data->fieldName;
+}
+
+QString AbstractFieldPhrase::tableName() const
+{
+    return data->tableName;
 }
 
 int AbstractFieldPhrase::maxLen() const

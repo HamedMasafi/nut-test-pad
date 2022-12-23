@@ -59,6 +59,7 @@ public:
     AbstractFieldPhrase(AbstractFieldPhrase &&other);
 
     const char *name() const;
+    QString tableName() const;
     int maxLen() const;
     int len() const;
     bool isPrimaryKey() const;
@@ -129,7 +130,6 @@ protected:
         pick<int>("Len", &data->len, args...);
         pick<std::pair<int, int> >("AutoIncrement", &data->autoIncrement, args...);
         pick<bool>("PrimaryKey", &data->isPrimaryKey, args...);
-        qDebug() << "AbstractFieldPhrase read values" << data->fieldName << data->maxLen << data->len << data->isPrimaryKey;
 
         addToParent(name, parent);
 

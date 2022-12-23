@@ -7,6 +7,19 @@
 
 namespace Nut {
 
+Table<TableTypeModel>::Table(Database<TableTypeModel> *parent, const char *name) : _name(name)
+{
+    qDebug() << "my name is" << name;
+}
+
+AbstractFieldPhrase *Nut::Table<TableTypeModel>::feild(const QString &name) const
+{
+    for (auto i = _fields.begin(); i != _fields.end(); ++i)
+        if ((*i)->name() == name)
+            return *i;
+    return nullptr;
+}
+
 void Table<TableTypeMain>::setFieldValue(const QString &name, const QVariant &value)
 {
     if (_fields.contains(name))
@@ -40,7 +53,7 @@ QJsonObject Table<TableTypeModel>::toJson() const
     for (auto i = _foreignKeys.begin(); i != _foreignKeys.end(); ++i) {
         QJsonObject foreignKeyObject;
 
-
+//        foreignKeyObject.insert("name", (*i)->);
         foreignKeyObject.insert(i.key(), foreignKeyObject);
     }
 

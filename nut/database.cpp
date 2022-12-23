@@ -8,7 +8,7 @@
 
 namespace Nut {
 
-Database::Database()
+Database3::Database3()
 {
     QString id = typeid(this).name();
     qDebug() << "model exists" << (ModelStorage::models.contains(id)) << id;
@@ -17,7 +17,7 @@ Database::Database()
         ModelStorage::models.insert(id, "a");
 }
 
-QList<TableModel *> Database::model() const
+QList<TableModel *> Database3::model() const
 {
     QList<TableModel *>  ret;
     for (const auto &table: _tables)
@@ -26,14 +26,14 @@ QList<TableModel *> Database::model() const
     return ret;
 }
 
-TableMain *Database::createTable(const QString &name) const
+TableMain *Database3::createTable(const QString &name) const
 {
     if (!_tables.contains(name))
         return nullptr;
     return _tables.value(name)->createTable();
 }
 
-QJsonObject Database::jsonModel() const
+QJsonObject Database3::jsonModel() const
 {
     QJsonObject model;
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {
@@ -43,7 +43,7 @@ QJsonObject Database::jsonModel() const
     return model;
 }
 
-QJsonObject Nut::Database2<TableTypeModel>::jsonModel() const
+QJsonObject Nut::Database<TableTypeModel>::jsonModel() const
 {
     QJsonObject model;
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {

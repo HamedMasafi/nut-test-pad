@@ -7,7 +7,7 @@
 namespace Nut {
 
 template<Nut::TableType _Type>
-class Database2;
+class Database;
 class AbstractFieldPhrase;
 class ForeignKeyModelBase;
 
@@ -15,7 +15,7 @@ class AbstractModel
 {
     QString _name;
 public:
-    AbstractModel(Database2<TableTypeModel> *parent, const char *name);
+    AbstractModel(Database<TableTypeModel> *parent, const char *name);
     virtual const QMap<QString, AbstractFieldPhrase *> &fields() = 0;
     virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() = 0;
     virtual QJsonObject toJson();

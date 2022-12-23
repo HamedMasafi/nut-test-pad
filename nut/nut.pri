@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/core/tablebase.h \
     $$PWD/database.h \
     $$PWD/dataset.h \
-    $$PWD/design/field.h \
     $$PWD/expressions/conditionalexpression.h \
     $$PWD/expressions/expressiondata.h \
     $$PWD/field2.h \
@@ -40,7 +39,6 @@ SOURCES += \
     $$PWD/core/tablebase.cpp \
     $$PWD/database.cpp \
     $$PWD/dataset.cpp \
-    $$PWD/design/field.cpp \
     $$PWD/expressions/conditionalexpression.cpp \
     $$PWD/expressions/expressiondata.cpp \
     $$PWD/field2.cpp \

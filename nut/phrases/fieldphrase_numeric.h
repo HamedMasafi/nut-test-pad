@@ -1,13 +1,11 @@
-#ifndef NUMERICPHRASE_H
-#define NUMERICPHRASE_H
+#pragma once
 
 #include <type_traits>
 
 #include "fieldphrase.h"
 
-QT_BEGIN_NAMESPACE
-
-NUT_BEGIN_NAMESPACE
+namespace Nut
+{
 
 #define SPECIALIZATION_NUMERIC_MEMBER(type, op, cond)                          \
     ConditionalPhrase operator op(const QVariant &other)                       \
@@ -92,8 +90,4 @@ SPECIALIZATION_NUMERIC_TYPE(quint64)
 SPECIALIZATION_NUMERIC_TYPE(qreal)
 SPECIALIZATION_NUMERIC_TYPE(float)
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // NUMERICPHRASE_H
+}

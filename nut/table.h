@@ -9,7 +9,6 @@
 #include "runtimecheckers/foreignkeychecker.h"
 #include <QJsonObject>
 
-#include "design/field.h"
 #include "core/tablebase.h"
 #include "phrase.h"
 
@@ -145,5 +144,74 @@ struct Property2<T, RuntimeChecker, Types...> {
 
 #define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
 #define ForeignKey(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}
+
+
+template<TableType _Type>
+class Table
+{
+public:
+    Table() = default;
+
+    friend class FieldBase;
+};
+
+template<>
+class Table<TableTypeMain>
+{
+protected:
+    QString keyField;
+    QMap<QString, FieldBase*> _fields;
+    QSet<QString> _changedFields;
+public:
+
+    Table() = default;
+
+    friend class FieldBase;
+
+    void setFieldValue(const QString &name, const QVariant &value);
+    QVariant fieldvalue(const QString &name) const;
+
+    QVariant key() const;
+    void setKey(const QVariant &value);
+    const QSet<QString> &changedFields() const;
+};
+
+template <>
+class Table<TableTypeModel>
+{
+protected:
+    QMap<QString, AbstractFieldPhrase*> _fields;
+    QMap<QString, ForeignKeyModelBase*> _foreignKeys;
+    QString _name;
+public:
+    Table() = default;
+    Table(Database<TableTypeModel> *parent, const char *name);
+
+    QJsonObject toJson() const;
+    AbstractFieldPhrase *feild(const QString &name) const;
+
+    friend class DatasetBase;
+    friend class AbstractFieldPhrase;
+    friend class ForeignKeyModelBase;
+    QString name() const{
+        return _name;
+    }
+};
+
+
+template<NUT_TABLE_TEMPLATE T>
+class ModelBase : public AbstractModel, public T<TableTypeModel>
+{
+public:
+    ModelBase(Nut::Database<TableTypeModel> *parent, const char *name)
+        : AbstractModel(parent, name)
+    {}
+    const QMap<QString, AbstractFieldPhrase *> &fields() override{
+        return T<TableTypeModel>::_fields;
+    }
+    const QMap<QString, ForeignKeyModelBase*> &foreignKeys() override{
+        return T<TableTypeModel>::_foreignKeys;
+    }
+};
 
 }
