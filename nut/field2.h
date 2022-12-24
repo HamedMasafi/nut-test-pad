@@ -77,7 +77,7 @@ T Nut::Field<T, false>::value() const
 template <typename T>
 class Field<T, true> : public Field<T, false>
 {
-    T _value;
+//    T _value;
     bool _isNull;
 public:
     template<typename ...Types>
@@ -105,6 +105,7 @@ bool Field<T, true>::operator==(const std::nullptr_t &)
 template<typename T>
 Field<T, true> &Nut::Field<T, true>::operator=(const DBNullType &)
 {
+    this->setChanged();
     setNull();
     return *this;
 }
@@ -112,8 +113,8 @@ Field<T, true> &Nut::Field<T, true>::operator=(const DBNullType &)
 template<typename T>
 Field<T, true> &Field<T, true>::operator=(const T &value)
 {
-//    setChanged();
-    _value = value;
+    this->setChanged();
+    this->_value = value;
     return *this;
 }
 
@@ -137,6 +138,7 @@ template<typename T, bool _AllowNull>                                           
 
 FieldMethodSelfNotNull::operator=(const T &value)
 {
+    this->setChanged();
     _value = value;
     return *this;
 }
@@ -144,14 +146,14 @@ FieldMethodSelfNotNull::operator=(const T &value)
 FieldMethodSelfAllowNull::operator=(const std::nullptr_t &)
 {
     setNull();
+    this->setChanged();
     return *this;
 }
 
 template<typename T>
 bool Field<T, true>::operator==(const DBNullType &)
 {
-    setNull();
-    return *this;
+    return _isNull;
 }
 
 template<typename T>

@@ -65,6 +65,7 @@ public:
     bool isPrimaryKey() const;
     int autoIncrementStart() const;
     int autoIncrementStep() const;
+    bool allowNull() const;
 
     virtual ~AbstractFieldPhrase();
 
@@ -130,6 +131,7 @@ protected:
         pick<int>("Len", &data->len, args...);
         pick<std::pair<int, int> >("AutoIncrement", &data->autoIncrement, args...);
         pick<bool>("PrimaryKey", &data->isPrimaryKey, args...);
+        pick<bool>("AllowNull", &data->allowNull, args...);
 
         addToParent(name, parent);
 

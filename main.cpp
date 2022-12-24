@@ -37,9 +37,9 @@ void changedTest()
     t.point = QPoint(1, 2);
 
 
-    qDebug() << t.changedFields().contains("id");
-    qDebug() << t.changedFields().contains("pn");
-    qDebug() << t.changedFields().contains("point");
+    print(t.changedFields().contains("id"));
+    print(t.changedFields().contains("pn"));
+    print(t.changedFields().contains("point"));
     print(t.changedFields());
 }
 

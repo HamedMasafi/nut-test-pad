@@ -112,7 +112,6 @@ void AbstractFieldPhrase::addToParent(const QString &name, Table<TableTypeModel>
 {
     parent->_fields.insert(name, this);
     data->tableName = parent->name();
-    qDebug() << "parent name is" << parent->name();
 }
 
 #define AbstractFieldPhraseOperatorVariant(class, op, cond) \
@@ -185,6 +184,11 @@ int AbstractFieldPhrase::autoIncrementStart() const
 int AbstractFieldPhrase::autoIncrementStep() const
 {
     return data->autoIncrement.second;
+}
+
+bool AbstractFieldPhrase::allowNull() const
+{
+    return data->allowNull;
 }
 
 } // namespace Nut

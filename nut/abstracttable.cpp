@@ -31,6 +31,7 @@ QJsonObject AbstractModel::toJson()
         fieldObject.insert("len", (*i)->len());
         fieldObject.insert("maxlen", (*i)->maxLen());
         fieldObject.insert("columnName", (*i)->name());
+        fieldObject.insert("allowNull", (*i)->allowNull());
 
         fieldsObject.insert(i.key(), fieldObject);
     }
