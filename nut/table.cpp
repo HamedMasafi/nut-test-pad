@@ -12,7 +12,7 @@ Table<TableTypeModel>::Table(Database<TableTypeModel> *parent, const char *name)
     qDebug() << "my name is" << name;
 }
 
-AbstractFieldPhrase *Nut::Table<TableTypeModel>::feild(const QString &name) const
+AbstractFieldPhrase *Nut::Table<TableTypeModel>::field(const QString &name) const
 {
     for (auto i = _fields.begin(); i != _fields.end(); ++i)
         if ((*i)->name() == name)
@@ -81,6 +81,21 @@ void Table<TableTypeMain>::setKey(const QVariant &value)
 const QSet<QString> &Table<TableTypeMain>::changedFields() const
 {
     return _changedFields;
+}
+
+QMap<QString, AbstractFieldPhrase *> Table<TableTypeModel>::fields() const
+{
+    return _fields;
+}
+
+QMap<QString, ForeignKeyModelBase *> Table<TableTypeModel>::foreignKeys() const
+{
+    return _foreignKeys;
+}
+
+RowStatus Table<TableTypeMain>::status() const
+{
+    return _status;
 }
 
 } // namespace Nut

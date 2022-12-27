@@ -1,7 +1,7 @@
 #pragma once
 
 #include "global.h"
-
+#include "query.h"
 #include <QList>
 
 
@@ -54,6 +54,9 @@ public:
         return Nut::createModel<T>();
     }
 
+    Query<T> query() const{
+        return Query<T>();
+    }
     void append(T<TableTypeMain> *row) {
         _list.append(row);
     }

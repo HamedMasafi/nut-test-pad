@@ -162,6 +162,7 @@ protected:
     QString keyField;
     QMap<QString, FieldBase*> _fields;
     QSet<QString> _changedFields;
+    RowStatus _status;
 public:
 
     Table() = default;
@@ -174,6 +175,7 @@ public:
     QVariant key() const;
     void setKey(const QVariant &value);
     const QSet<QString> &changedFields() const;
+    RowStatus status() const;
 };
 
 template <>
@@ -188,14 +190,16 @@ public:
     Table(Database<TableTypeModel> *parent, const char *name);
 
     QJsonObject toJson() const;
-    AbstractFieldPhrase *feild(const QString &name) const;
+    AbstractFieldPhrase *field(const QString &name) const;
 
     friend class DatasetBase;
     friend class AbstractFieldPhrase;
     friend class ForeignKeyModelBase;
-    QString name() const{
+    inline QString name() const{
         return _name;
     }
+    QMap<QString, AbstractFieldPhrase *> fields() const;
+    QMap<QString, ForeignKeyModelBase *> foreignKeys() const;
 };
 
 

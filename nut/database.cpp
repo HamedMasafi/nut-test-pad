@@ -53,4 +53,25 @@ QJsonObject Nut::Database<TableTypeModel>::jsonModel() const
     return model;
 }
 
+Database<TableTypeModel> Nut::Database<TableTypeModel>::operator|(const Database<TableTypeModel> &other)
+{
+    Database<TableTypeModel> ret;
+    ret._tables.append(_tables);
+    ret._tables.append(other._tables);
+    return ret;
+}
+
+AbstractModel *Nut::Database<TableTypeModel>::tableByName(const QString &name) const
+{
+    for (const auto &t: _tables)
+        if (t->name() == name)
+            return t;
+    return nullptr;
+}
+
+QList<AbstractModel *> Database<TableTypeModel>::tables() const
+{
+    return _tables;
+}
+
 } // namespace Nut

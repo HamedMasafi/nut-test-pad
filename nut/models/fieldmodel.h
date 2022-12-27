@@ -17,6 +17,7 @@ public:
     int maxLen{0};
     int len{};
     bool isPrimaryKey{false};
+    bool notNull{false};
     std::pair<int, int> autoIncrement{std::make_pair(0, 0)};
 };
 
@@ -34,10 +35,16 @@ public:
     bool isPrimaryKey() const;
     int autoIncrementStart() const;
     int autoIncrementStep() const;
+    bool notNull() const;
+    bool isUnique() const;
 protected:
     QSharedDataPointer<FieldModelData> d;
 
 };
+
+bool operator==(const FieldModelBase &l, const FieldModelBase &r);
+bool operator!=(const FieldModelBase &l, const FieldModelBase &r);
+
 using namespace Nut::Model;
 
 template<typename T>

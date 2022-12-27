@@ -3,6 +3,7 @@ INCLUDEPATH += $$PWD
 HEADERS += \
     $$PWD/abstracttable.h \
     $$PWD/core/fieldbase.h \
+    $$PWD/core/sqlserializer.h \
     $$PWD/core/tablebase.h \
     $$PWD/database.h \
     $$PWD/dataset.h \
@@ -10,6 +11,7 @@ HEADERS += \
     $$PWD/expressions/expressiondata.h \
     $$PWD/field2.h \
     $$PWD/foreignkey.h \
+    $$PWD/generators/abstractsqlgenerator.h \
     $$PWD/global.h \
     $$PWD/models/fieldmodel.h \
     $$PWD/models/foreignkeymodel.h \
@@ -17,6 +19,7 @@ HEADERS += \
     $$PWD/namedtype.h \
     $$PWD/phrase.h \
     $$PWD/phrases/fieldphrase_numeric.h \
+    $$PWD/query.h \
     $$PWD/runtimecheckers/fieldchecker.h \
     $$PWD/runtimecheckers/foreignkeychecker.h \
     $$PWD/runtimecheckers/tablechecker.h \
@@ -36,6 +39,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/abstracttable.cpp \
     $$PWD/core/fieldbase.cpp \
+    $$PWD/core/sqlserializer.cpp \
     $$PWD/core/tablebase.cpp \
     $$PWD/database.cpp \
     $$PWD/dataset.cpp \
@@ -43,6 +47,7 @@ SOURCES += \
     $$PWD/expressions/expressiondata.cpp \
     $$PWD/field2.cpp \
     $$PWD/foreignkey.cpp \
+    $$PWD/generators/abstractsqlgenerator.cpp \
     $$PWD/models/fieldmodel.cpp \
     $$PWD/models/foreignkeymodel.cpp \
     $$PWD/models/modelstorage.cpp \

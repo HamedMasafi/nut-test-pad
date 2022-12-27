@@ -12,8 +12,11 @@
 #include "nut/namedtype.h"
 
 #define print(x) qDebug() << #x "=" << (x)
+
 void f() {
     DBModel.table20.t().id;
+    DBDatabase d;
+    auto q = d.table20.query().where(DBModel.table20.id == 4 || DBModel.table20.id == 3).toList();
 
     auto f = SampleTableModel2.feild("id");
     qDebug() << "f.name" << f->name() << f->tableName();

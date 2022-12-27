@@ -79,6 +79,10 @@ public:
     QJsonObject jsonModel() const;
 
     friend class AbstractModel;
+    Database<TableTypeModel> operator|(const Database<TableTypeModel> &other);
+
+    AbstractModel *tableByName(const QString &name) const;
+    QList<AbstractModel *> tables() const;
 };
 
 #define NutDatabaseBase Nut::Database<_Type>
