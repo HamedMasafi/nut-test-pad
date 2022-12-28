@@ -28,7 +28,6 @@
 #include "abstractsqlgenerator.h"
 #include "core/sqlserializer.h"
 #include "database.h"
-#include "databasemodel.h"
 #include "nut_p.h"
 #include "sqlserializer.h"
 #include "table.h"
@@ -53,8 +52,9 @@ namespace Nut {
  *      INNER JOIN dbo.GiftCards ON dbo.GiftTypes.GiftTypeID = dbo.GiftCards.GiftTypeID
  *      INNER JOIN dbo.Entities ON dbo.GiftCards.GiftCardID = dbo.Entities.GiftCardID
  */
-bool AbstractSqlGenerator::isNumeric(const QMetaType &type)
+bool AbstractSqlGenerator::isNumeric(const QMetaType &metaType)
 {
+    auto type = metaType.id();
     return type == QMetaType::SChar || type == QMetaType::Char || type == QMetaType::UChar
            || type == QMetaType::Short || type == QMetaType::UShort || type == QMetaType::Int
            || type == QMetaType::UInt || type == QMetaType::Long || type == QMetaType::ULong
