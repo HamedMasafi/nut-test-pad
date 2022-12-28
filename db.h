@@ -15,7 +15,7 @@ public:
 
     Nut_TableSet2(SampleTable, table10);
     Nut_TableSet2(ParentTable, table20);
-//    SampleTable<Nut::TableTypeModel> dddd{this, ""};
+//    SampleTable<Nut::Type::Model> dddd{this, ""};
 };
 
 NUT_DECLARE_DATABASE(DB);

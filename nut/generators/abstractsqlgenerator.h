@@ -32,7 +32,7 @@ namespace Nut {
 
 class FieldModelBase;
 
-template<Nut::TableType _Type>
+template<Nut::Type _Type>
 class Database;
 
 struct RelationModel;
@@ -42,11 +42,11 @@ class NUT_EXPORT AbstractSqlGenerator : public QObject
 {
 //    Q_OBJECT
 
-    Database<TableTypeModel> *_database;
+    Database<Type::Model> *_database;
 protected:
     SqlSerializer *_serializer;
 
-    bool isNumeric(const QMetaType::Type &type);
+    bool isNumeric(const QMetaType &type);
 
 public:
     //TODO: remove this enum
@@ -66,14 +66,14 @@ public:
         Sum
     };
 
-    explicit AbstractSqlGenerator(Database<TableTypeModel> *parent);
+    explicit AbstractSqlGenerator(Database<Type::Model> *parent);
     virtual ~AbstractSqlGenerator() = default;
 
-    virtual bool supportPrimaryKey(const QMetaType::Type &type) {
+    virtual bool supportPrimaryKey(const QMetaType &type) {
         Q_UNUSED(type)
         return true;
     }
-    virtual bool supportAutoIncrement(const QMetaType::Type &type) {
+    virtual bool supportAutoIncrement(const QMetaType &type) {
         Q_UNUSED(type)
         return true;
     }
@@ -84,7 +84,7 @@ public:
     virtual QString escapeFieldName(const QString &fieldName) const;
     virtual QStringList constraints(TableModel *table);
     virtual QString escapeValue(const QVariant &v) const;
-    virtual QVariant unescapeValue(const QMetaType::Type &type, const QVariant &dbValue);
+    virtual QVariant unescapeValue(const QMetaType &type, const QVariant &dbValue);
 
     virtual QString masterDatabaseName(QString databaseName);
 
@@ -103,14 +103,14 @@ public:
                          QStringList *order = Q_NULLPTR);
     virtual QString join(const QStringList &list, QStringList *order = Q_NULLPTR);
 
-    virtual QString saveRecord(TableMain *t, QString tableName);
+    virtual QString saveRecord(TableRow *t, QString tableName);
 
     virtual QString recordsPhrase(TableModel *table);
 
     virtual QString insertBulk(const QString &tableName, const PhraseList &ph, const QList<QVariantList> &vars);
-    virtual QString insertRecord(TableMain *t, QString tableName);
-    virtual QString updateRecord(TableMain *t, QString tableName);
-    virtual QString deleteRecord(TableMain *t, QString tableName);
+    virtual QString insertRecord(TableRow *t, QString tableName);
+    virtual QString updateRecord(TableRow *t, QString tableName);
+    virtual QString deleteRecord(TableRow *t, QString tableName);
     virtual QString deleteRecords(const QString &tableName, const QString &where);
 
     virtual QString selectCommand(const QString &tableName,

@@ -9,30 +9,32 @@
 namespace Nut {
 
 class ForeignKeyModelBase {
+    QString _name;
 public:
-    ForeignKeyModelBase(Table<TableTypeModel> *parent, const char *name);
+    ForeignKeyModelBase(Table<Type::Model> *parent, const char *name);
     virtual QString keyType() const = 0;
-    virtual QString tableNae() const = 0;
+    virtual QString tableName() const = 0;
+    QString name() const;
 };
 
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
 class ForeignKeyModel : public ForeignKeyModelBase
 {
-    T<TableType::TableTypeMain>* _object{nullptr};
+    T<Type::Data>* _object{nullptr};
     KeyType _key;
 
 public:
-    ForeignKeyModel(Table<TableTypeModel> *parent, const char *name)
+    ForeignKeyModel(Table<Type::Model> *parent, const char *name)
         : ForeignKeyModelBase(parent, name)
     {}
 
     QString keyType() const override {
         return QMetaType::fromType<KeyType>().name();
     }
-    virtual QString tableNae() const override {
-        return T<TableTypeModel>().name();
+    virtual QString tableName() const override {
+        return T<Type::Model>().name();
     }
-    T<TableTypeModel> operator()() { return T<TableTypeModel>{}; }
+    T<Type::Model> operator()() { return T<Type::Model>{}; }
 };
 
 } // namespace Nut

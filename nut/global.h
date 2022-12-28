@@ -1,38 +1,33 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NUT_TABLE_TEMPLATE template<Nut::TableType _T> class
-#define NUT_TABLE_TEMPLATE_MAIN template<Nut::TableType _T = TableTypeMain> class
+#define NUT_TABLE_TEMPLATE template<Nut::Type _T> class
+#define NUT_TABLE_TEMPLATE_MAIN template<Nut::Type _T = Type::Data> class
 
 namespace Nut {
 
-enum TableType {
-    TableTypeMain,
-    TableTypeModel,
-    TableTypeFieldPhrases,
-    RuntimeChecker
-};
+enum Type { Data, Model, FieldPhrases, RuntimeChecker };
 
-template<template<Nut::TableType> class T>
-T<Nut::TableTypeModel> *createModel()
+template<template<Nut::Type> class T>
+T<Nut::Type::Model> *createModel()
 {
     return nullptr;
 }
 
-template <TableType _Type>
+template <Type _Type>
 class Table;
-using TableMain = Table<TableTypeMain>;
-using TableModel = Table<TableTypeModel>;
+using TableRow = Table<Type::Data>;
+using TableModel = Table<Type::Model>;
 
-template <TableType _Type>
+template <Type _Type>
 class Database;
-using DatabaseMain = Database<TableTypeMain>;
-using DatabaseModel = Database<TableTypeModel>;
+using DatabaseMain = Database<Type::Data>;
+using DatabaseModel = Database<Type::Model>;
 
-template<template<TableType _Type> class T>
-using Table_T = T<TableTypeMain>;
+template<template<Type _Type> class T>
+using Table_T = T<Type::Data>;
 
-#define NUT_ENTITY template<TableType _Type>
+#define NUT_ENTITY template<Type _Type>
 
 enum class RowStatus {
     Added,
@@ -41,6 +36,13 @@ enum class RowStatus {
     NewCreated,
     FetchedFromDB
 };
+
+template<template<Type _Type> class T>
+T<Type::Model> &createModel()
+{
+    return {};
+}
+
 } // namespace Nut
 
 #define NUT_EXPORT

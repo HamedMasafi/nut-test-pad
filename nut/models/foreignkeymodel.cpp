@@ -3,7 +3,12 @@
 
 namespace Nut {
 
-ForeignKeyModelBase::ForeignKeyModelBase(Table<TableTypeModel> *parent, const char *name)
+QString ForeignKeyModelBase::name() const
+{
+    return _name;
+}
+
+ForeignKeyModelBase::ForeignKeyModelBase(Table<Type::Model> *parent, const char *name) : _name{name}
 {
     parent->_foreignKeys.insert(name, this);
 }

@@ -5,7 +5,7 @@
 
 namespace Nut {
 
-template<typename T, TableType _Type, typename... Types>
+template<typename T, Type _Type, typename... Types>
 struct FieldB
 {
 public:

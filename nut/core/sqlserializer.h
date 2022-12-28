@@ -33,7 +33,7 @@ public:
 
     bool readString(QString &text, QString &out) const;
 
-    QVariant fromString(const QString &value, const QMetaType::Type &type) const;
+    QVariant fromString(const QString &value, const QMetaType &type) const;
     QString toString(const QVariant &value) const;
     QList<int> toListInt(const QString &s) const;
     QList<int> toListInt(const QString &s, const QString &sep) const;
@@ -46,7 +46,7 @@ public:
     QString fromList(const QList<float> &list) const;
     QString fromVariantList(const QVariantList &list) const;
 
-    QVariant deserialize(const QString &value, const QMetaType::Type &type) const;
+    QVariant deserialize(const QString &value, const QMetaType &type) const;
     QString serialize(const QVariant &value) const;
 
 private:

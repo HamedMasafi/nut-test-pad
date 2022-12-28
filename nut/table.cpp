@@ -7,12 +7,12 @@
 
 namespace Nut {
 
-Table<TableTypeModel>::Table(Database<TableTypeModel> *parent, const char *name) : _name(name)
+Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name) : _name(name)
 {
     qDebug() << "my name is" << name;
 }
 
-AbstractFieldPhrase *Nut::Table<TableTypeModel>::field(const QString &name) const
+AbstractFieldPhrase *Nut::Table<Type::Model>::field(const QString &name) const
 {
     for (auto i = _fields.begin(); i != _fields.end(); ++i)
         if ((*i)->name() == name)
@@ -20,20 +20,20 @@ AbstractFieldPhrase *Nut::Table<TableTypeModel>::field(const QString &name) cons
     return nullptr;
 }
 
-void Table<TableTypeMain>::setFieldValue(const QString &name, const QVariant &value)
+void Table<Type::Data>::setFieldValue(const QString &name, const QVariant &value)
 {
     if (_fields.contains(name))
         _fields.value(name)->fromVariant(value);
 }
 
-QVariant Table<TableTypeMain>::fieldvalue(const QString &name) const
+QVariant Table<Type::Data>::fieldvalue(const QString &name) const
 {
     if (!_fields.contains(name))
         return QVariant();
     return _fields.value(name)->toVariant();
 }
 
-QJsonObject Table<TableTypeModel>::toJson() const
+QJsonObject Table<Type::Model>::toJson() const
 {
     QJsonObject fieldsObject;
     for (auto i = _fields.begin(); i != _fields.end(); ++i) {
@@ -63,39 +63,54 @@ QJsonObject Table<TableTypeModel>::toJson() const
     return o;
 }
 
-QVariant Table<TableTypeMain>::key() const
+QVariant Table<Type::Data>::key() const
 {
     return _fields.value(keyField)->toVariant();
 }
 
-void Table<TableTypeMain>::setKey(const QVariant &value)
+void Table<Type::Data>::setKey(const QVariant &value)
 {
     _fields.value(keyField)->fromVariant(value);
 }
 
-//const QMap<QString, AbstractFieldPhrase *> &Table<TableTypeModel>::fields() const
+//const QMap<QString, AbstractFieldPhrase *> &Table<Type::Model>::fields() const
 //{
 //    return _fields;
 //}
 
-const QSet<QString> &Table<TableTypeMain>::changedFields() const
+const QSet<QString> &Table<Type::Data>::changedFields() const
 {
     return _changedFields;
 }
 
-QMap<QString, AbstractFieldPhrase *> Table<TableTypeModel>::fields() const
+QMap<QString, AbstractFieldPhrase *> Table<Type::Model>::fields() const
 {
     return _fields;
 }
 
-QMap<QString, ForeignKeyModelBase *> Table<TableTypeModel>::foreignKeys() const
+QMap<QString, ForeignKeyModelBase *> Table<Type::Model>::foreignKeys() const
 {
     return _foreignKeys;
 }
 
-RowStatus Table<TableTypeMain>::status() const
+RowStatus Table<Type::Data>::status() const
 {
     return _status;
 }
+
+bool operator==(const TableModel &l, const TableModel &r)
+{
+    //TODO: implement me
+    return false;
+}
+
+AbstractFieldPhrase *Nut::Table<Type::Model>::primaryField() const
+{
+    for (const auto &f:_fields)
+        if (f->isPrimaryKey())
+            return f;
+    return nullptr;
+}
+
 
 } // namespace Nut

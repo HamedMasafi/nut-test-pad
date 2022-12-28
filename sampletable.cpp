@@ -1,6 +1,6 @@
 #include "sampletable.h"
 
-NUT_IMPLEMENT_TABLE(SampleTable)
+Type::RuntimeChecker(SampleTable)
 
 //SampleTable::SampleTable()
 //{

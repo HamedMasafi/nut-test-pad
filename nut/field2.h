@@ -15,11 +15,11 @@ struct DBNullType {};
 extern DBNullType DBNull;
 
 class FieldBase {
-    TableMain *_parent;
+    TableRow *_parent;
     QString _name;
 
 protected:
-    FieldBase(TableMain *parent, const char *name);
+    FieldBase(TableRow *parent, const char *name);
     void setChanged();
 
 public:
@@ -27,7 +27,7 @@ public:
     virtual void fromVariant(const QVariant& value) = 0;
 };
 
-using namespace Nut::Model;
+using namespace Nut::ModelDeclartion;
 
 template <typename T, bool _AllowNull = true>
 class Field : public FieldBase
@@ -42,7 +42,7 @@ protected:
 
 public:
     template<typename ...Types>
-    constexpr inline Field(TableMain *parent, const char *name, ...)
+    constexpr inline Field(TableRow *parent, const char *name, ...)
         : FieldBase(parent, name)
     {
     }
@@ -81,7 +81,7 @@ class Field<T, true> : public Field<T, false>
     bool _isNull;
 public:
     template<typename ...Types>
-    constexpr inline Field(TableMain *parent, const char *name, ...)
+    constexpr inline Field(TableRow *parent, const char *name, ...)
         : Field<T, false>(parent, name)
     {
     }

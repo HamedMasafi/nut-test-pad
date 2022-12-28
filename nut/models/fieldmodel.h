@@ -25,7 +25,7 @@ class FieldModelBase
 {
 protected:
 
-    void addToParent(const QString &name, Table<TableTypeModel> *parent);
+    void addToParent(const QString &name, Table<Type::Model> *parent);
 
 public:
 
@@ -45,7 +45,7 @@ protected:
 bool operator==(const FieldModelBase &l, const FieldModelBase &r);
 bool operator!=(const FieldModelBase &l, const FieldModelBase &r);
 
-using namespace Nut::Model;
+using namespace Nut::ModelDeclartion;
 
 template<typename T>
 class FieldModel : public FieldModelBase
@@ -80,7 +80,7 @@ public:
 ConditionalExpression operator ==(const FieldModelBase &f, const QVariant &other);
 
 template<typename T, typename... Types>
-struct FieldB<T, TableTypeModel, Types...>
+struct FieldB<T, Type::Model, Types...>
 {
     const char *_name;
     int _maxLen{0};

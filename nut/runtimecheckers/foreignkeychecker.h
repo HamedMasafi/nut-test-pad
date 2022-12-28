@@ -15,11 +15,11 @@ namespace Nut {
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
 class ForeignKeyChecker// : public ForeignKeyCheckerBase
 {
-    T<TableType::TableTypeMain>* _object{nullptr};
+    T<Type::Data>* _object{nullptr};
     KeyType _key;
 
 public:
-    constexpr ForeignKeyChecker(Table<RuntimeChecker> *parent, const char *name) {
+    constexpr ForeignKeyChecker(Table<Type::RuntimeChecker> *parent, const char *name) {
         Q_UNUSED(parent)
         Q_UNUSED(name)
     }

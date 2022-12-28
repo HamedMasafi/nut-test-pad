@@ -9,18 +9,18 @@ namespace Nut {
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
 class ForeignKey
 {
-    T<TableType::TableTypeMain>* _object{nullptr};
+    T<Type::Data>* _object{nullptr};
     KeyType _key;
 
 public:
-    ForeignKey(Table<TableTypeMain> *parent, const char*)
+    ForeignKey(Table<Type::Data> *parent, const char*)
     {
         Q_UNUSED(parent)
     }
 
-    ForeignKey<T, KeyType> &operator=(T<TableType::TableTypeMain> *p);
+    ForeignKey<T, KeyType> &operator=(T<Type::Data> *p);
     ForeignKey<T, KeyType> &operator=(const KeyType &id);
-    T<TableType::TableTypeMain> *object() const {
+    T<Type::Data> *object() const {
         return _object;
     }
 };
@@ -30,7 +30,7 @@ template <NUT_TABLE_TEMPLATE T, typename KeyType>
 class ForeignKeyPhrase
 {
 public:
-    T<TableType::TableTypeFieldPhrases>* _object{nullptr};
+    T<Type::FieldPhrases>* _object{nullptr};
     KeyType _key;
 
     ForeignKeyPhrase(const char*)
@@ -40,7 +40,7 @@ public:
 
 
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
-Q_OUTOFLINE_TEMPLATE ForeignKey<T, KeyType> &ForeignKey<T, KeyType>::operator=(T<TableTypeMain> *p)
+Q_OUTOFLINE_TEMPLATE ForeignKey<T, KeyType> &ForeignKey<T, KeyType>::operator=(T<Type::Data> *p)
 {
     _object = p;
     return *this;

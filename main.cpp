@@ -18,14 +18,14 @@ void f() {
     DBDatabase d;
     auto q = d.table20.query().where(DBModel.table20.id == 4 || DBModel.table20.id == 3).toList();
 
-    auto f = SampleTableModel2.feild("id");
+    auto f = SampleTableModel2.field("id");
     qDebug() << "f.name" << f->name() << f->tableName();
-    //    Database<TableTypeMain>::Tableset<SampleTable> ff();
+    //    Database<Type::Data>::Tableset<SampleTable> ff();
 }
 
 void printModel()
 {
-    DB<Nut::TableTypeModel> model;
+    DB<Nut::Type::Model> model;
     auto t = model.table10.id == model.table20.id;
     QJsonDocument doc(model.jsonModel());
     qDebug() << "===Model===";

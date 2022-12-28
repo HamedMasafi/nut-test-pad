@@ -39,6 +39,18 @@
 #include <QtCore/QUrl>
 #include <QtCore/QUuid>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#   define VARIANT_TYPE_COMPARE(v, t)  v.typeId() == QMetaType::Q##t
+#   define VARIANT_TYPE_COMPARE_X(v, vt, mt)  v.typeId() == QMetaType::mt
+#   define METATYPE_TO_NAME(type) QMetaType(type).name()
+#   define METATYPE_ID(v) static_cast<QMetaType::Type>(v.typeId())
+#else
+#   define VARIANT_TYPE_COMPARE(v, t)  v.type() == QVariant::t
+#   define VARIANT_TYPE_COMPARE_X(v, vt, mt)  v.type() == QVariant::vt
+#   define METATYPE_TO_NAME(type) QMetaType::typeName(type)
+#   define METATYPE_ID(v) static_cast<QMetaType::Type>(v.type())
+#endif
+
 #ifdef QT_GUI_LIB
 #include <QtGui/QColor>
 #include <QtGui/QFont>
@@ -59,9 +71,9 @@ SqlSerializer::SqlSerializer() {}
 
 SqlSerializer::~SqlSerializer() {}
 
-QVariant SqlSerializer::fromString(const QString &value, const QMetaType::Type &type) const
+QVariant SqlSerializer::fromString(const QString &value, const QMetaType &type) const
 {
-    switch (type) {
+    switch (type.id()) {
     case QMetaType::Bool:
         return !value.compare(QStringLiteral("true"), Qt::CaseInsensitive)
                || value == QStringLiteral("1");
@@ -299,11 +311,11 @@ QVariant SqlSerializer::fromString(const QString &value, const QMetaType::Type &
 QString SqlSerializer::toString(const QVariant &value) const
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    auto type = static_cast<QMetaType::Type>(value.typeId());
+    auto type = static_cast<QMetaType>(value.typeId());
 #else
-    auto type = static_cast<QMetaType::Type>(value.type());
+    auto type = static_cast<QMetaType>(value.type());
 #endif
-    switch (type) {
+    switch (type.id()) {
     case QMetaType::Bool:
     case QMetaType::Char:
     case QMetaType::Short:
@@ -491,7 +503,7 @@ QString SqlSerializer::toString(const QVariant &value) const
     }
 
     default:
-        qWarning("The type (%s) does not supported", METATYPE_TO_NAME(type));
+        qWarning("The type (%s) does not supported", METATYPE_TO_NAME(type.id()));
         return QString();
     }
 }
@@ -692,7 +704,7 @@ bool SqlSerializer::readString(QString &text, QString &out) const
     return false;
 }
 
-QVariant SqlSerializer::deserialize(const QString &value, const QMetaType::Type &type) const
+QVariant SqlSerializer::deserialize(const QString &value, const QMetaType &type) const
 {
     return fromString(unescapeString(value), type);
 }

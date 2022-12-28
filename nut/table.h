@@ -13,13 +13,13 @@
 #include "phrase.h"
 
 #define NUT_FORWARD_DECLARE_TABLE(name)                                                            \
-    template<Nut::TableType _Type>                                                                 \
+    template<Nut::Type _Type>                                                                 \
     class name;                                                                                    \
-    using name##Main = name<Nut::TableTypeMain>;                                                   \
-    using name##Model = name<Nut::TableTypeModel>;
+    using name##Main = name<Nut::Type::Data>;                                                   \
+    using name##Model = name<Nut::Type::Model>;
 
 #define NUT_DEFINE_TABLE(name)                                                                     \
-    template<Nut::TableType _Type = Nut::TableTypeMain>                                            \
+    template<Nut::Type _Type = Nut::Type::Data>                                            \
     class name : public Nut::Table<_Type>
 
 #define Nut__Table Table<_Type>
@@ -36,68 +36,68 @@ struct PropertyTypeHelper {
 };
 
 template <typename T, typename... Types>
-struct PropertyTypeHelper<T, TableTypeMain, Types...> {
+struct PropertyTypeHelper<T, Type::Data, Types...> {
 //    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
-    using type = ::Nut::Field<T, Model::containsType<AllowNull, Types...>>;
+    using type = ::Nut::Field<T, containsType<AllowNull, Types...>>;
 };
 
 template <typename T, typename... Types>
-struct PropertyTypeHelper<T, TableTypeModel, Types...> {
+struct PropertyTypeHelper<T, Type::Model, Types...> {
     using type = ::Nut::FieldPhrase<T>;
 };
 
 template <typename T, typename... Types>
-struct PropertyTypeHelper<T, TableTypeFieldPhrases, Types...> {
+struct PropertyTypeHelper<T, Type::FieldPhrases, Types...> {
     using type = void;
 };
 
 template <typename T, typename... Types>
-struct PropertyTypeHelper<T, RuntimeChecker, Types...> {
+struct PropertyTypeHelper<T, Type::RuntimeChecker, Types...> {
     using type = ::Nut::FieldChecker<T>;
 };
 
 
-template <NUT_TABLE_TEMPLATE T, typename KeyType, Nut::TableType _Type>
+template <NUT_TABLE_TEMPLATE T, typename KeyType, Nut::Type _Type>
 struct ForeignKeyTypeHelper {
     using type = void;
 };
 
 template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, TableTypeMain> {
+struct ForeignKeyTypeHelper<T, KeyType, Type::Data> {
     using type = Nut::ForeignKey<T, KeyType>;
 };
 
 template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, TableTypeModel> {
+struct ForeignKeyTypeHelper<T, KeyType, Type::Model> {
     using type = Nut::ForeignKeyModel<T, KeyType>;
 };
 
 template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, TableTypeFieldPhrases> {
+struct ForeignKeyTypeHelper<T, KeyType, Type::FieldPhrases> {
     using type = void;
 };
 
 template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, RuntimeChecker> {
+struct ForeignKeyTypeHelper<T, KeyType, Type::RuntimeChecker> {
     using type = Nut::ForeignKeyChecker<T, KeyType>;
 };
 
-template<typename T, TableType _Type, typename... Types>
+template<typename T, Type _Type, typename... Types>
 struct Property2 {
     using type = void;
 };
 
 template<typename T, typename... Types>
-struct Property2<T, TableTypeMain, Types...> //: public ::Nut::Field<T, Model::containsType<AllowNull, Types...>>
+struct Property2<T, Type::Data, Types...> //: public ::Nut::Field<T, Model::containsType<AllowNull, Types...>>
 {
-    using type = ::Nut::Field<T, Model::containsType<AllowNull, Types...>>;
+    using type = ::Nut::Field<T, containsType<AllowNull, Types...>>;
 
-    Property2(TableMain *parent, const char *name, Types... args)
+    Property2(TableRow *parent, const char *name, Types... args)
     // : ::Nut::Field<T, Model::containsType<AllowNull, Types...>>(parent, name, args...)
     {}
 };
 template<typename T, typename... Types>
-struct Property2<T, TableTypeModel, Types...>// : public ::Nut::FieldModel<T>
+struct Property2<T, Type::Model, Types...>// : public ::Nut::FieldModel<T>
 {
     using type = ::Nut::FieldModel<T>;
     Property2(TableModel *parent, const char *name, Types &&...args)
@@ -105,11 +105,11 @@ struct Property2<T, TableTypeModel, Types...>// : public ::Nut::FieldModel<T>
     {}
 };
 template<typename T, typename... Types>
-struct Property2<T, TableTypeFieldPhrases, Types...> {
+struct Property2<T, Type::FieldPhrases, Types...> {
     using type = ::Nut::FieldModel<T>;
 };
 template<typename T, typename... Types>
-struct Property2<T, RuntimeChecker, Types...> {
+struct Property2<T, Type::RuntimeChecker, Types...> {
     using type = ::Nut::FieldChecker<T>;
 };
 
@@ -119,24 +119,31 @@ struct Property2<T, RuntimeChecker, Types...> {
     template<NUT_TABLE_TEMPLATE T, typename KeyType>                                               \
     using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type;
 
-#define NUT_DECLARE_TABLE(name)                                                                    \
-    typedef name<Nut::TableTypeMain> name##Table;                                                  \
-    typedef name<Nut::TableTypeModel> name##Model;                                                 \
-    extern name<Nut::RuntimeChecker> name##Checker;                                                \
-    extern name<Nut::TableTypeModel> name##Model2;                                                 \
-    namespace Nut {                                                                                \
-    template<>                                                                                     \
-    name<Nut::TableTypeModel> *createModel<name>();                                                \
+#define NUT_DECLARE_TABLE(name) \
+    typedef name<Nut::Type::Data> name##Table; \
+    typedef name<Nut::Type::Model> name##Model; \
+    extern name<Nut::RuntimeChecker> name##Checker; \
+    extern name<Nut::Type::Model> name##Model2; \
+    namespace Nut { \
+    template<> \
+    name<Nut::Type::Model> *createModel<name>(); \
+    } \
+    namespace Nut { \
+    template<> \
+    name<Type::Model> &createModel<name>() \
+    { \
+        return name##Model2; \
+    } \
     }
 
-//    typedef name<Nut::TableTypeFieldPhrases> name##Fields;
+//    typedef name<Nut::Type::FieldPhrases> name##Fields;
 
 #define NUT_IMPLEMENT_TABLE(name)                                                                  \
     name<Nut::RuntimeChecker> name##Checker;                                                       \
-    name<Nut::TableTypeModel> name##Model2;                                                        \
+    name<Nut::Type::Model> name##Model2;                                                        \
     namespace Nut {                                                                                \
     template<>                                                                                     \
-    name<Nut::TableTypeModel> *createModel<name>()                                                 \
+    name<Nut::Type::Model> *createModel<name>()                                                 \
     {                                                                                              \
         return &name##Model2;                                                                      \
     }                                                                                              \
@@ -146,7 +153,7 @@ struct Property2<T, RuntimeChecker, Types...> {
 #define ForeignKey(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}
 
 
-template<TableType _Type>
+template<Type _Type>
 class Table
 {
 public:
@@ -156,7 +163,7 @@ public:
 };
 
 template<>
-class Table<TableTypeMain>
+class Table<Type::Data>
 {
 protected:
     QString keyField;
@@ -179,7 +186,7 @@ public:
 };
 
 template <>
-class Table<TableTypeModel>
+class Table<Type::Model>
 {
 protected:
     QMap<QString, AbstractFieldPhrase*> _fields;
@@ -187,7 +194,7 @@ protected:
     QString _name;
 public:
     Table() = default;
-    Table(Database<TableTypeModel> *parent, const char *name);
+    Table(Database<Type::Model> *parent, const char *name);
 
     QJsonObject toJson() const;
     AbstractFieldPhrase *field(const QString &name) const;
@@ -198,23 +205,26 @@ public:
     inline QString name() const{
         return _name;
     }
+    AbstractFieldPhrase *primaryField() const;
     QMap<QString, AbstractFieldPhrase *> fields() const;
     QMap<QString, ForeignKeyModelBase *> foreignKeys() const;
+
 };
 
+bool operator==(const TableModel &l, const TableModel &r);
 
 template<NUT_TABLE_TEMPLATE T>
-class ModelBase : public AbstractModel, public T<TableTypeModel>
+class ModelBase : public AbstractModel, public T<Type::Model>
 {
 public:
-    ModelBase(Nut::Database<TableTypeModel> *parent, const char *name)
+    ModelBase(Nut::Database<Type::Model> *parent, const char *name)
         : AbstractModel(parent, name)
     {}
     const QMap<QString, AbstractFieldPhrase *> &fields() override{
-        return T<TableTypeModel>::_fields;
+        return T<Type::Model>::_fields;
     }
     const QMap<QString, ForeignKeyModelBase*> &foreignKeys() override{
-        return T<TableTypeModel>::_foreignKeys;
+        return T<Type::Model>::_foreignKeys;
     }
 };
 

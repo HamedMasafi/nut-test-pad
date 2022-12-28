@@ -7,7 +7,7 @@
 #include <QPoint>
 
 using namespace Nut;
-using namespace Nut::Model;
+using namespace Nut::ModelDeclartion;
 NUT_DEFINE_TABLE(SampleTable)
 {
 public:

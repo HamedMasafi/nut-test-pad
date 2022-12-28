@@ -35,8 +35,8 @@ namespace Nut
     constexpr cls(TableModel *parent, const char *name, Types... args) \
         : AbstractFieldPhrase("", name) \
     { \
-        using namespace Model; \
-        static_assert(Model::no_unique<PrimaryKey, Types...>::value <= 1, \
+        using namespace ModelDeclartion; \
+        static_assert(no_unique<PrimaryKey, Types...>::value <= 1, \
                       "More than one PrimaryKey()"); \
         if (!pick<const char *>("Name", &data->fieldName, args...)) \
             data->fieldName = name; \
@@ -115,10 +115,10 @@ protected:
     template<typename... Types>
     constexpr void init(TableModel *parent, const char *name, Types... args)
     {
-        using namespace Model;
+        using namespace ModelDeclartion;
         //        d = new FieldModelData();
         //        static_assert(containsType<PrimaryKey, Types...>, "no key");
-        static_assert(Model::no_unique<PrimaryKey, Types...>::value <= 1, "More than one PrimaryKey()");
+        static_assert(no_unique<PrimaryKey, Types...>::value <= 1, "More than one PrimaryKey()");
         //        static_assert(containsType<PrimaryKey, Types...>, "No PrimaryKey()");
 
         //        static_assert(count("MaxLen", args...) <= -100, "max len more than once");
@@ -136,7 +136,7 @@ protected:
         addToParent(name, parent);
 
     }
-    void addToParent(const QString &name, Table<TableTypeModel> *parent);
+    void addToParent(const QString &name, Table<Type::Model> *parent);
 };
 
 }

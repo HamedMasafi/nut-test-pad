@@ -3,7 +3,7 @@
 
 namespace Nut {
 
-constexpr void addToParent(const char *name, Table<RuntimeChecker> *parent)
+constexpr void addToParent(const char *name, Table<Type::RuntimeChecker> *parent)
 {
     Q_UNUSED(name)
     parent->k = true;

@@ -9,7 +9,7 @@
 
 namespace Nut {
 
-constexpr void addToParent(const char *name, Table<RuntimeChecker> *parent);
+constexpr void addToParent(const char *name, Table<Type::RuntimeChecker> *parent);
 class FieldCheckerBase
 {
 protected:
@@ -34,9 +34,9 @@ class FieldChecker : public FieldCheckerBase
 {
 public:
     template<typename... Types>
-    constexpr FieldChecker(Table<RuntimeChecker> *parent, const char *name, Types&&... args)
+    constexpr FieldChecker(Table<Type::RuntimeChecker> *parent, const char *name, Types&&... args)
     {
-        using namespace Nut::Model;
+        using namespace Nut::ModelDeclartion;
 
         if (!pick<const char *>("Name", &_name, args...))
             _name = name;

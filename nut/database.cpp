@@ -26,7 +26,7 @@ QList<TableModel *> Database3::model() const
     return ret;
 }
 
-TableMain *Database3::createTable(const QString &name) const
+TableRow *Database3::createTable(const QString &name) const
 {
     if (!_tables.contains(name))
         return nullptr;
@@ -43,7 +43,7 @@ QJsonObject Database3::jsonModel() const
     return model;
 }
 
-QJsonObject Nut::Database<TableTypeModel>::jsonModel() const
+QJsonObject Nut::Database<Type::Model>::jsonModel() const
 {
     QJsonObject model;
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {
@@ -53,15 +53,15 @@ QJsonObject Nut::Database<TableTypeModel>::jsonModel() const
     return model;
 }
 
-Database<TableTypeModel> Nut::Database<TableTypeModel>::operator|(const Database<TableTypeModel> &other)
+Database<Type::Model> Nut::Database<Type::Model>::operator|(const Database<Type::Model> &other)
 {
-    Database<TableTypeModel> ret;
+    Database<Type::Model> ret;
     ret._tables.append(_tables);
     ret._tables.append(other._tables);
     return ret;
 }
 
-AbstractModel *Nut::Database<TableTypeModel>::tableByName(const QString &name) const
+AbstractModel *Nut::Database<Type::Model>::tableByName(const QString &name) const
 {
     for (const auto &t: _tables)
         if (t->name() == name)
@@ -69,7 +69,7 @@ AbstractModel *Nut::Database<TableTypeModel>::tableByName(const QString &name) c
     return nullptr;
 }
 
-QList<AbstractModel *> Database<TableTypeModel>::tables() const
+QList<AbstractModel *> Database<Type::Model>::tables() const
 {
     return _tables;
 }

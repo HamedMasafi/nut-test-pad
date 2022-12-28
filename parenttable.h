@@ -7,7 +7,7 @@
 
 NUT_FORWARD_DECLARE_TABLE(SampleTable)
 
-using namespace Nut::Model;
+using namespace Nut::ModelDeclartion;
 NUT_DEFINE_TABLE(ParentTable)
 {
     NUT_TABLE
@@ -22,6 +22,6 @@ public:
     ForeignKey(SampleTable, int, t);
 };
 
-NUT_DECLARE_TABLE(ParentTable);
+NUT_DECLARE_TABLE(ParentTable)
 
 #endif // PARENTTABLE_H

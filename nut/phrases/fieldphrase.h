@@ -40,10 +40,10 @@ public:
     constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
         : AbstractFieldPhrase("", name)
     {
-        using namespace Model;
+        using namespace ModelDeclartion;
 //        d = new FieldModelData();
         //        static_assert(containsType<PrimaryKey, Types...>, "no key");
-        static_assert(Model::no_unique<PrimaryKey, Types...>::value <= 1, "More than one PrimaryKey()");
+        static_assert(no_unique<PrimaryKey, Types...>::value <= 1, "More than one PrimaryKey()");
         //        static_assert(containsType<PrimaryKey, Types...>, "No PrimaryKey()");
 
         //        static_assert(count("MaxLen", args...) <= -100, "max len more than once");

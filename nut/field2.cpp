@@ -5,7 +5,7 @@
 namespace Nut {
 DBNullType DBNull;
 
-FieldBase::FieldBase(TableMain *parent, const char *name) : _parent{parent}, _name{name}
+FieldBase::FieldBase(TableRow *parent, const char *name) : _parent{parent}, _name{name}
 {
     parent->_fields.insert(name, this);
 }

@@ -9,7 +9,7 @@ class FieldCheckerBase;
 namespace Nut {
 
 template <>
-class Table<RuntimeChecker>
+class Table<Type::RuntimeChecker>
 {
     std::array<FieldCheckerBase*, 0> _fields;
     FieldCheckerBase *d{nullptr};

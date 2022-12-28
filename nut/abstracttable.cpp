@@ -11,7 +11,7 @@ QString AbstractModel::name() const
     return _name;
 }
 
-AbstractModel::AbstractModel(Database<TableTypeModel> *parent, const char *name)
+AbstractModel::AbstractModel(Database<Type::Model> *parent, const char *name)
     : _name{name}
 {
     parent->_tables.append(this);
@@ -41,7 +41,7 @@ QJsonObject AbstractModel::toJson()
     for (auto i = _foreignKeys.begin(); i != _foreignKeys.end(); ++i) {
         QJsonObject foreignKeyObject;
 
-        foreignKeyObject.insert("table", (*i)->tableNae());
+        foreignKeyObject.insert("table", (*i)->tableName());
         foreignKeyObject.insert("keytype", (*i)->keyType());
 
         foreignKeysObject.insert(i.key(), foreignKeyObject);

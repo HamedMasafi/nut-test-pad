@@ -16,12 +16,12 @@ class FieldBase;
 class ForeignKeyModelBase;
 class FieldCheckerBase;
 class AbstractFieldPhrase;
-template<Nut::TableType _Type>
+template<Nut::Type _Type>
 class Database;
 
 
-using TableClassBase = Table<TableTypeMain>;
-using ModelClassBase = Table<TableTypeModel>;
+using TableClassBase = Table<Type::Data>;
+using ModelClassBase = Table<Type::Model>;
 
 
 }

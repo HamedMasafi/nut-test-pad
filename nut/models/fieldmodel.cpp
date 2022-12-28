@@ -3,7 +3,7 @@
 
 namespace Nut {
 
-void FieldModelBase::addToParent(const QString &name, Table<TableTypeModel> *parent)
+void FieldModelBase::addToParent(const QString &name, Table<Type::Model> *parent)
 {
 //    parent->_fields.insert(name, this);
 }

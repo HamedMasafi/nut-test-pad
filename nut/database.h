@@ -11,33 +11,33 @@
 namespace Nut {
 
 class AbstractModel;
-template<TableType _Type>
+template<Type _Type>
 class Table;
 template<NUT_TABLE_TEMPLATE T>
 class ModelBase;
 
-template<NUT_TABLE_TEMPLATE C, TableType _Type>
-struct TableTypeHelper {
+template<NUT_TABLE_TEMPLATE C, Type _Type>
+struct TypeHelper {
     using type = void;
 };
 
 template<NUT_TABLE_TEMPLATE C>
-struct TableTypeHelper<C, TableTypeMain> {
+struct TypeHelper<C, Type::Data> {
     using type = Dataset<C>;
 };
 
 template<NUT_TABLE_TEMPLATE C>
-struct TableTypeHelper<C, TableTypeModel> {
+struct TypeHelper<C, Type::Model> {
     using type = ModelBase<C>;
 };
 
 template<NUT_TABLE_TEMPLATE C>
-struct TableTypeHelper<C, TableTypeFieldPhrases> {
+struct TypeHelper<C, Type::FieldPhrases> {
     using type = void;
 };
 
 template<NUT_TABLE_TEMPLATE C>
-struct TableTypeHelper<C, RuntimeChecker>{
+struct TypeHelper<C, Type::RuntimeChecker>{
     using type = void;
 };
 
@@ -53,25 +53,25 @@ public:
     Q_DECL_DEPRECATED
     Database3();
 
-    TableMain *createTable(const QString &name) const;
+    TableRow *createTable(const QString &name) const;
     QList<TableModel*> model() const;
 
     QJsonObject jsonModel() const;
 };
 
-template<Nut::TableType _Type>
+template<Nut::Type _Type>
 class Database
 {
 
 };
 
 template<>
-class Database<TableTypeMain>
+class Database<Type::Data>
 {
 };
 
 template<>
-class Database<TableTypeModel>
+class Database<Type::Model>
 {
     QList<AbstractModel*> _tables;
 public:
@@ -79,7 +79,7 @@ public:
     QJsonObject jsonModel() const;
 
     friend class AbstractModel;
-    Database<TableTypeModel> operator|(const Database<TableTypeModel> &other);
+    Database<Type::Model> operator|(const Database<Type::Model> &other);
 
     AbstractModel *tableByName(const QString &name) const;
     QList<AbstractModel *> tables() const;
@@ -87,15 +87,15 @@ public:
 
 #define NutDatabaseBase Nut::Database<_Type>
 #define NUT_DATABASE \
-template<template<Nut::TableType _T> class T> \
-    using Tableset = typename Nut::TableTypeHelper<T, _Type>::type;
+template<template<Nut::Type _T> class T> \
+    using Tableset = typename Nut::TypeHelper<T, _Type>::type;
 
 #define NUT_DECLARE_DATABASE(name) \
-    extern name<Nut::TableTypeModel> name##Model; \
-    using name##Database = name<Nut::TableTypeMain>;
+    extern name<Nut::Type::Model> name##Model; \
+    using name##Database = name<Nut::Type::Data>;
 
 #define NUT_DECLARE_IMPLEMENT(name) \
-    name<Nut::TableTypeModel> name##Model;
+    name<Nut::Type::Model> name##Model;
 
 #define Nut_TableSet2(type, name) Tableset<type> name{this, #name}
 //Nut::Database<T>::Tableset<type> name{this, #name}

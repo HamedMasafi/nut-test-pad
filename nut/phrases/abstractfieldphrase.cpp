@@ -108,7 +108,7 @@ void AbstractFieldPhrase::detach()
     data = clone;
 }
 
-void AbstractFieldPhrase::addToParent(const QString &name, Table<TableTypeModel> *parent)
+void AbstractFieldPhrase::addToParent(const QString &name, Table<Type::Model> *parent)
 {
     parent->_fields.insert(name, this);
     data->tableName = parent->name();
