@@ -21,42 +21,56 @@
 #include "sqlitegenerator.h"
 #include "table.h"
 #include "tablemodel.h"
-#include "nut_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Nut {
 
-NUT_BEGIN_NAMESPACE
-
-SqliteGenerator::SqliteGenerator(Database *parent) : AbstractSqlGenerator(parent)
-{
-
-}
+SqliteGenerator::SqliteGenerator(Database *parent)
+    : AbstractSqlGenerator(parent)
+{}
 
 QString SqliteGenerator::fieldType(FieldModel *field)
 {
     switch (field->type) {
-    case QMetaType::Bool:           return QStringLiteral("BOOLEAN");
+    case QMetaType::Bool:
+        return QStringLiteral("BOOLEAN");
     case QMetaType::QBitArray:
-    case QMetaType::QByteArray:     return QStringLiteral("BLOB");
-    case QMetaType::QDate:          return QStringLiteral("DATE");
-    case QMetaType::QDateTime:      return QStringLiteral("DATETIME");
-    case QMetaType::QTime:          return QStringLiteral("TIME");
-    case QMetaType::Double:         return QStringLiteral("DOUBLE");
-    case QMetaType::Float:          return QStringLiteral("FLOAT");
+    case QMetaType::QByteArray:
+        return QStringLiteral("BLOB");
+    case QMetaType::QDate:
+        return QStringLiteral("DATE");
+    case QMetaType::QDateTime:
+        return QStringLiteral("DATETIME");
+    case QMetaType::QTime:
+        return QStringLiteral("TIME");
+    case QMetaType::Double:
+        return QStringLiteral("DOUBLE");
+    case QMetaType::Float:
+        return QStringLiteral("FLOAT");
 
     case QMetaType::SChar:
-    case QMetaType::Char:           return QStringLiteral("TINYINT");
-    case QMetaType::UChar:          return QStringLiteral("TINYINT UNSIGNED");
-    case QMetaType::Short:          return QStringLiteral("SMALLINT");
-    case QMetaType::UShort:         return QStringLiteral("SMALLINT UNSIGNED");
-    case QMetaType::Int:            return QStringLiteral("INT");
-    case QMetaType::UInt:           return QStringLiteral("INT UNSIGNED");
-    case QMetaType::Long:           return QStringLiteral("MEDIUMINT");
-    case QMetaType::ULong:          return QStringLiteral("MEDIUMINT UNSIGNED");
-    case QMetaType::LongLong:       return QStringLiteral("BIGINT");
-    case QMetaType::ULongLong:      return QStringLiteral("BIGINT UNSIGNED");
+    case QMetaType::Char:
+        return QStringLiteral("TINYINT");
+    case QMetaType::UChar:
+        return QStringLiteral("TINYINT UNSIGNED");
+    case QMetaType::Short:
+        return QStringLiteral("SMALLINT");
+    case QMetaType::UShort:
+        return QStringLiteral("SMALLINT UNSIGNED");
+    case QMetaType::Int:
+        return QStringLiteral("INT");
+    case QMetaType::UInt:
+        return QStringLiteral("INT UNSIGNED");
+    case QMetaType::Long:
+        return QStringLiteral("MEDIUMINT");
+    case QMetaType::ULong:
+        return QStringLiteral("MEDIUMINT UNSIGNED");
+    case QMetaType::LongLong:
+        return QStringLiteral("BIGINT");
+    case QMetaType::ULongLong:
+        return QStringLiteral("BIGINT UNSIGNED");
 
-    case QMetaType::QChar:          return QStringLiteral("NCHAR(1)");
+    case QMetaType::QChar:
+        return QStringLiteral("NCHAR(1)");
 
     case QMetaType::QUrl:
     case QMetaType::QJsonArray:
@@ -75,19 +89,20 @@ QString SqliteGenerator::fieldType(FieldModel *field)
     case QMetaType::QPolygonF:
     case QMetaType::QStringList:
     case QMetaType::QColor:
-    case QMetaType::QUuid:          return QStringLiteral("TEXT");
+    case QMetaType::QUuid:
+        return QStringLiteral("TEXT");
 
-//        if (field->isAutoIncrement)
-//            dbType.append(" PRIMARY KEY AUTOINCREMENT");
+        //        if (field->isAutoIncrement)
+        //            dbType.append(" PRIMARY KEY AUTOINCREMENT");
 
     case QMetaType::QString:
-        if(field->length)
+        if (field->length)
             return QStringLiteral("VARCHAR(%1)").arg(field->length);
         else
             return QStringLiteral("TEXT");
     default:
-//        qWarning("The type (%s) does not supported",
-//                 QMetaType::typeName(field->type));
+        //        qWarning("The type (%s) does not supported",
+        //                 QMetaType::typeName(field->type));
         return QString();
     }
 }
@@ -118,7 +133,6 @@ bool SqliteGenerator::supportAutoIncrement(const QMetaType::Type &type)
     return isNumeric(type);
 }
 
-
 QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTable)
 {
     QStringList ret;
@@ -141,22 +155,22 @@ QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTabl
     QList<QString> fieldNames;
     QList<QString> relations;
 
-    for (auto &f: oldTable->fields())
+    for (auto &f : oldTable->fields())
         if (!fieldNames.contains(f->name))
             fieldNames.append(f->name);
-    for (auto &r: oldTable->foreignKeys())
+    for (auto &r : oldTable->foreignKeys())
         if (!relations.contains(r->localColumn))
             relations.append(r->localColumn);
 
-    for (auto &f: newTable->fields())
+    for (auto &f : newTable->fields())
         if (!fieldNames.contains(f->name))
             fieldNames.append(f->name);
-    for (auto &r: newTable->foreignKeys())
+    for (auto &r : newTable->foreignKeys())
         if (!relations.contains(r->localColumn))
             relations.append(r->localColumn);
 
     QString columns;
-    for (auto &f: oldTable->fields()) {
+    for (auto &f : oldTable->fields()) {
         if (!newTable->field(f->name))
             continue;
 
@@ -188,25 +202,24 @@ QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTabl
     */
 
     QString foreignKeys;
-    for (auto &f: newTable->foreignKeys()) {
+    for (auto &f : newTable->foreignKeys()) {
         if (!foreignKeys.isEmpty())
             foreignKeys.append(QStringLiteral(", "));
         foreignKeys.append(QStringLiteral("FOREIGN KEY(%1) REFERENCES %2(id)")
-                           .arg(f->localColumn, f->masterTable->name()));
+                               .arg(f->localColumn, f->masterTable->name()));
     }
-    ret.append(QStringLiteral("ALTER TABLE ") + newTable->name() + QStringLiteral(" RENAME TO nut_orm_temp_table;"));
+    ret.append(QStringLiteral("ALTER TABLE ") + newTable->name()
+               + QStringLiteral(" RENAME TO nut_orm_temp_table;"));
     ret.append(newTableSql);
     ret.append(QStringLiteral("INSERT INTO %1 ( %2 ) SELECT %2 FROM nut_orm_temp_table;")
-               .arg(newTable->name(), columns));
+                   .arg(newTable->name(), columns));
     ret.append(QStringLiteral("DROP TABLE nut_orm_temp_table;"));
     return ret;
 }
 void SqliteGenerator::appendSkipTake(QString &sql, int skip, int take)
 {
     if (take > 0 && skip > 0) {
-        sql.append(QStringLiteral(" LIMIT %1 OFFSET %2")
-                   .arg(take)
-                   .arg(skip));
+        sql.append(QStringLiteral(" LIMIT %1 OFFSET %2").arg(take).arg(skip));
     } else if (take > 0) {
         sql.append(QStringLiteral(" LIMIT %1").arg(take));
     }
@@ -216,12 +229,12 @@ QString SqliteGenerator::primaryKeyConstraint(const TableModel *table) const
 {
     Q_UNUSED(table)
     return QString();
-//    QString sql = QString("CONSTRAINT pk_%1 PRIMARY KEY (%2)")
-//            .arg(table->name())
-//            .arg(table->primaryKey());
-//    if (table->field(table->primaryKey())->isAutoIncrement)
-//        sql += " AUTOINCREMENT";
-//    return sql;
+    //    QString sql = QString("CONSTRAINT pk_%1 PRIMARY KEY (%2)")
+    //            .arg(table->name())
+    //            .arg(table->primaryKey());
+    //    if (table->field(table->primaryKey())->isAutoIncrement)
+    //        sql += " AUTOINCREMENT";
+    //    return sql;
 }
 
 QString SqliteGenerator::createConditionalPhrase(const PhraseData *d) const
@@ -264,9 +277,9 @@ QString SqliteGenerator::createConditionalPhrase(const PhraseData *d) const
         case PhraseData::AddSecondsDateTime: {
             int i = d->operand.toInt();
             return QStringLiteral("DATETIME(%1,'%2 %3')")
-                    .arg(createConditionalPhrase(d->left),
+                .arg(createConditionalPhrase(d->left),
                      (i < 0 ? QLatin1String() : QStringLiteral("+")) + QString::number(i),
-                         dateTimePartName(op));
+                     dateTimePartName(op));
             break;
         }
         default:
@@ -277,27 +290,27 @@ QString SqliteGenerator::createConditionalPhrase(const PhraseData *d) const
         switch (op) {
         case PhraseData::DatePartYear:
             return QStringLiteral("CAST(strftime('%Y', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
         case PhraseData::DatePartMonth:
             return QStringLiteral("CAST(strftime('%m', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
         case PhraseData::DatePartDay:
             return QStringLiteral("CAST(strftime('%d', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
         case PhraseData::DatePartHour:
             return QStringLiteral("CAST(strftime('%H', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
         case PhraseData::DatePartMinute:
             return QStringLiteral("CAST(strftime('%M', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
         case PhraseData::DatePartSecond:
             return QStringLiteral("CAST(strftime('%S', %1) AS INT)")
-                    .arg(createConditionalPhrase(d->left));
+                .arg(createConditionalPhrase(d->left));
 
             //        case PhraseData::DatePartMilisecond:
             //            return QString("CAST(strftime('%Y', %1) AS INT)")
@@ -338,6 +351,4 @@ QVariant SqliteGenerator::unescapeValue(const QMetaType::Type &type, const QVari
     return AbstractSqlGenerator::unescapeValue(type, dbValue);
 }
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
+} // namespace Nut

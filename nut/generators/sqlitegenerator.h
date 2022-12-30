@@ -18,16 +18,14 @@
 **
 **************************************************************************/
 
-#ifndef SQLITEGENERATOR_H
-#define SQLITEGENERATOR_H
+#pragma once
 
-#include <QtCore/qglobal.h>
+#include "global.h"
 
-#include <QtNut/abstractsqlgenerator.h>
+#include "abstractsqlgenerator.h"
 
-QT_BEGIN_NAMESPACE
+namespace Nut {
 
-NUT_BEGIN_NAMESPACE
 
 class NUT_EXPORT SqliteGenerator : public AbstractSqlGenerator
 {
@@ -50,8 +48,4 @@ public:
     QVariant unescapeValue(const QMetaType::Type &type, const QVariant &dbValue) override;
 };
 
-NUT_END_NAMESPACE
-
-QT_END_NAMESPACE
-
-#endif // SQLITEGENERATOR_H
+} // namespace Nut
