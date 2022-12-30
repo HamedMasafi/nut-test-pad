@@ -113,40 +113,41 @@ struct Property2<T, Type::RuntimeChecker, Types...> {
     using type = ::Nut::FieldChecker<T>;
 };
 
-#define NUT_TABLE                                                                                  \
-    template<typename T, typename... Types>                                                        \
-    using Property = typename Nut::PropertyTypeHelper<T, _Type, Types...>::type;                   \
-    template<NUT_TABLE_TEMPLATE T, typename KeyType>                                               \
-    using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type;
+#define NUT_TABLE \
+    template<typename T, typename... Types> \
+    using Property = typename Nut::PropertyTypeHelper<T, _Type, Types...>::type; \
+    template<NUT_TABLE_TEMPLATE T, typename KeyType> \
+    using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type; \
+\
+public: \
+    QString className() const override; \
+\
+private:
 
-#define NUT_DECLARE_TABLE(name) \
-    typedef name<Nut::Type::Data> name##Table; \
-    typedef name<Nut::Type::Model> name##Model; \
-    extern name<Nut::RuntimeChecker> name##Checker; \
-    extern name<Nut::Type::Model> name##Model2; \
+#define NUT_DECLARE_TABLE(table) \
+    typedef table<Nut::Type::Data> table##Table; \
+    typedef table<Nut::Type::Model> table##Model; \
+    extern table<Nut::Type::Model> table##Model2; \
     namespace Nut { \
     template<> \
-    name<Nut::Type::Model> *createModel<name>(); \
+    table<Type::Model> &createModel<table>(); \
     } \
+    template<Nut::Type _T> \
+    QString table<_T>::className() const \
+    { \
+        return #table; \
+    }
+
+//    typedef name<Nut::Type::FieldPhrases> name##Fields;
+
+#define NUT_IMPLEMENT_TABLE(name) \
+    name<Nut::Type::Model> name##Model2; \
     namespace Nut { \
     template<> \
     name<Type::Model> &createModel<name>() \
     { \
         return name##Model2; \
     } \
-    }
-
-//    typedef name<Nut::Type::FieldPhrases> name##Fields;
-
-#define NUT_IMPLEMENT_TABLE(name)                                                                  \
-    name<Nut::RuntimeChecker> name##Checker;                                                       \
-    name<Nut::Type::Model> name##Model2;                                                        \
-    namespace Nut {                                                                                \
-    template<>                                                                                     \
-    name<Nut::Type::Model> *createModel<name>()                                                 \
-    {                                                                                              \
-        return &name##Model2;                                                                      \
-    }                                                                                              \
     }
 
 #define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
@@ -158,7 +159,7 @@ class Table
 {
 public:
     Table() = default;
-
+    virtual QString className() const;
     friend class FieldBase;
 };
 
@@ -175,9 +176,10 @@ public:
     Table() = default;
 
     friend class FieldBase;
+    virtual QString className() const;
 
     void setFieldValue(const QString &name, const QVariant &value);
-    QVariant fieldvalue(const QString &name) const;
+    QVariant fieldValue(const QString &name) const;
 
     QVariant key() const;
     void setKey(const QVariant &value);
@@ -186,7 +188,7 @@ public:
 };
 
 template <>
-class Table<Type::Model>
+class Table<Type::Model> : public AbstractTableModel
 {
 protected:
     QMap<QString, AbstractFieldPhrase*> _fields;
@@ -196,7 +198,8 @@ public:
     Table() = default;
     Table(Database<Type::Model> *parent, const char *name);
 
-    QJsonObject toJson() const;
+    virtual QString className() const;
+    QJsonObject toJson() const override;
     AbstractFieldPhrase *field(const QString &name) const;
 
     friend class DatasetBase;
@@ -206,25 +209,29 @@ public:
         return _name;
     }
     AbstractFieldPhrase *primaryField() const;
-    QMap<QString, AbstractFieldPhrase *> fields() const;
-    QMap<QString, ForeignKeyModelBase *> foreignKeys() const;
+    const QMap<QString, AbstractFieldPhrase *> &fields() const override;
+    const QMap<QString, ForeignKeyModelBase *> &foreignKeys() const override;
 
 };
 
 bool operator==(const TableModel &l, const TableModel &r);
 
 template<NUT_TABLE_TEMPLATE T>
-class ModelBase : public AbstractModel, public T<Type::Model>
+class ModelBase : public AbstractTableModel, public T<Type::Model>
 {
 public:
     ModelBase(Nut::Database<Type::Model> *parent, const char *name)
-        : AbstractModel(parent, name)
+        : AbstractTableModel(parent, name)
     {}
-    const QMap<QString, AbstractFieldPhrase *> &fields() override{
+    const QMap<QString, AbstractFieldPhrase *> &fields() const override{
         return T<Type::Model>::_fields;
     }
-    const QMap<QString, ForeignKeyModelBase*> &foreignKeys() override{
+    const QMap<QString, ForeignKeyModelBase*> &foreignKeys() const override{
         return T<Type::Model>::_foreignKeys;
+    }
+    QJsonObject toJson() const override
+    {
+        return {};
     }
 };
 

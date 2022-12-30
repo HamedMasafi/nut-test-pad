@@ -8,7 +8,7 @@
 
 namespace Nut {
 
-struct NUT_EXPORT QueryData {
+struct NUT_EXPORT QueryData : public QSharedData {
     ConditionalPhrase where;
     PhraseList order;
 };

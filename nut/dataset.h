@@ -24,8 +24,8 @@ public:
 //        }
 //    }
 
-    virtual TableRow *createTable() const = 0;
-    virtual TableModel *createModel() const = 0;
+//    virtual TableRow *createTable() const = 0;
+//    virtual TableModel *createModel() const = 0;
 };
 
 template <template<Type> class T>
@@ -45,11 +45,11 @@ public:
 
     }
 
-    T<Type::Data> *createTable() const override
+    T<Type::Data> *createTable() const
     {
         return new T<Type::Data>();
     }
-    T<Type::Model> *createModel() const override
+    T<Type::Model> &createModel() const
     {
         return Nut::createModel<T>();
     }

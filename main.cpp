@@ -13,6 +13,10 @@
 
 #define print(x) qDebug() << #x "=" << (x)
 
+void ff(TableModel *t)
+{
+    print(typeid(t).name());
+}
 void f() {
     DBModel.table20.t().id;
     DBDatabase d;
@@ -20,6 +24,8 @@ void f() {
 
     auto f = SampleTableModel2.field("id");
     qDebug() << "f.name" << f->name() << f->tableName();
+
+    ff(&DBModel.table10);
     //    Database<Type::Data>::Tableset<SampleTable> ff();
 }
 
@@ -71,7 +77,7 @@ int main(int argc, char *argv[])
 
     table.ps = "salam";
     QString ps = table.ps;
-    qDebug() << table.ps << table.fieldvalue("ps") << ps;
+    qDebug() << table.ps << table.fieldValue("ps") << ps;
 
     table.ps = Nut::DBNull;
     table.ps = nullptr;
@@ -83,6 +89,7 @@ int main(int argc, char *argv[])
 
 
     ParentTableModel mm;
+
     mm.t().id;
     auto b = mm.t().id;
     Q_UNUSED(b)
@@ -94,5 +101,6 @@ int main(int argc, char *argv[])
     printModel();
     f();
     changedTest();
+    ff(&mm);
     return EXIT_SUCCESS;
 }

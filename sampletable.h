@@ -10,10 +10,11 @@ using namespace Nut;
 using namespace Nut::ModelDeclartion;
 NUT_DEFINE_TABLE(SampleTable)
 {
+    NUT_TABLE
+
 public:
     SampleTable() = default;
 
-    NUT_TABLE
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
 

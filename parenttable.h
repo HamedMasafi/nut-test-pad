@@ -13,6 +13,8 @@ NUT_DEFINE_TABLE(ParentTable)
     NUT_TABLE
 
 public:
+
+
     ParentTable(){
 
     }

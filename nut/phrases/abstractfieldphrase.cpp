@@ -176,6 +176,11 @@ bool AbstractFieldPhrase::isPrimaryKey() const
     return data->isPrimaryKey;
 }
 
+bool AbstractFieldPhrase::isAutoIncrement() const
+{
+    return data->autoIncrement != std::make_pair(-1, -1);
+}
+
 int AbstractFieldPhrase::autoIncrementStart() const
 {
     return data->autoIncrement.first;
@@ -189,6 +194,11 @@ int AbstractFieldPhrase::autoIncrementStep() const
 bool AbstractFieldPhrase::allowNull() const
 {
     return data->allowNull;
+}
+
+bool AbstractFieldPhrase::isUnique() const
+{
+    return data->isUnique;
 }
 
 } // namespace Nut

@@ -79,10 +79,10 @@ public:
     }
 
     //fields
-    virtual QString fieldType(FieldModelBase *field) = 0;
-    virtual QString fieldDeclare(FieldModelBase *field);
+    virtual QString fieldType(AbstractFieldPhrase *field) = 0;
+    virtual QString fieldDeclare(AbstractFieldPhrase *field);
     virtual QString escapeFieldName(const QString &fieldName) const;
-    virtual QStringList constraints(TableModel *table);
+    virtual QStringList constraints(AbstractTableModel *table);
     virtual QString escapeValue(const QVariant &v) const;
     virtual QVariant unescapeValue(const QMetaType &type, const QVariant &dbValue);
 
@@ -93,9 +93,9 @@ public:
     virtual QString relationDeclare(const RelationModel *relation);
 
     virtual QStringList diffDatabase(const DatabaseModel &lastModel, const DatabaseModel &newModel);
-    virtual QString diffField(FieldModelBase *oldField, FieldModelBase *newField);
-    virtual QStringList diffTable(TableModel *oldTable, TableModel *newTable);
-    virtual QStringList diffRelation(TableModel *oldTable, TableModel *newTable);
+    virtual QString diffField(AbstractFieldPhrase *oldField, AbstractFieldPhrase *newField);
+    virtual QStringList diffTable(AbstractTableModel *oldTable, AbstractTableModel *newTable);
+    virtual QStringList diffRelation(AbstractTableModel *oldTable, AbstractTableModel *newTable);
     virtual QStringList diffRelation2(RelationModel *oldRel, RelationModel *newRel);
 
     virtual QString join(const QString &mainTable,
@@ -151,7 +151,7 @@ public:
     virtual QString phrase(const PhraseData *d) const;
     virtual QString operatorString(const PhraseData::Condition &cond) const;
     virtual void appendSkipTake(QString &sql, int skip = -1, int take = -1);
-    virtual QString primaryKeyConstraint(const TableModel *table) const;
+    virtual QString primaryKeyConstraint(const AbstractTableModel *table) const;
 
 protected:
     virtual QString createConditionalPhrase(const PhraseData *d) const;
@@ -163,7 +163,9 @@ protected:
     QString fromTableText(const QString &tableName, QString &joinClassName, QString &orderBy) const;
 //    QString createWhere(QList<WherePhrase> &wheres);
 
+    Q_DECL_DEPRECATED
     virtual void replaceTableNames(QString &command);
+    Q_DECL_DEPRECATED
     void removeTableNames(QString &command);
     QString dateTimePartName(const PhraseData::Condition &op) const;
 };

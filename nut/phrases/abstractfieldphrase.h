@@ -44,6 +44,7 @@ namespace Nut
         pick<int>("Len", &data->len, args...); \
         pick<std::pair<int, int>>("AutoIncrement", &data->autoIncrement, args...); \
         pick<bool>("PrimaryKey", &data->isPrimaryKey, args...); \
+        pick<bool>("Unique", &data->isUnique, args...); \
         addToParent(name, parent); \
     }
 
@@ -63,9 +64,11 @@ public:
     int maxLen() const;
     int len() const;
     bool isPrimaryKey() const;
+    bool isAutoIncrement() const;
     int autoIncrementStart() const;
     int autoIncrementStep() const;
     bool allowNull() const;
+    bool isUnique() const;
 
     virtual ~AbstractFieldPhrase();
 

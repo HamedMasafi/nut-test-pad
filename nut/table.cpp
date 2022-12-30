@@ -26,7 +26,7 @@ void Table<Type::Data>::setFieldValue(const QString &name, const QVariant &value
         _fields.value(name)->fromVariant(value);
 }
 
-QVariant Table<Type::Data>::fieldvalue(const QString &name) const
+QVariant Table<Type::Data>::fieldValue(const QString &name) const
 {
     if (!_fields.contains(name))
         return QVariant();
@@ -83,12 +83,12 @@ const QSet<QString> &Table<Type::Data>::changedFields() const
     return _changedFields;
 }
 
-QMap<QString, AbstractFieldPhrase *> Table<Type::Model>::fields() const
+const QMap<QString, AbstractFieldPhrase *> &Table<Type::Model>::fields() const
 {
     return _fields;
 }
 
-QMap<QString, ForeignKeyModelBase *> Table<Type::Model>::foreignKeys() const
+const QMap<QString, ForeignKeyModelBase *> &Table<Type::Model>::foreignKeys() const
 {
     return _foreignKeys;
 }

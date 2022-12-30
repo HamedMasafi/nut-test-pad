@@ -10,7 +10,7 @@
 
 namespace Nut {
 
-class AbstractModel;
+class AbstractTableModel;
 template<Type _Type>
 class Table;
 template<NUT_TABLE_TEMPLATE T>
@@ -44,21 +44,6 @@ struct TypeHelper<C, Type::RuntimeChecker>{
 
 class DatasetBase;
 
-class Database3
-{
-
-public:
-    QMap<QString, DatasetBase*> _tables;
-
-    Q_DECL_DEPRECATED
-    Database3();
-
-    TableRow *createTable(const QString &name) const;
-    QList<TableModel*> model() const;
-
-    QJsonObject jsonModel() const;
-};
-
 template<Nut::Type _Type>
 class Database
 {
@@ -73,16 +58,16 @@ class Database<Type::Data>
 template<>
 class Database<Type::Model>
 {
-    QList<AbstractModel*> _tables;
+    QList<AbstractTableModel*> _tables;
 public:
 
     QJsonObject jsonModel() const;
 
-    friend class AbstractModel;
+    friend class AbstractTableModel;
     Database<Type::Model> operator|(const Database<Type::Model> &other);
 
-    AbstractModel *tableByName(const QString &name) const;
-    QList<AbstractModel *> tables() const;
+    AbstractTableModel *tableByName(const QString &name) const;
+    QList<AbstractTableModel *> tables() const;
 };
 
 #define NutDatabaseBase Nut::Database<_Type>

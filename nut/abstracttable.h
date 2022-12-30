@@ -11,15 +11,25 @@ class Database;
 class AbstractFieldPhrase;
 class ForeignKeyModelBase;
 
-class AbstractModel
+class AbstractTableModel
 {
     QString _name;
 public:
-    AbstractModel(Database<Type::Model> *parent, const char *name);
-    virtual const QMap<QString, AbstractFieldPhrase *> &fields() = 0;
-    virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() = 0;
-    virtual QJsonObject toJson();
+    AbstractTableModel() = default;
+    AbstractTableModel(Database<Type::Model> *parent, const char *name);
+    AbstractFieldPhrase *field(const QString &name) const;
+    virtual const QMap<QString, AbstractFieldPhrase *> &fields() const = 0;
+    virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() const = 0;
+    virtual QJsonObject toJson() const = 0;
     QString name() const;
+    AbstractFieldPhrase *primaryField() const
+    {
+        //TODO: fix me
+        return nullptr;
+    }
+
+    bool operator==(const AbstractTableModel &other);
+    bool operator!=(const AbstractTableModel &other);
 };
 
 }

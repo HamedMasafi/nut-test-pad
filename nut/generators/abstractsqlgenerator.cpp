@@ -28,10 +28,8 @@
 #include "abstractsqlgenerator.h"
 #include "core/sqlserializer.h"
 #include "database.h"
-#include "nut_p.h"
-#include "sqlserializer.h"
+#include "core/sqlserializer.h"
 #include "table.h"
-#include "tablemodel.h"
 
 namespace Nut {
 
@@ -134,18 +132,18 @@ QString AbstractSqlGenerator::insertBulk(const QString &tableName,
     }
     sql = QStringLiteral("INSERT INTO %1 (%2) VALUES %3").arg(tableName, createFieldPhrase(ph), sql);
 
-    removeTableNames(sql);
+//    removeTableNames(sql);
     return sql;
 }
 
-QString AbstractSqlGenerator::fieldDeclare(FieldModelBase *field)
+QString AbstractSqlGenerator::fieldDeclare(AbstractFieldPhrase *field)
 {
     QString type = fieldType(field);
     if (type.isEmpty())
         return type;
 
     QString ret = escapeFieldName(field->name()) + QStringLiteral(" ") + type;
-    if (field->notNull())
+    if (!field->allowNull())
         ret.append(QStringLiteral(" NOT NULL"));
 
     if (field->isUnique())
@@ -159,7 +157,7 @@ QString AbstractSqlGenerator::escapeFieldName(const QString &fieldName) const
     return fieldName;
 }
 
-QStringList AbstractSqlGenerator::constraints(TableModel *table)
+QStringList AbstractSqlGenerator::constraints(AbstractTableModel *table)
 {
     Q_UNUSED(table)
     return QStringList();
@@ -167,8 +165,10 @@ QStringList AbstractSqlGenerator::constraints(TableModel *table)
 
 QString AbstractSqlGenerator::relationDeclare(const RelationModel *relation)
 {
-    return QStringLiteral("FOREIGN KEY (FK_%1) REFERENCES %2(%1)")
-        .arg(relation->localColumn, relation->slaveTable->name());
+    return {};
+    //TODO: fix me
+//    return QStringLiteral("FOREIGN KEY (FK_%1) REFERENCES %2(%1)")
+//        .arg(relation->localColumn, relation->slaveTable->name());
 }
 
 QStringList AbstractSqlGenerator::diffDatabase(const DatabaseModel &lastModel,
@@ -198,14 +198,15 @@ QStringList AbstractSqlGenerator::diffDatabase(const DatabaseModel &lastModel,
     return ret;
 }
 
-QString AbstractSqlGenerator::diffField(FieldModelBase *oldField, FieldModelBase *newField)
+QString AbstractSqlGenerator::diffField(AbstractFieldPhrase *oldField, AbstractFieldPhrase *newField)
 {
     if (!oldField && !newField)
         return QString();
 
-    if (oldField && newField)
-        if (*oldField == *newField)
-            return QString();
+    //TODO: fix me
+//    if (oldField && newField)
+//        if (*oldField == *newField)
+//            return QString();
 
     QString sql = QString();
     if (!newField) {
@@ -220,7 +221,7 @@ QString AbstractSqlGenerator::diffField(FieldModelBase *oldField, FieldModelBase
     return sql;
 }
 
-QStringList AbstractSqlGenerator::diffTable(TableModel *oldTable, TableModel *newTable)
+QStringList AbstractSqlGenerator::diffTable(AbstractTableModel *oldTable, AbstractTableModel *newTable)
 {
     if (!newTable && !oldTable)
         return QStringList();
@@ -297,12 +298,13 @@ QStringList AbstractSqlGenerator::diffTable(TableModel *oldTable, TableModel *ne
     return QStringList() << sql;
 }
 
-QStringList AbstractSqlGenerator::diffRelation(TableModel *oldTable, TableModel *newTable)
+QStringList AbstractSqlGenerator::diffRelation(AbstractTableModel *oldTable, AbstractTableModel *newTable)
 {
     QStringList ret;
     if (!newTable)
         return ret;
-
+    //TODO: fix me
+/*
     QList<QString> relations;
 
     if (oldTable) {
@@ -330,7 +332,7 @@ QStringList AbstractSqlGenerator::diffRelation(TableModel *oldTable, TableModel 
     if (columnSql.count())
         ret.append(QStringLiteral("ALTER TABLE ") + newTable->name() + QStringLiteral("\n")
                    + columnSql.join(QStringLiteral(",\n")));
-
+*/
     return ret;
 }
 
@@ -349,6 +351,7 @@ QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationM
                          .arg(newRelation->masterTable->name())
                          .arg(newRelation->foreignColumn);
     */
+    /*
     if (!oldRel)
         ret.append(
             QStringLiteral("ADD CONSTRAINT FK_%1 FOREIGN KEY (%1) "
@@ -360,7 +363,7 @@ QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationM
             QStringLiteral("ADD CONSTRAINT FK_%1 FOREIGN KEY (%1) "
                            "REFERENCES %2(%3)")
                 .arg(oldRel->localColumn, oldRel->masterTable->name(), oldRel->foreignColumn));
-
+*/
     //    if (*oldRel == *newRel)
     return ret;
 }
@@ -370,6 +373,8 @@ QString AbstractSqlGenerator::join(const QString &mainTable,
                                    QStringList *order)
 {
     QString ret = mainTable;
+    //TODO: fix me
+    /*
     QList<RelationModel *>::const_iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if ((*i)->masterTable->name() == mainTable) {
@@ -393,7 +398,7 @@ QString AbstractSqlGenerator::join(const QString &mainTable,
                 order->append((*i)->masterTable->name() + QStringLiteral(".")
                               + (*i)->masterTable->primaryKey());
         }
-    }
+    }*/
     return ret;
 }
 
@@ -411,7 +416,7 @@ QString AbstractSqlGenerator::join(const QStringList &list, QStringList *order)
 
     if (list.count() == 1)
         return QStringLiteral("[") + list.first() + QStringLiteral("]");
-
+/*
     DatabaseModel model = _database->model();
     QStringList clone = list;
     QString mainTable = clone.takeFirst();
@@ -450,35 +455,39 @@ QString AbstractSqlGenerator::join(const QStringList &list, QStringList *order)
 
         clone.takeFirst();
     } while (clone.count());
-
     return ret;
+*/
+    return {};
 }
 
 QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
-    auto model = _database->model().tableByName(tableName);
+    //TODO: fix me
+//    auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
+//    auto keyField = model.primaryField();
 
-    QString key = model->isPrimaryKeyAutoIncrement() ? model->primaryKey() : QString();
+//    QString key;
+//    if (keyField->isAutoIncrement())
+//        key = keyField->name();
 
-    QStringList values;
+//    QStringList values;
 
-    QSet<QString> props = t->changedFields();
-    QString changedPropertiesText = QString();
-    for (auto &f : props) {
-        if (f == key)
-            continue;
+//    QSet<QString> props = t->changedFields();
+//    QString changedPropertiesText = QString();
+//    for (auto &f : props) {
+//        if (f == key)
+//            continue;
 
-        values.append(escapeValue(t->fieldvalue(f.toLatin1().data())));
+//        values.append(escapeValue(t->fieldValue(f.toLatin1().data())));
 
-        if (changedPropertiesText != QLatin1String(""))
-            changedPropertiesText.append(QStringLiteral(", "));
-        changedPropertiesText.append(escapeFieldName(f));
-    }
-    sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
-              .arg(tableName, changedPropertiesText, values.join(QStringLiteral(", ")));
+//        if (changedPropertiesText != QLatin1String(""))
+//            changedPropertiesText.append(QStringLiteral(", "));
+//        changedPropertiesText.append(escapeFieldName(f));
+//    }
+//    sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
+//              .arg(tableName, changedPropertiesText, values.join(QStringLiteral(", ")));
 
-    removeTableNames(sql);
 
     return sql;
 }
@@ -486,34 +495,35 @@ QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
 QString AbstractSqlGenerator::updateRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
-    auto model = _database->model().tableByName(tableName);
-    QString key = model->primaryKey();
+    auto model = _database->tableByName(t->className());
+    /*auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
+    QString key = model.primaryField()->name();
     QStringList values;
 
-    for (const auto &f : t->changedProperties())
+    for (const auto &f : t->changedFields())
         if (f != key)
             values.append(escapeFieldName(f) + QStringLiteral("=")
-                          + escapeValue(t->property(f.toLatin1().data())));
+                          + escapeValue(t->fieldValue(f.toLatin1().data())));
 
     sql = QStringLiteral("UPDATE %1 SET %2 WHERE %3=%4")
               .arg(tableName,
                    values.join(QStringLiteral(", ")),
                    key,
-                   t->property(key.toUtf8().data()).toString());
+                   t->fieldValue(key.toUtf8().data()).toString());*/
 
-    removeTableNames(sql);
+//    removeTableNames(sql);
 
     return sql;
 }
 
 QString AbstractSqlGenerator::deleteRecord(TableRow *t, QString tableName)
 {
-    auto model = _database->model().tableByName(tableName);
-    QString key = model->primaryKey();
+   /* auto model = Nut::modelForRow(t);// t->changedFields();// _database->model().tableByName(tableName);
+    QString key = model.primaryField()->name();
     QString sql = QStringLiteral("DELETE FROM %1 WHERE %2='%3'")
-                      .arg(tableName, key, t->fieldvalue(key.toUtf8().data()).toString());
-    replaceTableNames(sql);
-    return sql;
+                      .arg(tableName, key, t->fieldValue(key.toUtf8().data()).toString());
+    return sql;*/
+    return {};
 }
 
 QString AbstractSqlGenerator::agregateText(const AgregateType &t, const QString &arg) const
@@ -545,7 +555,8 @@ QString AbstractSqlGenerator::fromTableText(const QString &tableName,
                                             QString &orderBy) const
 {
     QString tableNameText = tableName;
-    if (!joinClassName.isNull()) {
+    //TODO: fix me
+    /*if (!joinClassName.isNull()) {
         QString joinTableName = _database->tableName(joinClassName);
         RelationModel *rel = _database->model().relationByTableNames(tableName, joinTableName);
         if (rel) {
@@ -560,7 +571,7 @@ QString AbstractSqlGenerator::fromTableText(const QString &tableName,
                      qPrintable(joinTableName.isNull() ? QStringLiteral("NULL") : joinTableName));
             joinClassName = QString();
         }
-    }
+    }*/
 
     return tableNameText;
 }
@@ -572,7 +583,7 @@ QString AbstractSqlGenerator::deleteRecords(const QString &tableName, const QStr
     if (!where.isEmpty())
         sql.append(QStringLiteral(" WHERE ") + where);
 
-    replaceTableNames(sql);
+//    replaceTableNames(sql);
 
     return sql;
 }
@@ -589,7 +600,8 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     Q_UNUSED(take)
     QString selectText;
 
-    if (fields.data.count() == 0) {
+    //TODO: fix me
+    /*if (fields.data.count() == 0) {
         QSet<TableModel *> tables;
         tables.insert(_database->tableByName(tableName));
         for (auto &rel : joins)
@@ -603,7 +615,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
         }
     } else {
         selectText = createFieldPhrase(fields);
-    }
+    }*/
 
     QStringList joinedOrders;
     QString orderText = createOrderPhrase(order);
@@ -623,7 +635,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     //                          _database->model().at(i)->name() + ".");
 
     appendSkipTake(sql, skip, take);
-    replaceTableNames(sql);
+//    replaceTableNames(sql);
 
     return sql + QStringLiteral(" ");
 }
@@ -691,11 +703,11 @@ QString AbstractSqlGenerator::updateCommand(const QString &tableName,
     if (!whereText.isEmpty())
         sql.append(QStringLiteral(" WHERE ") + whereText);
 
-    for (int i = 0; i < _database->model().count(); i++)
-        sql = sql.replace(_database->model().at(i)->className() + QStringLiteral("."),
-                          _database->model().at(i)->name() + QStringLiteral("."));
+//    for (int i = 0; i < _database->model().count(); i++)
+//        sql = sql.replace(_database->model().at(i)->className() + QStringLiteral("."),
+//                          _database->model().at(i)->name() + QStringLiteral("."));
 
-    removeTableNames(sql);
+//    removeTableNames(sql);
 
     return sql;
 }
@@ -720,16 +732,16 @@ QString AbstractSqlGenerator::insertCommand(const QString &tableName,
 
 void AbstractSqlGenerator::replaceTableNames(QString &command)
 {
-    for (auto &m : _database->model())
-        command = command.replace(QStringLiteral("[") + m->className() + QStringLiteral("]"),
-                                  m->name());
+//    for (auto &m : _database->model())
+//        command = command.replace(QStringLiteral("[") + m->className() + QStringLiteral("]"),
+//                                  m->name());
 }
 
 void AbstractSqlGenerator::removeTableNames(QString &command)
 {
-    for (auto &m : _database->model())
-        command = command.replace(QStringLiteral("[") + m->className() + QStringLiteral("]."),
-                                  QLatin1String());
+//    for (auto &m : _database->model())
+//        command = command.replace(QStringLiteral("[") + m->className() + QStringLiteral("]."),
+//                                  QLatin1String());
 }
 
 QString AbstractSqlGenerator::dateTimePartName(const PhraseData::Condition &op) const
@@ -934,10 +946,10 @@ void AbstractSqlGenerator::appendSkipTake(QString &sql, int skip, int take)
     Q_UNUSED(take)
 }
 
-QString AbstractSqlGenerator::primaryKeyConstraint(const TableModel *table) const
+QString AbstractSqlGenerator::primaryKeyConstraint(const AbstractTableModel *table) const
 {
     return QStringLiteral("CONSTRAINT pk_%1 PRIMARY KEY (%2)")
-        .arg(table->name(), table->primaryKey());
+        .arg(table->name(), table->primaryField()->name());
 }
 
 QString AbstractSqlGenerator::createConditionalPhrase(const PhraseData *d) const
