@@ -159,7 +159,7 @@ class Table
 {
 public:
     Table() = default;
-    virtual QString className() const;
+    virtual QString className() const = 0;
     friend class FieldBase;
 };
 
@@ -176,7 +176,7 @@ public:
     Table() = default;
 
     friend class FieldBase;
-    virtual QString className() const;
+    virtual QString className() const = 0;
 
     void setFieldValue(const QString &name, const QVariant &value);
     QVariant fieldValue(const QString &name) const;
@@ -198,7 +198,7 @@ public:
     Table() = default;
     Table(Database<Type::Model> *parent, const char *name);
 
-    virtual QString className() const;
+    virtual QString className() const = 0;
     QJsonObject toJson() const override;
     AbstractFieldPhrase *field(const QString &name) const;
 

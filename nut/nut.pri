@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/field2.h \
     $$PWD/foreignkey.h \
     $$PWD/generators/abstractsqlgenerator.h \
+    $$PWD/generators/sqlitegenerator.h \
     $$PWD/global.h \
     $$PWD/models/fieldmodel.h \
     $$PWD/models/foreignkeymodel.h \
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/field2.cpp \
     $$PWD/foreignkey.cpp \
     $$PWD/generators/abstractsqlgenerator.cpp \
+    $$PWD/generators/sqlitegenerator.cpp \
     $$PWD/models/fieldmodel.cpp \
     $$PWD/models/foreignkeymodel.cpp \
     $$PWD/models/modelstorage.cpp \

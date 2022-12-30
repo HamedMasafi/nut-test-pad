@@ -16,6 +16,7 @@
 void ff(TableModel *t)
 {
     print(typeid(t).name());
+    print(t->className());
 }
 void f() {
     DBModel.table20.t().id;

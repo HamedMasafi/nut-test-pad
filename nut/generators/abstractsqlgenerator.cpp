@@ -132,7 +132,6 @@ QString AbstractSqlGenerator::insertBulk(const QString &tableName,
     }
     sql = QStringLiteral("INSERT INTO %1 (%2) VALUES %3").arg(tableName, createFieldPhrase(ph), sql);
 
-//    removeTableNames(sql);
     return sql;
 }
 
