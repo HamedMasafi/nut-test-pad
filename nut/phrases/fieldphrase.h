@@ -32,6 +32,8 @@ template<typename T>
 class FieldPhrase : public AbstractFieldPhrase
 {
 public:
+    NUT_DECLARE_METATYPE_ID(T)
+
     FieldPhrase(const char *className, const char *s) :
         AbstractFieldPhrase(className, s)
     {}

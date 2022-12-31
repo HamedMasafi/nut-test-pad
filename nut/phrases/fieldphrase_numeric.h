@@ -61,6 +61,7 @@ public:
     class FieldPhrase<type> : public NumericFieldPhrase \
     { \
     public: \
+        NUT_DECLARE_METATYPE_ID(type) \
         template<typename... Types> \
         constexpr FieldPhrase(TableModel *parent, const char *name, Types... args) \
             : NumericFieldPhrase("", name) \

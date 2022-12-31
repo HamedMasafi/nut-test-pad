@@ -20,17 +20,16 @@
 
 #include "sqlitegenerator.h"
 #include "table.h"
-#include "tablemodel.h"
 
 namespace Nut {
 
-SqliteGenerator::SqliteGenerator(Database *parent)
+SqliteGenerator::SqliteGenerator(Database<Model> *parent)
     : AbstractSqlGenerator(parent)
 {}
 
-QString SqliteGenerator::fieldType(FieldModel *field)
+QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)
 {
-    switch (field->type) {
+    switch (field->metaTypeId()) {
     case QMetaType::Bool:
         return QStringLiteral("BOOLEAN");
     case QMetaType::QBitArray:
@@ -96,8 +95,8 @@ QString SqliteGenerator::fieldType(FieldModel *field)
         //            dbType.append(" PRIMARY KEY AUTOINCREMENT");
 
     case QMetaType::QString:
-        if (field->length)
-            return QStringLiteral("VARCHAR(%1)").arg(field->length);
+        if (field->len())
+            return QStringLiteral("VARCHAR(%1)").arg(field->len());
         else
             return QStringLiteral("TEXT");
     default:
@@ -107,33 +106,33 @@ QString SqliteGenerator::fieldType(FieldModel *field)
     }
 }
 
-QString SqliteGenerator::fieldDeclare(FieldModel *field)
+QString SqliteGenerator::fieldDeclare(AbstractFieldPhrase *field)
 {
     QString type = fieldType(field);
     if (type.isEmpty())
         return type;
 
-    if (isNumeric(field->type) && field->isPrimaryKey) {
+    if (isNumeric(field->metaTypeId()) && field->isPrimaryKey()) {
         type = QStringLiteral("INTEGER PRIMARY KEY");
-        if (field->isAutoIncrement)
+        if (field->isAutoIncrement())
             type.append(QStringLiteral(" AUTOINCREMENT"));
     }
 
-    if (field->notNull)
+    if (!field->allowNull())
         type.append(QStringLiteral(" NOT NULL"));
 
-    if (field->isUnique)
+    if (field->isUnique())
         type.append(QStringLiteral(" UNIQUE"));
 
-    return field->name + QStringLiteral(" ") + type;
+    return field->name() + QStringLiteral(" ") + type;
 }
 
-bool SqliteGenerator::supportAutoIncrement(const QMetaType::Type &type)
+bool SqliteGenerator::supportAutoIncrement(const QMetaType &type)
 {
-    return isNumeric(type);
+    return isNumeric(static_cast<QMetaType::Type>(type.id()));
 }
 
-QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTable)
+QStringList SqliteGenerator::diffTable(AbstractTableModel *oldTable, AbstractTableModel *newTable)
 {
     QStringList ret;
 
@@ -156,27 +155,27 @@ QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTabl
     QList<QString> relations;
 
     for (auto &f : oldTable->fields())
-        if (!fieldNames.contains(f->name))
-            fieldNames.append(f->name);
-    for (auto &r : oldTable->foreignKeys())
-        if (!relations.contains(r->localColumn))
-            relations.append(r->localColumn);
+        if (!fieldNames.contains(f->name()))
+            fieldNames.append(f->name());
+//    for (auto &r : oldTable->foreignKeys())
+//        if (!relations.contains(r->localColumn))
+//            relations.append(r->localColumn);
 
     for (auto &f : newTable->fields())
-        if (!fieldNames.contains(f->name))
-            fieldNames.append(f->name);
-    for (auto &r : newTable->foreignKeys())
-        if (!relations.contains(r->localColumn))
-            relations.append(r->localColumn);
+        if (!fieldNames.contains(f->name()))
+            fieldNames.append(f->name());
+//    for (auto &r : newTable->foreignKeys())
+//        if (!relations.contains(r->localColumn))
+//            relations.append(r->localColumn);
 
     QString columns;
     for (auto &f : oldTable->fields()) {
-        if (!newTable->field(f->name))
+        if (!newTable->field(f->name()))
             continue;
 
         if (!columns.isEmpty())
             columns.append(QStringLiteral(", "));
-        columns.append(f->name);
+        columns.append(f->name());
     }
 
     /*
@@ -202,12 +201,12 @@ QStringList SqliteGenerator::diffTable(TableModel *oldTable, TableModel *newTabl
     */
 
     QString foreignKeys;
-    for (auto &f : newTable->foreignKeys()) {
-        if (!foreignKeys.isEmpty())
-            foreignKeys.append(QStringLiteral(", "));
-        foreignKeys.append(QStringLiteral("FOREIGN KEY(%1) REFERENCES %2(id)")
-                               .arg(f->localColumn, f->masterTable->name()));
-    }
+//    for (auto &f : newTable->foreignKeys()) {
+//        if (!foreignKeys.isEmpty())
+//            foreignKeys.append(QStringLiteral(", "));
+//        foreignKeys.append(QStringLiteral("FOREIGN KEY(%1) REFERENCES %2(id)")
+//                               .arg(f->localColumn, f->masterTable->name()));
+//    }
     ret.append(QStringLiteral("ALTER TABLE ") + newTable->name()
                + QStringLiteral(" RENAME TO nut_orm_temp_table;"));
     ret.append(newTableSql);
@@ -225,7 +224,7 @@ void SqliteGenerator::appendSkipTake(QString &sql, int skip, int take)
     }
 }
 
-QString SqliteGenerator::primaryKeyConstraint(const TableModel *table) const
+QString SqliteGenerator::primaryKeyConstraint(const AbstractTableModel *table) const
 {
     Q_UNUSED(table)
     return QString();
@@ -337,15 +336,15 @@ QString SqliteGenerator::escapeValue(const QVariant &v) const
     return AbstractSqlGenerator::escapeValue(v);
 }
 
-QVariant SqliteGenerator::unescapeValue(const QMetaType::Type &type, const QVariant &dbValue)
+QVariant SqliteGenerator::unescapeValue(const QMetaType &type, const QVariant &dbValue)
 {
-    if (type == QMetaType::QDateTime)
+    if (type.id() == QMetaType::QDateTime)
         return dbValue.toDateTime();
 
-    if (type == QMetaType::QTime)
+    if (type.id() == QMetaType::QTime)
         return dbValue.toTime();
 
-    if (type == QMetaType::QDate)
+    if (type.id() == QMetaType::QDate)
         return dbValue.toDate();
 
     return AbstractSqlGenerator::unescapeValue(type, dbValue);

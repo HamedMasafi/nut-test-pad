@@ -48,6 +48,12 @@ namespace Nut
         addToParent(name, parent); \
     }
 
+#define NUT_DECLARE_METATYPE_ID(T) \
+    QMetaType::Type metaTypeId() const override \
+    { \
+        return static_cast<QMetaType::Type>(qMetaTypeId<T>()); \
+    }
+
 class PhraseData;
 class NUT_EXPORT AbstractFieldPhrase
 {
@@ -59,6 +65,7 @@ public:
     AbstractFieldPhrase(const AbstractFieldPhrase &other);
     AbstractFieldPhrase(AbstractFieldPhrase &&other);
 
+    virtual QMetaType::Type metaTypeId() const;
     const char *name() const;
     QString tableName() const;
     int maxLen() const;

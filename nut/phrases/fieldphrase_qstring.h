@@ -18,6 +18,7 @@ public:
         init(parent, name, args...);
     }
 
+    NUT_DECLARE_METATYPE_ID(QString)
     ConditionalPhrase like(const QString &term)
     {
         return ConditionalPhrase(this, PhraseData::Like, term);

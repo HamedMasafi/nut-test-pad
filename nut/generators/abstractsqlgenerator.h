@@ -46,7 +46,7 @@ class NUT_EXPORT AbstractSqlGenerator : public QObject
 protected:
     SqlSerializer *_serializer;
 
-    bool isNumeric(const QMetaType &type);
+    bool isNumeric(const QMetaType::Type &type);
 
 public:
     //TODO: remove this enum

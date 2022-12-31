@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <nut/table.h>
 #include <nut/models/fieldmodel.h>
+#include <generators/sqlitegenerator.h>
 
 #include "sampletable.h"
 
@@ -62,6 +63,10 @@ void checkExpressions()
     auto order = SampleTableModel2.id | !SampleTableModel2.ps;
 
     auto q4 = DBModel.table10.id == DBModel.table20.id;
+
+    Nut::SqliteGenerator gen;
+    auto where = gen.createConditionalPhrase(q3.data);
+    print(where);
 }
 int main(int argc, char *argv[])
 {
@@ -103,5 +108,6 @@ int main(int argc, char *argv[])
     f();
     changedTest();
     ff(&mm);
+    checkExpressions();
     return EXIT_SUCCESS;
 }

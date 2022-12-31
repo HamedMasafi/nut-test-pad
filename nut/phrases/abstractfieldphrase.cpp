@@ -52,6 +52,11 @@ AbstractFieldPhrase::AbstractFieldPhrase(AbstractFieldPhrase &&other)
     other.data = nullptr;
 }
 
+QMetaType::Type AbstractFieldPhrase::metaTypeId() const
+{
+    return QMetaType::Void;
+}
+
 AbstractFieldPhrase::~AbstractFieldPhrase()
 {
     if (data) {

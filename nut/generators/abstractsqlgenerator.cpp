@@ -50,9 +50,8 @@ namespace Nut {
  *      INNER JOIN dbo.GiftCards ON dbo.GiftTypes.GiftTypeID = dbo.GiftCards.GiftTypeID
  *      INNER JOIN dbo.Entities ON dbo.GiftCards.GiftCardID = dbo.Entities.GiftCardID
  */
-bool AbstractSqlGenerator::isNumeric(const QMetaType &metaType)
+bool AbstractSqlGenerator::isNumeric(const QMetaType::Type &type)
 {
-    auto type = metaType.id();
     return type == QMetaType::SChar || type == QMetaType::Char || type == QMetaType::UChar
            || type == QMetaType::Short || type == QMetaType::UShort || type == QMetaType::Int
            || type == QMetaType::UInt || type == QMetaType::Long || type == QMetaType::ULong

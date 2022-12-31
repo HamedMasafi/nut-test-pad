@@ -13,6 +13,8 @@ class FieldPhrase<bool> : public AbstractFieldPhrase
 {
     TableModel *_parent;
 public:
+    NUT_DECLARE_METATYPE_ID(bool)
+
     template<typename... Types>
         constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
         : AbstractFieldPhrase("", name), _parent(parent)

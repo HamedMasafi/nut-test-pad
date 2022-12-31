@@ -69,7 +69,7 @@ public:
         init(parent, name, args...);
     }
 
-
+    NUT_DECLARE_METATYPE_ID(QDate)
     COMMON_OPERATORS_DECL(QDate)
 
     ConditionalPhrase addYears(int years);
@@ -92,7 +92,7 @@ public:
         init(parent, name, args...);
     }
 
-
+    NUT_DECLARE_METATYPE_ID(QTime)
     COMMON_OPERATORS_DECL(QTime)
 
     ConditionalPhrase addHours(int hours);
@@ -116,7 +116,7 @@ public:
         init(parent, name, args...);
     }
 
-
+    NUT_DECLARE_METATYPE_ID(QDateTime)
     COMMON_OPERATORS_DECL(QDateTime)
 
     ConditionalPhrase addYears(int year);

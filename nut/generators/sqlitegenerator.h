@@ -30,22 +30,22 @@ namespace Nut {
 class NUT_EXPORT SqliteGenerator : public AbstractSqlGenerator
 {
 public:
-    explicit SqliteGenerator(Database *parent = nullptr);
+    explicit SqliteGenerator(Database<Type::Model> *parent = nullptr);
 
-    QString fieldType(FieldModel *field) override;
-    QString fieldDeclare(FieldModel *field) override;
+    QString fieldType(AbstractFieldPhrase *field) override;
+    QString fieldDeclare(AbstractFieldPhrase *field) override;
 
-    bool supportAutoIncrement(const QMetaType::Type &type) override;
+    bool supportAutoIncrement(const QMetaType &type) override;
 
     void appendSkipTake(QString &sql, int skip, int take) override;
 
-    QString primaryKeyConstraint(const TableModel *table) const override;
-    QStringList diffTable(TableModel *oldTable, TableModel *newTable) override;
+    QString primaryKeyConstraint(const AbstractTableModel *table) const override;
+    QStringList diffTable(AbstractTableModel *oldTable, AbstractTableModel *newTable) override;
 
     QString createConditionalPhrase(const PhraseData *d) const override;
 
     QString escapeValue(const QVariant &v) const override;
-    QVariant unescapeValue(const QMetaType::Type &type, const QVariant &dbValue) override;
+    QVariant unescapeValue(const QMetaType &type, const QVariant &dbValue) override;
 };
 
 } // namespace Nut
