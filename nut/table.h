@@ -188,7 +188,7 @@ public:
 };
 
 template <>
-class Table<Type::Model> : public AbstractTableModel
+class Table<Type::Model> //: public AbstractTableModel
 {
 protected:
     QMap<QString, AbstractFieldPhrase*> _fields;
@@ -196,10 +196,11 @@ protected:
     QString _name;
 public:
     Table() = default;
+    Table(const char *name);
     Table(Database<Type::Model> *parent, const char *name);
 
     virtual QString className() const = 0;
-    QJsonObject toJson() const override;
+    QJsonObject toJson() const ;
     AbstractFieldPhrase *field(const QString &name) const;
 
     friend class DatasetBase;
@@ -209,8 +210,8 @@ public:
         return _name;
     }
     AbstractFieldPhrase *primaryField() const;
-    const QMap<QString, AbstractFieldPhrase *> &fields() const override;
-    const QMap<QString, ForeignKeyModelBase *> &foreignKeys() const override;
+    const QMap<QString, AbstractFieldPhrase *> &fields() const ;
+    const QMap<QString, ForeignKeyModelBase *> &foreignKeys() const ;
 
 };
 
@@ -220,9 +221,12 @@ template<NUT_TABLE_TEMPLATE T>
 class ModelBase : public AbstractTableModel, public T<Type::Model>
 {
 public:
-    ModelBase(Nut::Database<Type::Model> *parent, const char *name)
-        : AbstractTableModel(parent, name)
-    {}
+    ModelBase(Database<Type::Model> *parent, const char *name)
+        : AbstractTableModel(parent, name), T<Type::Model>(name)
+    {
+        for (auto &f: T<Type::Model>::_fields)
+            f->data->className = name;
+    }
     const QMap<QString, AbstractFieldPhrase *> &fields() const override{
         return T<Type::Model>::_fields;
     }
@@ -235,4 +239,4 @@ public:
     }
 };
 
-}
+} // namespace Nut

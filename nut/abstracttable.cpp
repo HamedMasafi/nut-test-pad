@@ -13,6 +13,7 @@ QString AbstractTableModel::name() const
 
 bool AbstractTableModel::operator==(const AbstractTableModel &other)
 {
+    Q_UNUSED(other)
     return false;
 }
 
@@ -29,6 +30,7 @@ AbstractTableModel::AbstractTableModel(Database<Type::Model> *parent, const char
 
 AbstractFieldPhrase *AbstractTableModel::field(const QString &name) const
 {
+    Q_UNUSED(name)
     //TODO: fix me
     return nullptr;
 }

@@ -7,7 +7,7 @@
 
 namespace Nut {
 
-Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name) : _name(name)
+Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name)// : AbstractTableModel(parent, name), _name(name)
 {
     qDebug() << "my name is" << name;
 }
@@ -110,6 +110,11 @@ AbstractFieldPhrase *Nut::Table<Type::Model>::primaryField() const
         if (f->isPrimaryKey())
             return f;
     return nullptr;
+}
+
+Nut::Table<Type::Model>::Table(const char *name) : _name{name}
+{
+
 }
 
 

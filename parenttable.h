@@ -13,11 +13,8 @@ NUT_DEFINE_TABLE(ParentTable)
     NUT_TABLE
 
 public:
-
-
-    ParentTable(){
-
-    }
+    ParentTable() = default;
+    ParentTable(const char *) {}
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
 

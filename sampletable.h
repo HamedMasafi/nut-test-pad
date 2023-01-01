@@ -14,7 +14,7 @@ NUT_DEFINE_TABLE(SampleTable)
 
 public:
     SampleTable() = default;
-
+    SampleTable(const char *) {}
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
 

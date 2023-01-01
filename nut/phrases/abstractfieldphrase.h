@@ -120,6 +120,8 @@ public:
     AssignmentPhrase operator =(const ConditionalPhrase &other);
     AssignmentPhrase operator <<(const QVariant &other);
 
+    template<NUT_TABLE_TEMPLATE T>
+    friend class ModelBase;
 protected:
     void detach();
     template<typename... Types>

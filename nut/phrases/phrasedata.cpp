@@ -80,7 +80,7 @@ PhraseData &PhraseData::operator =(PhraseData &other)
 QString PhraseData::toString() const
 {
     return QStringLiteral("[%1].%2")
-        .arg(QString::fromUtf8(className), QString::fromUtf8(fieldName));
+        .arg(tableName, QString::fromUtf8(fieldName));
 }
 
 void PhraseData::cleanUp()
