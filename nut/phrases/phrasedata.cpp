@@ -95,6 +95,7 @@ PhraseData *PhraseData::clone() const
 
     c->type = type;
 
+    c->tableName = tableName;
     c->operatorCond = operatorCond;
 
     c->left = left;

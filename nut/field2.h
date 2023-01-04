@@ -21,6 +21,7 @@ class FieldBase {
 protected:
     FieldBase(TableRow *parent, const char *name);
     void setChanged();
+    virtual bool isPrimary() = 0;
 
 public:
     virtual QVariant toVariant() const = 0;
@@ -29,13 +30,13 @@ public:
 
 using namespace Nut::ModelDeclartion;
 
-template <typename T, bool _AllowNull = true>
+template <typename T, bool _IsPrimary, bool _AllowNull = true>
 class Field : public FieldBase
 {
 };
 
-template <typename T>
-class Field<T, false> : public FieldBase
+template <typename T, bool _IsPrimary>
+class Field<T, _IsPrimary, false> : public FieldBase
 {
 protected:
     T _value;
@@ -47,7 +48,9 @@ public:
     {
     }
 
-    Field<T, false> &operator=(const T &value);
+    bool isPrimary() override { return _IsPrimary; }
+
+    Field<T, _IsPrimary, false> &operator=(const T &value);
 
     operator T ();
     T value() const;
@@ -62,33 +65,52 @@ public:
     }
 };
 
-template<typename T>
-Field<T, false>::operator T()
+#define FieldMethod(type, allowNull) \
+    template<typename T, bool _IsPrimary> \
+    Q_OUTOFLINE_TEMPLATE type Field<T, _IsPrimary, allowNull>
+
+#define FieldMethodSelf(_AllowNull) \
+    template<typename T, bool _IsPrimary> \
+    Q_OUTOFLINE_TEMPLATE Field<T, _IsPrimary, _AllowNull> &Field<T, _IsPrimary, _AllowNull>
+
+#define FieldMethodSelfAllowNull \
+    template <typename T, bool _IsPrimary> \
+    Q_OUTOFLINE_TEMPLATE Field<T, true> &Field<T, true>
+
+#define FieldMethodSelfNotNull \
+    template <typename T, bool _IsPrimary> \
+    Q_OUTOFLINE_TEMPLATE Field<T, false> &Field<T, false>
+
+
+template <typename T, bool _IsPrimary>
+Field<T, _IsPrimary, false>::operator T()
 {
     return _value;
 }
 
-template<typename T>
-T Nut::Field<T, false>::value() const
+template <typename T, bool _IsPrimary>
+T Nut::Field<T, _IsPrimary, false>::value() const
 {
     return _value;
 }
 
-template <typename T>
-class Field<T, true> : public Field<T, false>
+template<typename T, bool _IsPrimary>
+class Field<T, _IsPrimary, true> : public Field<T, _IsPrimary, false>
 {
 //    T _value;
     bool _isNull;
 public:
     template<typename ...Types>
     constexpr inline Field(TableRow *parent, const char *name, ...)
-        : Field<T, false>(parent, name)
+        : Field<T, _IsPrimary, false>(parent, name)
     {
     }
 
-    Field<T, true> &operator=(const T &value);
-    Field<T, true> &operator=(const DBNullType &);
-    Field<T, true> &operator=(const std::nullptr_t &);
+    bool isPrimary() override { return _IsPrimary; }
+
+    Field<T, _IsPrimary, true> &operator=(const T &value);
+    Field<T, _IsPrimary, true> &operator=(const DBNullType &);
+    Field<T, _IsPrimary, true> &operator=(const std::nullptr_t &);
 
     bool operator==(const DBNullType &);
     bool operator==(const std::nullptr_t &);
@@ -96,22 +118,19 @@ public:
     void setNull();
 };
 
-template<typename T>
-bool Field<T, true>::operator==(const std::nullptr_t &)
+FieldMethod(bool, true)::operator==(const std::nullptr_t &)
 {
     return _isNull;
 }
 
-template<typename T>
-Field<T, true> &Nut::Field<T, true>::operator=(const DBNullType &)
+FieldMethodSelf(true)::operator=(const DBNullType &)
 {
     this->setChanged();
     setNull();
     return *this;
 }
 
-template<typename T>
-Field<T, true> &Field<T, true>::operator=(const T &value)
+FieldMethodSelf(true)::operator=(const T &value)
 {
     this->setChanged();
     this->_value = value;
@@ -120,49 +139,31 @@ Field<T, true> &Field<T, true>::operator=(const T &value)
 
 
 
-#define FieldMethod(type)                                                                          \
-    template<typename T, bool _AllowNull>                                                          \
-    Q_OUTOFLINE_TEMPLATE type Field<T, _AllowNull>
-
-#define FieldMethodSelf                                                                            \
-template<typename T, bool _AllowNull>                                                          \
-    Q_OUTOFLINE_TEMPLATE Field<T, _AllowNull> &Field<T, _AllowNull>
-
-#define FieldMethodSelfAllowNull \
-    template<typename T> \
-    Q_OUTOFLINE_TEMPLATE Field<T, true> &Field<T, true>
-
-#define FieldMethodSelfNotNull \
-    template<typename T> \
-    Q_OUTOFLINE_TEMPLATE Field<T, false> &Field<T, false>
-
-FieldMethodSelfNotNull::operator=(const T &value)
+FieldMethodSelf(false)::operator=(const T &value)
 {
     this->setChanged();
     _value = value;
     return *this;
 }
 
-FieldMethodSelfAllowNull::operator=(const std::nullptr_t &)
+FieldMethodSelf(true)::operator=(const std::nullptr_t &)
 {
     setNull();
     this->setChanged();
     return *this;
 }
 
-template<typename T>
-bool Field<T, true>::operator==(const DBNullType &)
+FieldMethod(bool, true)::operator==(const DBNullType &)
 {
     return _isNull;
 }
 
-template<typename T>
-void Field<T, true>::setNull()
+FieldMethod(void, true)::setNull()
 {
     _isNull = true;
 }
 
-template<typename T>
+template <typename T, bool _IsPrimary>
 QDebug operator<<(QDebug debug, const Field<T, true> &f)
 {
     if (f.isNull())
@@ -171,7 +172,7 @@ QDebug operator<<(QDebug debug, const Field<T, true> &f)
         return debug << f.value();
 }
 
-template<typename T>
+template <typename T, bool _IsPrimary>
 QDebug operator<<(QDebug debug, const Field<T, false> &f)
 {
     return debug << f.value();

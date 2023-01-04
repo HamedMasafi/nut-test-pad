@@ -47,6 +47,9 @@ void changedTest()
     t.pn = 4;
     t.point = QPoint(1, 2);
 
+    Nut::SqliteGenerator gen;
+    auto sql = gen.saveRecord(&t, "sample");
+    print(sql);
 
     print(t.changedFields().contains("id"));
     print(t.changedFields().contains("pn"));
@@ -59,7 +62,7 @@ void checkExpressions()
     auto q1 = SampleTableModel2.id == 23;
 
     auto q2 = SampleTableModel2.id = 4;
-    auto q3 = SampleTableModel2.id == 4 && SampleTableModel2.point == QPoint(1, 2);
+    auto q3 = DBModel.table20.id == 4 && DBModel.table10.point == QPoint(1, 2);
     auto order = SampleTableModel2.id | !SampleTableModel2.ps;
 
     auto q4 = DBModel.table10.id == DBModel.table20.id;
@@ -67,6 +70,7 @@ void checkExpressions()
     Nut::SqliteGenerator gen;
     auto where = gen.createConditionalPhrase(q3.data);
     print(where);
+    print(DBModel.table10.id.data->tableName);
 }
 int main(int argc, char *argv[])
 {

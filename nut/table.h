@@ -38,7 +38,8 @@ struct PropertyTypeHelper {
 template <typename T, typename... Types>
 struct PropertyTypeHelper<T, Type::Data, Types...> {
 //    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
-    using type = ::Nut::Field<T, containsType<AllowNull, Types...>>;
+    using type
+        = ::Nut::Field<T, containsType<PrimaryKey, Types...>, containsType<AllowNull, Types...>>;
 };
 
 template <typename T, typename... Types>
@@ -171,6 +172,7 @@ protected:
     QMap<QString, FieldBase*> _fields;
     QSet<QString> _changedFields;
     RowStatus _status;
+    FieldBase *_primaryField;
 public:
 
     Table() = default;
@@ -183,8 +185,10 @@ public:
 
     QVariant key() const;
     void setKey(const QVariant &value);
+
     const QSet<QString> &changedFields() const;
     RowStatus status() const;
+    FieldBase *primaryField();
 };
 
 template <>
@@ -224,8 +228,11 @@ public:
     ModelBase(Database<Type::Model> *parent, const char *name)
         : AbstractTableModel(parent, name), T<Type::Model>(name)
     {
-        for (auto &f: T<Type::Model>::_fields)
+        for (auto &f: T<Type::Model>::_fields) {
+            qDebug() << "field" << f->data->fieldName<<f->data->tableName;
+            f->data->tableName = name;
             f->data->className = name;
+        }
     }
     const QMap<QString, AbstractFieldPhrase *> &fields() const override{
         return T<Type::Model>::_fields;

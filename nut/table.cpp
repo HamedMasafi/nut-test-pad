@@ -117,5 +117,16 @@ Nut::Table<Type::Model>::Table(const char *name) : _name{name}
 
 }
 
+FieldBase *Table<Type::Data>::primaryField()
+{
+    if (!_primaryField)
+        for (const auto &f: _fields)
+            if (f) {
+                _primaryField = f;
+                break;
+            }
+    return _primaryField;
+}
+
 
 } // namespace Nut

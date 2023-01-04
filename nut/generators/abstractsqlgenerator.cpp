@@ -82,7 +82,7 @@ QString AbstractSqlGenerator::createTable(TableModel *table)
 QString AbstractSqlGenerator::saveRecord(TableRow *t, QString tableName)
 {
     Q_ASSERT(!tableName.isEmpty() && !tableName.isNull());
-    t->key();
+
     switch (t->status()) {
     case Nut::RowStatus::Added:
         return insertRecord(t, tableName);
