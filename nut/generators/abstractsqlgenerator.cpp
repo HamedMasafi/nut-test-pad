@@ -494,8 +494,8 @@ QString AbstractSqlGenerator::updateRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
     auto model = _database->tableByName(t->className());
-    /*auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
-    QString key = model.primaryField()->name();
+//    auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
+    QString key =model->primaryField()->name();
     QStringList values;
 
     for (const auto &f : t->changedFields())
@@ -507,7 +507,7 @@ QString AbstractSqlGenerator::updateRecord(TableRow *t, QString tableName)
               .arg(tableName,
                    values.join(QStringLiteral(", ")),
                    key,
-                   t->fieldValue(key.toUtf8().data()).toString());*/
+                   t->fieldValue(key.toUtf8().data()).toString());
 
 //    removeTableNames(sql);
 

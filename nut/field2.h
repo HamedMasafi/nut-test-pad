@@ -21,11 +21,11 @@ class FieldBase {
 protected:
     FieldBase(TableRow *parent, const char *name);
     void setChanged();
-    virtual bool isPrimary() = 0;
 
 public:
     virtual QVariant toVariant() const = 0;
     virtual void fromVariant(const QVariant& value) = 0;
+    virtual bool isPrimary() = 0;
 };
 
 using namespace Nut::ModelDeclartion;

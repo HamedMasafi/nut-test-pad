@@ -48,6 +48,7 @@ void changedTest()
     t.point = QPoint(1, 2);
 
     Nut::SqliteGenerator gen;
+    gen._database = &DBModel;
     auto sql = gen.saveRecord(&t, "sample");
     print(sql);
 

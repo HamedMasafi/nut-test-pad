@@ -121,7 +121,7 @@ FieldBase *Table<Type::Data>::primaryField()
 {
     if (!_primaryField)
         for (const auto &f: _fields)
-            if (f) {
+            if (f->isPrimary()) {
                 _primaryField = f;
                 break;
             }

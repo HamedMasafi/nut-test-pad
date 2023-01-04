@@ -42,13 +42,14 @@ class NUT_EXPORT AbstractSqlGenerator : public QObject
 {
 //    Q_OBJECT
 
-    Database<Type::Model> *_database;
 protected:
     SqlSerializer *_serializer;
 
     bool isNumeric(const QMetaType::Type &type);
 
 public:
+    //TODO: move to private
+    Database<Type::Model> *_database;
     //TODO: remove this enum
     enum CommandType{
         Select,

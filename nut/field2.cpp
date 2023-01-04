@@ -13,6 +13,7 @@ FieldBase::FieldBase(TableRow *parent, const char *name) : _parent{parent}, _nam
 void FieldBase::setChanged()
 {
     _parent->_changedFields.insert(_name);
+    _parent->_status = Nut::RowStatus::Modified;
 }
 
 } // namespace Nut
