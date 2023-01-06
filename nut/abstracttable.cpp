@@ -11,6 +11,14 @@ QString AbstractTableModel::name() const
     return _name;
 }
 
+AbstractFieldPhrase *AbstractTableModel::primaryField() const
+{
+    for (auto const &f: fields())
+        if (f->isPrimaryKey())
+            return f;
+    return nullptr;
+}
+
 bool AbstractTableModel::operator==(const AbstractTableModel &other)
 {
     Q_UNUSED(other)

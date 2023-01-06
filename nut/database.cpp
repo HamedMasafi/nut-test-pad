@@ -28,8 +28,9 @@ Database<Type::Model> Nut::Database<Type::Model>::operator|(const Database<Type:
 
 AbstractTableModel *Nut::Database<Type::Model>::tableByName(const QString &name) const
 {
+    //TODO: fix me
     for (const auto &t: _tables)
-        if (t->name() == name)
+        if (t->className() == name)
             return t;
     return nullptr;
 }

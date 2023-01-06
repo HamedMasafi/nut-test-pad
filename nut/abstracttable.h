@@ -22,11 +22,8 @@ public:
     virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() const = 0;
     virtual QJsonObject toJson() const = 0;
     QString name() const;
-    AbstractFieldPhrase *primaryField() const
-    {
-        //TODO: fix me
-        return nullptr;
-    }
+    virtual QString className() const = 0;
+    AbstractFieldPhrase *primaryField() const;
 
     bool operator==(const AbstractTableModel &other);
     bool operator!=(const AbstractTableModel &other);

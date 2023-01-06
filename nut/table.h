@@ -121,7 +121,9 @@ struct Property2<T, Type::RuntimeChecker, Types...> {
     using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type; \
 \
 public: \
+    Nut::Table<Nut::Type::Model> *model() const; \
     QString className() const override; \
+    static QString staticClassName(); \
 \
 private:
 
@@ -135,6 +137,11 @@ private:
     } \
     template<Nut::Type _T> \
     QString table<_T>::className() const \
+    { \
+        return #table; \
+    } \
+    template<Nut::Type _T> \
+    QString table<_T>::staticClassName() \
     { \
         return #table; \
     }
@@ -171,7 +178,7 @@ protected:
     QString keyField;
     QMap<QString, FieldBase*> _fields;
     QSet<QString> _changedFields;
-    RowStatus _status;
+    RowStatus _status{RowStatus::Added};
     FieldBase *_primaryField;
 public:
 
@@ -234,6 +241,7 @@ public:
             f->data->className = name;
         }
     }
+    virtual QString className() const override { return T<Type::Data>::staticClassName(); }
     const QMap<QString, AbstractFieldPhrase *> &fields() const override{
         return T<Type::Model>::_fields;
     }

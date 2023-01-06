@@ -461,30 +461,30 @@ QString AbstractSqlGenerator::join(const QStringList &list, QStringList *order)
 QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
-    //TODO: fix me
-//    auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
-//    auto keyField = model.primaryField();
+    auto model = _database->tableByName(t->className());
 
-//    QString key;
-//    if (keyField->isAutoIncrement())
-//        key = keyField->name();
+    auto keyField = model->primaryField();
 
-//    QStringList values;
+    QString key;
+    if (keyField->isAutoIncrement())
+        key = keyField->name();
 
-//    QSet<QString> props = t->changedFields();
-//    QString changedPropertiesText = QString();
-//    for (auto &f : props) {
-//        if (f == key)
-//            continue;
+    QStringList values;
 
-//        values.append(escapeValue(t->fieldValue(f.toLatin1().data())));
+    QSet<QString> props = t->changedFields();
+    QString changedPropertiesText = QString();
+    for (auto &f : props) {
+        if (f == key)
+            continue;
 
-//        if (changedPropertiesText != QLatin1String(""))
-//            changedPropertiesText.append(QStringLiteral(", "));
-//        changedPropertiesText.append(escapeFieldName(f));
-//    }
-//    sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
-//              .arg(tableName, changedPropertiesText, values.join(QStringLiteral(", ")));
+        values.append(escapeValue(t->fieldValue(f.toLatin1().data())));
+
+        if (changedPropertiesText != QLatin1String(""))
+            changedPropertiesText.append(QStringLiteral(", "));
+        changedPropertiesText.append(escapeFieldName(f));
+    }
+    sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
+              .arg(tableName, changedPropertiesText, values.join(QStringLiteral(", ")));
 
 
     return sql;
