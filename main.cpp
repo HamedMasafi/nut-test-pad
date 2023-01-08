@@ -31,6 +31,13 @@ void f() {
     //    Database<Type::Data>::Tableset<SampleTable> ff();
 }
 
+void testJoin()
+{
+    DBDatabase db;
+    db.table10.query()
+        .join(DBModel.table20.t)
+        .toList();
+}
 void printModel()
 {
     DB<Nut::Type::Model> model;
@@ -58,6 +65,13 @@ void changedTest()
     print(t.changedFields());
 }
 
+void checkQuery()
+{
+    DBDatabase db;
+    Nut::Query2<SampleTable> q2;
+    auto list = db.table10.query()
+        .toList();
+}
 void checkExpressions()
 {
     auto q1 = SampleTableModel2.id == 23;
@@ -113,6 +127,7 @@ int main(int argc, char *argv[])
     f();
     changedTest();
     ff(&mm);
+    testJoin();
     checkExpressions();
     return EXIT_SUCCESS;
 }

@@ -598,6 +598,12 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     Q_UNUSED(take)
     QString selectText;
 
+    auto model = _database->tableByName(tableName);
+
+    for (auto const &f: model->fields()) {
+        selectText.append(",");
+        selectText.append(f->name());
+    }
     //TODO: fix me
     /*if (fields.data.count() == 0) {
         QSet<TableModel *> tables;

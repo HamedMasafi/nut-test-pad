@@ -70,5 +70,6 @@ SOURCES += \
     $$PWD/phrases/phrasedata.cpp \
     $$PWD/phrases/phrasedatalist.cpp \
     $$PWD/phrases/phraselist.cpp \
+    $$PWD/query.cpp \
     $$PWD/table.cpp
 

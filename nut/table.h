@@ -250,7 +250,7 @@ public:
     }
     QJsonObject toJson() const override
     {
-        return {};
+        return T<Type::Model>::toJson();
     }
 };
 

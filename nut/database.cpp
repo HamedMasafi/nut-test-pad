@@ -1,5 +1,6 @@
 #include "database.h"
 #include "dataset.h"
+#include "generators/sqlitegenerator.h"
 #include "table.h"
 #include "models/modelstorage.h"
 
@@ -28,7 +29,6 @@ Database<Type::Model> Nut::Database<Type::Model>::operator|(const Database<Type:
 
 AbstractTableModel *Nut::Database<Type::Model>::tableByName(const QString &name) const
 {
-    //TODO: fix me
     for (const auto &t: _tables)
         if (t->className() == name)
             return t;
@@ -38,6 +38,11 @@ AbstractTableModel *Nut::Database<Type::Model>::tableByName(const QString &name)
 QList<AbstractTableModel *> Database<Type::Model>::tables() const
 {
     return _tables;
+}
+
+AbstractSqlGenerator *Database<Type::Data>::generator() const
+{
+    return new SqliteGenerator;
 }
 
 } // namespace Nut

@@ -10,6 +10,7 @@
 
 namespace Nut {
 
+class AbstractSqlGenerator;
 class AbstractTableModel;
 template<Type _Type>
 class Table;
@@ -53,6 +54,10 @@ class Database
 template<>
 class Database<Type::Data>
 {
+    AbstractSqlGenerator *_generator;
+
+public:
+    AbstractSqlGenerator *generator() const;
 };
 
 template<>
