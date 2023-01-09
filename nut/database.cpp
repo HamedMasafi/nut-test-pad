@@ -40,9 +40,13 @@ QList<AbstractTableModel *> Database<Type::Model>::tables() const
     return _tables;
 }
 
-AbstractSqlGenerator *Database<Type::Data>::generator() const
+AbstractSqlGenerator *Database<Type::Data>::generator()
 {
-    return new SqliteGenerator;
+    if (!_generator) {
+        _generator = new SqliteGenerator();
+        _generator->_database = this;
+    }
+    return _generator;
 }
 
 } // namespace Nut

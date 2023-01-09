@@ -90,6 +90,12 @@ public:
         : d{new QueryData}
     {}
 
+    Query<T>(Database<Type::Data> *parentDatabase)
+        : d{new QueryData}
+    {
+        d->database = parentDatabase;
+    }
+
     inline Query<T> &where(const ConditionalPhrase &ph);;
     inline Query<T> &orderBy(const PhraseList &ph);
 

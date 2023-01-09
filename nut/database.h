@@ -54,10 +54,10 @@ class Database
 template<>
 class Database<Type::Data>
 {
-    AbstractSqlGenerator *_generator;
+    AbstractSqlGenerator *_generator{nullptr};
 
 public:
-    AbstractSqlGenerator *generator() const;
+    AbstractSqlGenerator *generator();
 };
 
 template<>
@@ -77,14 +77,14 @@ public:
 
 #define NutDatabaseBase Nut::Database<_Type>
 #define NUT_DATABASE \
-template<template<Nut::Type _T> class T> \
+    template<template<Nut::Type _T> class T> \
     using Tableset = typename Nut::TypeHelper<T, _Type>::type;
 
 #define NUT_DECLARE_DATABASE(name) \
     extern name<Nut::Type::Model> name##Model; \
     using name##Database = name<Nut::Type::Data>;
 
-#define NUT_DECLARE_IMPLEMENT(name) \
+#define NUT_IMPLEMENT_DATABASE(name) \
     name<Nut::Type::Model> name##Model;
 
 #define Nut_TableSet2(type, name) Tableset<type> name{this, #name}

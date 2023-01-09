@@ -5,6 +5,7 @@
 
 namespace Nut {
 QString QueryData::generateSelectCommand() {
-    return database->generator()->selectCommand("SampleTable", fields, where, order, QList<RelationModel *>());
+    auto gen = database->generator();
+    return gen->selectCommand("SampleTable", fields, where, order);
 }
 } // namespace Nut

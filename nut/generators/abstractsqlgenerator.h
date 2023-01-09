@@ -35,7 +35,8 @@ class FieldModelBase;
 template<Nut::Type _Type>
 class Database;
 
-struct RelationModel;
+struct RelationModel
+{};
 class SqlSerializer;
 
 class NUT_EXPORT AbstractSqlGenerator : public QObject
@@ -118,7 +119,6 @@ public:
                                   const PhraseList &fields,
                                   const ConditionalPhrase &where,
                                   const PhraseList &order,
-                                  const QList<RelationModel *> &joins,
                                   const int skip = -1,
                                   const int take = -1);
 

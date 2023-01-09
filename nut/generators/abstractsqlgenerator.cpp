@@ -590,7 +590,6 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
                                             const PhraseList &fields,
                                             const ConditionalPhrase &where,
                                             const PhraseList &order,
-                                            const QList<RelationModel *> &joins,
                                             const int skip,
                                             const int take)
 {
@@ -624,7 +623,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     QStringList joinedOrders;
     QString orderText = createOrderPhrase(order);
     QString whereText = createConditionalPhrase(where.data);
-    QString fromText = join(tableName, joins, &joinedOrders);
+    QString fromText = "FUCK";//join(tableName, joins, &joinedOrders);
 
     QString sql = QStringLiteral("SELECT ") + selectText + QStringLiteral(" FROM ") + fromText;
 

@@ -32,7 +32,7 @@ template <template<Type> class T>
 class Dataset : public DatasetBase
 {
     QList<T<Type::Data>> _list;
-
+    Database<Type::Data> *_parentDatabase;
 public:
     template <Type _T>
     Dataset(Table<_T> *parent, const char *name) : DatasetBase(parent, name, Nut::createModel<T>())
@@ -40,22 +40,18 @@ public:
 
     }
 
-    Dataset(Database<Type::Data> *parent, const char *name)// : DatasetBase(nullptr, name, Nut::createModel<T>())
-    {
+    Dataset(Database<Type::Data> *parent, const char *name)
+        : _parentDatabase{parent} // : DatasetBase(nullptr, name, Nut::createModel<T>())
+    {}
 
-    }
-
-    T<Type::Data> *createTable() const
-    {
-        return new T<Type::Data>();
-    }
+    T<Type::Data> *createTable() const { return new T<Type::Data>(); }
     T<Type::Model> &createModel() const
     {
         return Nut::createModel<T>();
     }
 
     Query<T> query() const{
-        return Query<T>();
+        return Query<T>(_parentDatabase);
     }
     void append(T<Type::Data> *row) {
         _list.append(row);

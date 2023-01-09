@@ -15,6 +15,7 @@ public:
 
     Nut_TableSet2(SampleTable, table10);
     Nut_TableSet2(ParentTable, table20);
+    Tableset<SampleTable> sampleTable{this, "sampleTable"};
 //    SampleTable<Nut::Type::Model> dddd{this, ""};
 };
 
