@@ -1,8 +1,8 @@
 #ifndef SAMPLETABLE_H
 #define SAMPLETABLE_H
 
-#include <nut/field2.h>
-#include <nut/table.h>
+#include <field2.h>
+#include <table.h>
 
 #include <QPoint>
 

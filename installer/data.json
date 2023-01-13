@@ -1,5 +1,0 @@
-{
-    "qmake": "/doc/Qt/5.15.2/gcc_64/bin/qmake",
-    "qtif_path": "/doc/Qt/Tools/QtInstallerFramework/4.1/",
-    "output_file_name": "nut-pad"
-}
