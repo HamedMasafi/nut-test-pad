@@ -1,6 +1,4 @@
-message("########## UsageDetectorImageTest")
-
-    enable_testing()
+enable_testing()
 
 add_executable(BasicTest
     basic.cpp
