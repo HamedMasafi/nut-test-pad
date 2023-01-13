@@ -4,22 +4,13 @@
 #include "global.h"
 #include "phrase.h"
 #include <functional>
-
+#include "querydata.h"
 #include <QList>
 
 namespace Nut {
 
 template<Nut::Type T>
 class Database;
-
-struct NUT_EXPORT QueryData : public QSharedData {
-    Database<Type::Data> *database;
-    ConditionalPhrase where;
-    PhraseList order;
-    QList<const ForeignKeyModelBase*> joins;
-    PhraseList fields;
-    QString generateSelectCommand();
-};
 
 template<template<typename _T> class Container, typename ElementType>
 struct appender {
@@ -90,10 +81,20 @@ public:
         : d{new QueryData}
     {}
 
-    Query<T>(Database<Type::Data> *parentDatabase)
+    template<NUT_TABLE_TEMPLATE _Database>
+    Query<T>(_Database<Type::Data> *parentDatabase)
         : d{new QueryData}
     {
         d->database = parentDatabase;
+    }
+
+    template<NUT_TABLE_TEMPLATE _Table>
+    Query<T>(Database<Type::Data> *parentDatabase, Database<Type::Model> *parentDatabaseModel, const _Table<Model> &model)
+        : d{new QueryData}
+    {
+        d->database = parentDatabase;
+        d->databaseModel = parentDatabaseModel;
+        d->model = &model;
     }
 
     inline Query<T> &where(const ConditionalPhrase &ph);;

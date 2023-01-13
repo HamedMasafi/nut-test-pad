@@ -28,7 +28,7 @@
 #include "abstractsqlgenerator.h"
 #include "core/sqlserializer.h"
 #include "database.h"
-#include "core/sqlserializer.h"
+#include "querydata.h"
 #include "table.h"
 
 namespace Nut {
@@ -584,6 +584,33 @@ QString AbstractSqlGenerator::deleteRecords(const QString &tableName, const QStr
 //    replaceTableNames(sql);
 
     return sql;
+}
+
+QString AbstractSqlGenerator::selectCommand(const QString &tableName, QueryData *data)
+{
+    QString selectText;
+    auto model = data->databaseModel->tableByName(tableName);
+    for (auto const &f: model->fields()) {
+        if (!selectText.isEmpty())
+            selectText.append(", ");
+        selectText.append(f->data->toString());
+    }
+
+    QStringList joinedOrders;
+    QString orderText = createOrderPhrase(data->order);
+    QString whereText = createConditionalPhrase(data->where.data);
+    QString fromText = data->model->name();//join(tableName, joins, &joinedOrders);
+    QString sql = QStringLiteral("SELECT ") + selectText + QStringLiteral(" FROM ") + fromText;
+
+    if (!whereText.isEmpty())
+        sql.append(QStringLiteral(" WHERE ") + whereText);
+
+    if (!orderText.isEmpty())
+        sql.append(QStringLiteral(" ORDER BY ") + orderText);
+
+    appendSkipTake(sql, data->skip, data->take);
+
+    return sql + QStringLiteral(" ");
 }
 
 QString AbstractSqlGenerator::selectCommand(const QString &tableName,

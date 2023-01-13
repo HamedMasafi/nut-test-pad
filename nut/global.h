@@ -36,7 +36,8 @@ enum class RowStatus {
 template<template<Type _Type> class T>
 T<Model> &createModel()
 {
-    return {};
+    static_assert(sizeof(T<Model>) == std::size_t(-1), "Create model is not registered for this class");
+    return T<Model>();
 }
 
 template<template<Type _Type> class T>

@@ -1,8 +1,8 @@
 #ifndef DB_H
 #define DB_H
 
-#include "nut/database.h"
-#include "nut/dataset.h"
+#include "database.h"
+#include "dataset.h"
 #include "sampletable.h"
 #include "parenttable.h"
 

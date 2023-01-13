@@ -1,8 +1,8 @@
 #ifndef PARENTTABLE_H
 #define PARENTTABLE_H
 
-#include "nut/table.h"
-#include "nut/foreignkey.h"
+#include "table.h"
+#include "foreignkey.h"
 #include "phrases/fieldphrase_numeric.h"
 
 NUT_FORWARD_DECLARE_TABLE(SampleTable)

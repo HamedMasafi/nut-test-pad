@@ -3,6 +3,7 @@
 #include "global.h"
 #include "query.h"
 #include <QList>
+#include <QObject>
 
 
 namespace Nut {
@@ -33,6 +34,8 @@ class Dataset : public DatasetBase
 {
     QList<T<Type::Data>> _list;
     Database<Type::Data> *_parentDatabase;
+    Database<Type::Model> *_parentDatabaseModel;
+
 public:
     template <Type _T>
     Dataset(Table<_T> *parent, const char *name) : DatasetBase(parent, name, Nut::createModel<T>())
@@ -40,9 +43,13 @@ public:
 
     }
 
-    Dataset(Database<Type::Data> *parent, const char *name)
+    template<NUT_TABLE_TEMPLATE _Database>
+    Dataset(_Database<Type::Data> *parent, const char *name)
         : _parentDatabase{parent} // : DatasetBase(nullptr, name, Nut::createModel<T>())
-    {}
+    {
+        Q_UNUSED(name)
+        _parentDatabaseModel = &Nut::createModel<_Database>();
+    }
 
     T<Type::Data> *createTable() const { return new T<Type::Data>(); }
     T<Type::Model> &createModel() const
@@ -51,7 +58,7 @@ public:
     }
 
     Query<T> query() const{
-        return Query<T>(_parentDatabase);
+        return Query<T>(_parentDatabase, _parentDatabaseModel, Nut::createModel<T>());
     }
     void append(T<Type::Data> *row) {
         _list.append(row);

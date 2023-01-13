@@ -1,7 +1,7 @@
 #ifndef FIELDBASE_H
 #define FIELDBASE_H
 
-#include "nut/global.h"
+#include "global.h"
 
 namespace Nut {
 

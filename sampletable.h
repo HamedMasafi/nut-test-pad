@@ -18,7 +18,7 @@ public:
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
 
-    Field(int, pn, ColumnName("pn--salam"), Len(8));
+    Field(int, pn, ColumnName("pn"), Len(8));
     Field(QPoint, point);
     Field(QPoint, pt3, AllowNull(true));
 //    Field(QString, ps, ColumnName("salam"), MaxLen(100), AllowNull(true));

@@ -39,6 +39,8 @@ struct RelationModel
 {};
 class SqlSerializer;
 
+class QueryData;
+
 class NUT_EXPORT AbstractSqlGenerator : public QObject
 {
 //    Q_OBJECT
@@ -115,6 +117,8 @@ public:
     virtual QString deleteRecord(TableRow *t, QString tableName);
     virtual QString deleteRecords(const QString &tableName, const QString &where);
 
+
+    virtual QString selectCommand(const QString &tableName, QueryData *data);
     virtual QString selectCommand(const QString &tableName,
                                   const PhraseList &fields,
                                   const ConditionalPhrase &where,

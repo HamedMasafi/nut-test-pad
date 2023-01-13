@@ -150,17 +150,17 @@ template <typename T, typename... UU>
 struct no_unique<T, UU...> : std::integral_constant<size_t, is_unique<T, UU...>::value + no_unique<UU...>::value> {};
 
 #define NamedParamSubClass(name, type)                                                             \
-    class name : public NamedParam                                                     \
+    class name : public NamedParam                                                                 \
     {                                                                                              \
     public:                                                                                        \
-        name(const type &value) : NamedParam(#name, value) {}                          \
+        explicit constexpr name(const type &value) : NamedParam(#name, value) {}                             \
     }
 
 #define NamedParamSubClassVoid(name)                                                               \
     class name : public NamedParam                                                     \
     {                                                                                              \
     public:                                                                                        \
-        name() : NamedParam(#name, true) {}                                            \
+        explicit constexpr name() : NamedParam(#name, true) {}                                            \
     }
 
 class AutoIncrement : public NamedParam
@@ -177,7 +177,8 @@ public:
 class ColumnName : public NamedParam
 {
 public:
-    ColumnName(const char *name) : NamedParam("Name", name) {}
+    explicit constexpr ColumnName(const char *name) : NamedParam("Name", name)
+    {}
 };
 
 NamedParamSubClassVoid(PrimaryKey);
@@ -187,6 +188,5 @@ NamedParamSubClass(AllowNull, bool);
 
 } // namespace Model
 } // namespace Nut
-
 
 #endif // NUT_NAMED_TYPE_H

@@ -10,7 +10,7 @@
 #include "sampletable.h"
 #include "db.h"
 #include "parenttable.h"
-#include "nut/namedtype.h"
+#include "namedtype.h"
 
 #define print(x) qDebug() << #x "=" << (x)
 
@@ -40,9 +40,8 @@ void testJoin()
 }
 void printModel()
 {
-    DB<Nut::Type::Model> model;
-    auto t = model.table10.id == model.table20.id;
-    QJsonDocument doc(model.jsonModel());
+    auto t = DBModel.table10.id == DBModel.table20.id;
+    QJsonDocument doc(DBModel.jsonModel());
     qDebug() << "===Model===";
     qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
 }

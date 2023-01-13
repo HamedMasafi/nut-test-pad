@@ -81,10 +81,21 @@ public:
     using Tableset = typename Nut::TypeHelper<T, _Type>::type;
 
 #define NUT_DECLARE_DATABASE(name) \
+    namespace Nut { \
+    template<> \
+    name<Type::Model> &createModel<name>(); \
+    } \
     extern name<Nut::Type::Model> name##Model; \
     using name##Database = name<Nut::Type::Data>;
 
 #define NUT_IMPLEMENT_DATABASE(name) \
+    namespace Nut { \
+    template<> \
+    name<Type::Model> &createModel<name>() \
+    { \
+        return name##Model; \
+    } \
+    } \
     name<Nut::Type::Model> name##Model;
 
 #define Nut_TableSet2(type, name) Tableset<type> name{this, #name}

@@ -6,6 +6,6 @@
 namespace Nut {
 QString QueryData::generateSelectCommand() {
     auto gen = database->generator();
-    return gen->selectCommand("SampleTable", fields, where, order);
+    return gen->selectCommand("SampleTable", this);
 }
 } // namespace Nut

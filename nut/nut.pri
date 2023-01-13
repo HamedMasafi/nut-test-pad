@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/phrase.h \
     $$PWD/phrases/fieldphrase_numeric.h \
     $$PWD/query.h \
+    $$PWD/querydata.h \
     $$PWD/runtimecheckers/fieldchecker.h \
     $$PWD/runtimecheckers/foreignkeychecker.h \
     $$PWD/runtimecheckers/tablechecker.h \
