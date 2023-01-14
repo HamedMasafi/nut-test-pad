@@ -22,6 +22,7 @@ struct NUT_EXPORT QueryData : public QSharedData
     PhraseList fields;
     QString generateSelectCommand();
 
+    QString sql;
     int take{-1};
     int skip{-1};
 };

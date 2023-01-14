@@ -77,16 +77,16 @@ class Query
     QSharedDataPointer<QueryData> d;
 
 public:
-    Query<T>()
-        : d{new QueryData}
-    {}
+//    Query<T>()
+//        : d{new QueryData}
+//    {}
 
-    template<NUT_TABLE_TEMPLATE _Database>
-    Query<T>(_Database<Type::Data> *parentDatabase)
-        : d{new QueryData}
-    {
-        d->database = parentDatabase;
-    }
+//    template<NUT_TABLE_TEMPLATE _Database>
+//    Query<T>(_Database<Type::Data> *parentDatabase)
+//        : d{new QueryData}
+//    {
+//        d->database = parentDatabase;
+//    }
 
     template<NUT_TABLE_TEMPLATE _Table>
     Query<T>(Database<Type::Data> *parentDatabase, Database<Type::Model> *parentDatabaseModel, const _Table<Model> &model)
@@ -104,6 +104,7 @@ public:
     inline Query<T> &join(const ForeignKeyModel<Table, KeyType> &ph);
 
     QList<DataType> toList();
+    QString sqlCommand() const;
 };
 
 #define QueryMethodSelf \
@@ -132,6 +133,11 @@ QueryMethodSelf::orderBy(const PhraseList &ph)
 QueryMethod(QList<typename Query<T>::DataType>)::toList() {
     qDebug() << "select cmd=" << d->generateSelectCommand();
     return QList<DataType>();
+}
+
+QueryMethod(QString)::sqlCommand() const
+{
+    return d->sql;
 }
 
 template<template<Type> class T, class ListElement, template<typename _T> class ListType, typename Appender>

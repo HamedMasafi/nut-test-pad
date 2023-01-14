@@ -2,39 +2,53 @@
 #define FOREIGNKEYMODEL_H
 
 #include "../global.h"
-#include "qglobal.h"
 
 #include <QMetaType>
 
 namespace Nut {
 
+class AbstractFieldPhrase;
 class ForeignKeyModelBase {
     QString _name;
+    Table<Type::Model> *_localModel;
+    Table<Type::Model> *_remoteModel;
 public:
-    ForeignKeyModelBase(Table<Type::Model> *parent, const char *name);
+    ForeignKeyModelBase(Table<Type::Model> *parent, Table<Type::Model> *remoteModel, const char *name);
     virtual QString keyType() const = 0;
-    virtual QString tableName() const = 0;
+    virtual QString remoteTableName() const ;
+    virtual QString localTableName() const ;
     QString name() const;
+
+    Nut::AbstractFieldPhrase *remoteTablePrimaryField() const;
+    Table<Type::Model> *localModel() const;
+    Table<Type::Model> *remoteModel() const;
 };
 
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
 class ForeignKeyModel : public ForeignKeyModelBase
 {
-    T<Type::Data>* _object{nullptr};
     KeyType _key;
 
 public:
-    ForeignKeyModel(Table<Type::Model> *parent, const char *name)
-        : ForeignKeyModelBase(parent, name)
-    {}
+    template<NUT_TABLE_TEMPLATE _LocalTable>
+    ForeignKeyModel(_LocalTable<Type::Model> *parent, const char *name)
+        : ForeignKeyModelBase(parent, &Nut::createModel<T>(), name)
+    {
+
+    }
 
     QString keyType() const override {
         return QMetaType::fromType<KeyType>().name();
     }
-    virtual QString tableName() const override {
-        return T<Type::Model>().name();
-    }
-    T<Type::Model> operator()() { return T<Type::Model>{}; }
+
+    T<Type::Model> operator()() { return Nut::createModel<T>(); }
+
+    /*auto remoteTablePrimaryField() -> QString
+    {
+        auto m = Nut::createModel<T>();
+        return m;
+    }*/
+
 };
 
 } // namespace Nut

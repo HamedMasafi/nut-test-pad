@@ -3,10 +3,10 @@ enable_testing()
 add_executable(BasicTest
     basic.cpp
     basic.h
-    sampletable.h
-    sampletable.cpp
-    parenttable.h
-    parenttable.cpp
+    post.h
+    post.cpp
+    user.h
+    user.cpp
     db.h
     db.cpp
 )

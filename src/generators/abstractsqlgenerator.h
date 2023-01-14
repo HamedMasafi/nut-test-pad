@@ -103,7 +103,7 @@ public:
     virtual QStringList diffRelation2(RelationModel *oldRel, RelationModel *newRel);
 
     virtual QString join(const QString &mainTable,
-                         const QList<RelationModel*> &list,
+                         const QList<const ForeignKeyModelBase *> &list,
                          QStringList *order = Q_NULLPTR);
     virtual QString join(const QStringList &list, QStringList *order = Q_NULLPTR);
 

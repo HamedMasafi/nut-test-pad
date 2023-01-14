@@ -3,8 +3,8 @@
 
 #include "database.h"
 #include "dataset.h"
-#include "sampletable.h"
-#include "parenttable.h"
+#include "user.h"
+#include "post.h"
 
 NUT_ENTITY
 class DB : public NutDatabaseBase
@@ -13,9 +13,8 @@ public:
     DB() = default;
     NUT_DATABASE
 
-    Nut_TableSet2(SampleTable, table10);
-    Nut_TableSet2(ParentTable, table20);
-    Tableset<SampleTable> sampleTable{this, "sampleTable"};
+    Nut_TableSet2(User, users);
+    Nut_TableSet2(Post, posts);
 //    SampleTable<Nut::Type::Model> dddd{this, ""};
 };
 

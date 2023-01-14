@@ -367,36 +367,36 @@ QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationM
 }
 
 QString AbstractSqlGenerator::join(const QString &mainTable,
-                                   const QList<RelationModel *> &list,
+                                   const QList<const ForeignKeyModelBase *> &list,
                                    QStringList *order)
 {
     QString ret = mainTable;
     //TODO: fix me
-    /*
-    QList<RelationModel *>::const_iterator i;
-    for (i = list.begin(); i != list.end(); ++i) {
-        if ((*i)->masterTable->name() == mainTable) {
-            ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%2 = %3.%4")
-                           .arg((*i)->masterTable->name(),
-                                (*i)->masterTable->primaryKey(),
-                                (*i)->slaveTable->name(),
-                                (*i)->localColumn));
 
-            if (order != Q_NULLPTR)
-                order->append((*i)->slaveTable->name() + QStringLiteral(".")
-                              + (*i)->slaveTable->primaryKey());
+    QList<ForeignKeyModelBase *>::const_iterator i;
+    for (const auto *j: list) {
+        if (j->localTableName() == mainTable) {
+            ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%2 = %3.%4")
+                           .arg(j->localModel()->name(),
+                                j->remoteTablePrimaryField()->name(),
+                                j->remoteModel()->name(),
+                                j->name()));
+
+//            if (order != Q_NULLPTR)
+//                order->append(j->slaveTable->name() + QStringLiteral(".")
+//                              + j->slaveTable->primaryKey());
         } else {
             ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%2 = %3.%4")
                            .arg(mainTable,
-                                (*i)->localColumn,
-                                (*i)->masterTable->name(),
-                                (*i)->masterTable->primaryKey()));
+                                j->name(),
+                                j->localModel()->name(),
+                                j->remoteTablePrimaryField()->name()));
 
-            if (order != Q_NULLPTR)
-                order->append((*i)->masterTable->name() + QStringLiteral(".")
-                              + (*i)->masterTable->primaryKey());
+//            if (order != Q_NULLPTR)
+//                order->append(j->localTableName() + QStringLiteral(".")
+//                              + j->masterTable->primaryKey());
         }
-    }*/
+    }
     return ret;
 }
 
@@ -589,7 +589,7 @@ QString AbstractSqlGenerator::deleteRecords(const QString &tableName, const QStr
 QString AbstractSqlGenerator::selectCommand(const QString &tableName, QueryData *data)
 {
     QString selectText;
-    auto model = data->databaseModel->tableByName(tableName);
+    auto model = data->databaseModel->tableByName(data->model->className());
     for (auto const &f: model->fields()) {
         if (!selectText.isEmpty())
             selectText.append(", ");
@@ -599,7 +599,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName, QueryData 
     QStringList joinedOrders;
     QString orderText = createOrderPhrase(data->order);
     QString whereText = createConditionalPhrase(data->where.data);
-    QString fromText = data->model->name();//join(tableName, joins, &joinedOrders);
+    QString fromText = join(data->model->name(), data->joins, &joinedOrders);
     QString sql = QStringLiteral("SELECT ") + selectText + QStringLiteral(" FROM ") + fromText;
 
     if (!whereText.isEmpty())
@@ -681,7 +681,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     QStringList joinedOrders;
     QString selectText = agregateText(t, agregateArg);
     QString whereText = createConditionalPhrase(where.data);
-    QString fromText = join(tableName, joins, &joinedOrders);
+    QString fromText = "*";//join(tableName, joins, &joinedOrders);
 
     QString sql = QStringLiteral("SELECT ") + selectText + QStringLiteral(" FROM ") + fromText;
 

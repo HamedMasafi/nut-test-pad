@@ -217,7 +217,7 @@ public:
     friend class DatasetBase;
     friend class AbstractFieldPhrase;
     friend class ForeignKeyModelBase;
-    inline QString name() const{
+    virtual QString name() const{
         return _name;
     }
     AbstractFieldPhrase *primaryField() const;
@@ -231,9 +231,10 @@ bool operator==(const TableModel &l, const TableModel &r);
 template<NUT_TABLE_TEMPLATE T>
 class ModelBase : public AbstractTableModel, public T<Type::Model>
 {
+    QString _name;
 public:
     ModelBase(Database<Type::Model> *parent, const char *name)
-        : AbstractTableModel(parent, name), T<Type::Model>(name)
+        : AbstractTableModel(parent, name), T<Type::Model>(name), _name{name}
     {
         for (auto &f: T<Type::Model>::_fields) {
             qDebug() << "field" << f->data->fieldName<<f->data->tableName;
@@ -251,6 +252,9 @@ public:
     QJsonObject toJson() const override
     {
         return T<Type::Model>::toJson();
+    }
+    virtual QString name() const override{
+        return _name;
     }
 };
 

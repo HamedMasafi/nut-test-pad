@@ -8,15 +8,18 @@
 
 using namespace Nut;
 using namespace Nut::ModelDeclartion;
-NUT_DEFINE_TABLE(SampleTable)
+NUT_DEFINE_TABLE(User)
 {
     NUT_TABLE
 
 public:
-    SampleTable() = default;
-    SampleTable(const char *) {}
+    User() = default;
+    User(const char *) {}
 
     Field(int, id, AutoIncrement(10, 10), PrimaryKey());
+
+    Field(QString, name);
+    Field(QString, lastName, AllowNull(true));
 
     Field(int, pn, ColumnName("pn"), Len(8));
     Field(QPoint, point);
@@ -28,6 +31,6 @@ public:
 //    FieldB<QString, _Type> salam{this, "D", 2};
 };
 
-NUT_DECLARE_TABLE(SampleTable)
+NUT_DECLARE_TABLE(User)
 
 #endif // SAMPLETABLE_H
