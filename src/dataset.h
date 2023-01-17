@@ -5,7 +5,6 @@
 #include <QList>
 #include <QObject>
 
-
 namespace Nut {
 
 template<Nut::Type _Type>
@@ -13,20 +12,31 @@ class Database;
 
 class DatasetBase
 {
+protected:
+    AbstractTableModel *_model;
+
 public:
     DatasetBase() = default;
-//    DatasetBase(Database *parent, const char *name);
 
-//    template<template<Nut::Type> class T>
-//        DatasetBase(Database *parent, const char *name, T<Nut::Type::Model> *model) : DatasetBase(parent, name)
-//    {
-//        for (auto &f: model->_fields) {
-//            f->data->className = name;
-//        }
-//    }
+    DatasetBase(Database<Type::Data> *parent, const char *name, const QString &className);
 
-//    virtual TableRow *createTable() const = 0;
-//    virtual TableModel *createModel() const = 0;
+    DatasetBase(Database<Type::Data> *parentDatabase,
+                Database<Type::Model> *parentDatabaseModel,
+                const char *name,
+                const QString &className);
+
+    //    DatasetBase(Database *parent, const char *name);
+
+    //    template<template<Nut::Type> class T>
+    //        DatasetBase(Database *parent, const char *name, T<Nut::Type::Model> *model) : DatasetBase(parent, name)
+    //    {
+    //        for (auto &f: model->_fields) {
+    //            f->data->className = name;
+    //        }
+    //    }
+
+    //    virtual TableRow *createTable() const = 0;
+    //    virtual TableModel *createModel() const = 0;
 };
 
 template <template<Type> class T>
@@ -45,7 +55,8 @@ public:
 
     template<NUT_TABLE_TEMPLATE _Database>
     Dataset(_Database<Type::Data> *parent, const char *name)
-        : _parentDatabase{parent} // : DatasetBase(nullptr, name, Nut::createModel<T>())
+        : DatasetBase(nullptr, &Nut::createModel<_Database>(), name, T<Type::Data>::staticClassName())
+        , _parentDatabase{parent}
     {
         Q_UNUSED(name)
         _parentDatabaseModel = &Nut::createModel<_Database>();
@@ -57,8 +68,10 @@ public:
         return Nut::createModel<T>();
     }
 
-    Query<T> query() const{
-        return Query<T>(_parentDatabase, _parentDatabaseModel, Nut::createModel<T>());
+    Query<T> query(){
+//        _parentDatabaseModel->tableByName(T<Type::Data>::staticClassName());
+        auto t = T<Type::Data>::staticClassName();
+        return Query<T>(_parentDatabase, _parentDatabaseModel, _model);
     }
     void append(T<Type::Data> *row) {
         _list.append(row);
@@ -67,5 +80,5 @@ public:
 
 } // namespace Nut
 
-#define Nut_TableSet(type, name) Nut::Dataset<type> name{this, #name}
+//#define Nut_TableSet(type, name) Nut::Dataset<type> name{this, #name}
 

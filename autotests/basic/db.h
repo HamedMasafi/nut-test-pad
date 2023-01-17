@@ -13,8 +13,8 @@ public:
     DB() = default;
     NUT_DATABASE
 
-    Nut_TableSet2(User, users);
-    Nut_TableSet2(Post, posts);
+    Nut_TableSet(User, users);
+    Nut_TableSet(Post, posts);
 //    SampleTable<Nut::Type::Model> dddd{this, ""};
 };
 

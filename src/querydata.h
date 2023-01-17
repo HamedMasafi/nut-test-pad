@@ -11,9 +11,10 @@ class Database;
 
 class ForeignKeyModelBase;
 
+class AbstractTableModel;
 struct NUT_EXPORT QueryData : public QSharedData
 {
-    const Table<Model> *model;
+    AbstractTableModel *model;
     Database<Type::Data> *database;
     Database<Type::Model> *databaseModel;
     ConditionalPhrase where;

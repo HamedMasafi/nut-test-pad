@@ -98,7 +98,7 @@ public:
     } \
     name<Nut::Type::Model> name##Model;
 
-#define Nut_TableSet2(type, name) Tableset<type> name{this, #name}
+#define Nut_TableSet(type, name) Tableset<type> name{this, #name}
 //Nut::Database<T>::Tableset<type> name{this, #name}
 
 } // namespace Nut

@@ -94,7 +94,15 @@ public:
     {
         d->database = parentDatabase;
         d->databaseModel = parentDatabaseModel;
-        d->model = &model;
+//        d->model = &model;
+    }
+
+    Query<T>(Database<Type::Data> *parentDatabase, Database<Type::Model> *parentDatabaseModel, AbstractTableModel *model)
+        : d{new QueryData}
+    {
+        d->database = parentDatabase;
+        d->databaseModel = parentDatabaseModel;
+        d->model = model;
     }
 
     inline Query<T> &where(const ConditionalPhrase &ph);;
