@@ -69,6 +69,10 @@ set(PROJECT_SRC
     table.h
     expressions/conditionalexpression.h
     expressions/expressiondata.h
+    database/databasebase.h database/databasebase.cpp
+    database/databasedata.h database/databasedata.cpp
+    database/databasemodel.h database/databasemodel.cpp
+    database/databasemigratestorage.h database/databasemigratestorage.cpp
 )
 
 add_library(Nut SHARED

@@ -2,16 +2,20 @@
 #define FOREIGNKEYMODEL_H
 
 #include "../global.h"
+#include "qdebug.h"
 
 #include <QMetaType>
 
 namespace Nut {
 
+class AbstractTableModel;
 class AbstractFieldPhrase;
 class ForeignKeyModelBase {
     QString _name;
     Table<Type::Model> *_localModel;
-    Table<Type::Model> *_remoteModel;
+    AbstractTableModel *_remoteModel{nullptr};
+protected:
+    QString _remoteClassName;
 public:
     ForeignKeyModelBase(Table<Type::Model> *parent, Table<Type::Model> *remoteModel, const char *name);
     virtual QString keyType() const = 0;
@@ -21,7 +25,7 @@ public:
 
     Nut::AbstractFieldPhrase *remoteTablePrimaryField() const;
     Table<Type::Model> *localModel() const;
-    Table<Type::Model> *remoteModel() const;
+    AbstractTableModel *remoteModel();
 };
 
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
@@ -34,7 +38,7 @@ public:
     ForeignKeyModel(_LocalTable<Type::Model> *parent, const char *name)
         : ForeignKeyModelBase(parent, &Nut::createModel<T>(), name)
     {
-
+        _remoteClassName = T<Model>::staticClassName();
     }
 
     QString keyType() const override {

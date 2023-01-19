@@ -21,7 +21,6 @@
 #pragma once
 
 #include <QVariant>
-#include <QtNut/NutGlobal>
 
 namespace Nut {
 

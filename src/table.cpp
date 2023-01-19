@@ -7,7 +7,7 @@
 
 namespace Nut {
 
-Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name)// : AbstractTableModel(parent, name), _name(name)
+Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name):_parentDatabase(parent) // : AbstractTableModel(parent, name), _name(name)
 {
     qDebug() << "my name is" << name;
 }

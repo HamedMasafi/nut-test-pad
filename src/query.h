@@ -18,25 +18,13 @@ struct appender {
 };
 
 template<typename ElementType>
-struct appender<QList, ElementType> {
-    static void append(QList<ElementType> &list, const ElementType &el) {
-        list << el;
-    }
-};
+struct appender<QList, ElementType>;
 
 template<typename ElementType>
-struct appender<QVector, ElementType> {
-    static void append(QVector<ElementType> &list, const ElementType &el) {
-        list << el;
-    }
-};
+struct appender<QVector, ElementType>;
 
 template<typename ElementType>
-struct appender<QSet, ElementType> {
-    static void append(QSet<ElementType> &list, const ElementType &el) {
-        list << el;
-    }
-};
+struct appender<QSet, ElementType>;
 
 template<template<Type> class T,
          class ListElement = T<Type::Data>,
@@ -109,7 +97,7 @@ public:
     inline Query<T> &orderBy(const PhraseList &ph);
 
     template<NUT_TABLE_TEMPLATE Table, typename KeyType>
-    inline Query<T> &join(const ForeignKeyModel<Table, KeyType> &ph);
+    inline Query<T> &join(ForeignKeyModel<Table, KeyType> &ph);
 
     QList<DataType> toList();
     QString sqlCommand() const;
@@ -160,7 +148,7 @@ Query2<T, ReturnType, ListType> Query2<T, ListElement, ListType, Appender>::sele
 
 template<template<Type> class T>
 template<NUT_TABLE_TEMPLATE Table, typename KeyType>
-Q_OUTOFLINE_TEMPLATE Query<T> &Query<T>::join(const ForeignKeyModel<Table, KeyType> &foreignKey)
+Q_OUTOFLINE_TEMPLATE Query<T> &Query<T>::join(ForeignKeyModel<Table, KeyType> &foreignKey)
 {
     d->joins << &foreignKey;
     return *this;

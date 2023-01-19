@@ -19,7 +19,7 @@ struct NUT_EXPORT QueryData : public QSharedData
     Database<Type::Model> *databaseModel;
     ConditionalPhrase where;
     PhraseList order;
-    QList<const ForeignKeyModelBase *> joins;
+    QList<ForeignKeyModelBase *> joins;
     PhraseList fields;
     QString generateSelectCommand();
 

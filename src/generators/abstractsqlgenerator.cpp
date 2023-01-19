@@ -367,26 +367,26 @@ QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationM
 }
 
 QString AbstractSqlGenerator::join(const QString &mainTable,
-                                   const QList<const ForeignKeyModelBase *> &list,
+                                   const QList<ForeignKeyModelBase *> &list,
                                    QStringList *order)
 {
     QString ret = mainTable;
     //TODO: fix me
 
     QList<ForeignKeyModelBase *>::const_iterator i;
-    for (const auto *j: list) {
+    for (auto &j: list) {
         if (j->localTableName() == mainTable) {
-            ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%2 = %3.%4")
+            ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%4 = %3.%2")
                            .arg(j->localModel()->name(),
                                 j->remoteTablePrimaryField()->name(),
                                 j->remoteModel()->name(),
                                 j->name()));
 
-//            if (order != Q_NULLPTR)
-//                order->append(j->slaveTable->name() + QStringLiteral(".")
-//                              + j->slaveTable->primaryKey());
+            if (order)
+                order->append(j->name() + QStringLiteral(".")
+                              + j->remoteTablePrimaryField()->name());
         } else {
-            ret.append(QStringLiteral(" INNER JOIN %3 ON %1.%2 = %3.%4")
+            ret.append(QStringLiteral(") INNER JOIN %3 ON %1.%2 = %3.%4")
                            .arg(mainTable,
                                 j->name(),
                                 j->localModel()->name(),

@@ -202,6 +202,7 @@ template <>
 class Table<Type::Model> //: public AbstractTableModel
 {
 protected:
+    Database<Model> *_parentDatabase;
     QMap<QString, AbstractFieldPhrase*> _fields;
     QMap<QString, ForeignKeyModelBase*> _foreignKeys;
     QString _name;
@@ -236,6 +237,7 @@ public:
     ModelBase(Database<Type::Model> *parent, const char *name)
         : AbstractTableModel(parent, name), T<Type::Model>(name), _name{name}
     {
+        T<Type::Model>::_parentDatabase = parent;
         for (auto &f: T<Type::Model>::_fields) {
             qDebug() << "field" << f->data->fieldName<<f->data->tableName;
             f->data->tableName = name;
