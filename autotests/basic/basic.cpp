@@ -57,6 +57,8 @@ void BasicTest::join()
     auto q = db.posts.query()
                  .join(DBModel.posts.user)
                  .orderBy(!DBModel.posts.id)
+                 .skip(10)
+                 .take(5)
                  .toList();
 }
 

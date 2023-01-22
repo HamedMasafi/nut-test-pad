@@ -93,6 +93,8 @@ public:
         d->model = model;
     }
 
+    inline Query<T> &skip(int skip);;
+    inline Query<T> &take(int take);;
     inline Query<T> &where(const ConditionalPhrase &ph);;
     inline Query<T> &orderBy(const PhraseList &ph);
 
@@ -110,6 +112,18 @@ public:
 #define QueryMethod(type) \
 template<template<Type> class T> \
     Q_OUTOFLINE_TEMPLATE type Query<T>
+
+QueryMethodSelf::skip(int skip)
+{
+    d->skip = skip;
+    return *this;
+}
+
+QueryMethodSelf::take(int take)
+{
+    d->take = take;
+    return *this;
+}
 
 QueryMethodSelf::where(const ConditionalPhrase &ph)
 {

@@ -24,7 +24,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 
-#include "phrase.h"
+#include "phrases/phrasedata.h"
 #include "global.h"
 
 namespace Nut {
@@ -40,6 +40,12 @@ struct RelationModel
 class SqlSerializer;
 
 class QueryData;
+class AbstractFieldPhrase;
+class AbstractTableModel;
+class ForeignKeyModelBase;
+class PhraseList;
+class ConditionalPhrase;
+class AssignmentPhraseList;
 
 class NUT_EXPORT AbstractSqlGenerator : public QObject
 {
@@ -118,7 +124,7 @@ public:
     virtual QString deleteRecords(const QString &tableName, const QString &where);
 
 
-    virtual QString selectCommand(const QString &tableName, QueryData *data);
+    virtual QString selectCommand(QueryData *data);
     virtual QString selectCommand(const QString &tableName,
                                   const PhraseList &fields,
                                   const ConditionalPhrase &where,

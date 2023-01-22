@@ -586,7 +586,7 @@ QString AbstractSqlGenerator::deleteRecords(const QString &tableName, const QStr
     return sql;
 }
 
-QString AbstractSqlGenerator::selectCommand(const QString &tableName, QueryData *data)
+QString AbstractSqlGenerator::selectCommand(QueryData *data)
 {
     QString selectText;
     auto model = data->databaseModel->tableByName(data->model->className());

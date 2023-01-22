@@ -6,7 +6,7 @@
 namespace Nut {
 QString QueryData::generateSelectCommand() {
     auto gen = database->generator();
-    sql = gen->selectCommand("Post", this);
+    sql = gen->selectCommand(this);
     return sql;
 }
 

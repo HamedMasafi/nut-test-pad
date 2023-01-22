@@ -83,6 +83,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(Nut PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-target_link_libraries(Nut PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(Nut PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql)
 
 target_compile_definitions(Nut PRIVATE NUT_LIBRARY)
