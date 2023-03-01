@@ -48,16 +48,37 @@ class Database
 
 #define NutDatabaseBase Nut::Database<_Type>
 #define NUT_DATABASE \
+public: \
     template<template<Nut::Type _T> class T> \
-    using Tableset = typename Nut::TypeHelper<T, _Type>::type;
+    using Tableset = typename Nut::TypeHelper<T, _Type>::type; \
+    static QString staticClassName(); \
+    QString className() override; \
+\
+protected: \
+    Database<Type::Model> &model() const override;
 
 #define NUT_DECLARE_DATABASE(name) \
+    extern name<Nut::Type::Model> name##Model; \
+    using name##Database = name<Nut::Type::Data>; \
     namespace Nut { \
     template<> \
     name<Type::Model> &createModel<name>(); \
     } \
-    extern name<Nut::Type::Model> name##Model; \
-    using name##Database = name<Nut::Type::Data>;
+    template<Nut::Type _T> \
+    QString name<_T>::className() \
+    { \
+        return #name; \
+    } \
+    template<Nut::Type _T> \
+    QString name<_T>::staticClassName() \
+    { \
+        return #name; \
+    } \
+    template<Nut::Type _T> \
+    Database<Type::Model> &name<_T>::model() const \
+    { \
+        return name##Model; \
+    }
 
 #define NUT_IMPLEMENT_DATABASE(name) \
     namespace Nut { \

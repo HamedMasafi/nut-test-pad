@@ -40,6 +40,10 @@ set(PROJECT_SRC
     core/tablebase.h
     core/fieldbase.h
     core/sqlserializer.h
+    core/globalstorage.h
+    core/globalstorage.cpp
+    core/changelogtable.h
+    core/changelogtable.cpp
     querydata.h
     namedtype.h
     phrases/abstractfieldphrase.h

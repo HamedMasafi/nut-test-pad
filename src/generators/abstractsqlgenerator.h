@@ -99,6 +99,7 @@ public:
     virtual QString masterDatabaseName(QString databaseName);
 
     virtual QString createTable(TableModel *table);
+    virtual QString createTable(TableModel *table, const QString &tableName);
 
     virtual QString relationDeclare(const RelationModel *relation);
 

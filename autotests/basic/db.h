@@ -1,5 +1,4 @@
-#ifndef DB_H
-#define DB_H
+#pragma once
 
 #include "database.h"
 #include "dataset.h"
@@ -9,15 +8,14 @@
 NUT_ENTITY
 class DB : public NutDatabaseBase
 {
+    NUT_DATABASE
+
 public:
     DB() = default;
-    NUT_DATABASE
 
     Nut_TableSet(User, users);
     Nut_TableSet(Post, posts);
-//    SampleTable<Nut::Type::Model> dddd{this, ""};
 };
 
 NUT_DECLARE_DATABASE(DB);
 
-#endif // DB_H

@@ -27,6 +27,10 @@ SqliteGenerator::SqliteGenerator(Database<Model> *parent)
     : AbstractSqlGenerator(parent)
 {}
 
+SqliteGenerator::SqliteGenerator(Database<Data> *parent)
+    : AbstractSqlGenerator(nullptr)
+{}
+
 QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)
 {
     switch (field->metaTypeId()) {

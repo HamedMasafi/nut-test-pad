@@ -38,8 +38,9 @@ AbstractTableModel::AbstractTableModel(Database<Type::Model> *parent, const char
 
 AbstractFieldPhrase *AbstractTableModel::field(const QString &name) const
 {
-    Q_UNUSED(name)
-    //TODO: fix me
+    for (auto const &f : fields())
+        if (f->name() == name)
+            return f;
     return nullptr;
 }
 

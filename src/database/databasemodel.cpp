@@ -3,13 +3,14 @@
 
 #include <QJsonObject>
 
+#include <type_traits>
+
 namespace Nut {
 
 QJsonObject Nut::Database<Type::Model>::jsonModel() const
 {
     QJsonObject model;
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {
-        //        auto o = i.value()->createModel();
         model.insert((*i)->name(), (*i)->toJson());
     }
     return model;
@@ -25,10 +26,14 @@ Database<Type::Model> Nut::Database<Type::Model>::operator|(const Database<Type:
 
 AbstractTableModel *Nut::Database<Type::Model>::tableByName(const QString &name) const
 {
-    for (const auto &t : _tables)
-        if (t->className() == name)
-            return t;
-    return nullptr;
+    auto i = std::find_if(_tables.begin(), _tables.end(), [&name](AbstractTableModel *t){
+        return t->className() == name;
+    });
+
+    if (i == _tables.end())
+        return nullptr;
+
+    return *i;
 }
 
 QList<AbstractTableModel *> Database<Type::Model>::tables() const
@@ -38,10 +43,31 @@ QList<AbstractTableModel *> Database<Type::Model>::tables() const
 
 AbstractTableModel *Nut::Database<Type::Model>::tableByTableName(const QString &tableName) const
 {
-    for (const auto &t : _tables)
-        if (t->name() == tableName)
-            return t;
-    return nullptr;
+    auto i = std::find_if(_tables.begin(), _tables.end(), [&tableName](AbstractTableModel *t){
+        return t->name() == tableName;
+    });
+
+    if (i == _tables.end())
+        return nullptr;
+
+    return *i;
+}
+
+Database<Model> &Nut::Database<Type::Model>::model() const
+{
+    return *const_cast<DatabaseModel*>(this); // I know! but it will never be called
+}
+
+Database<Model> Nut::Database<Type::Model>::fromJsonModel(const QJsonObject &json)
+{
+    Database<Model> ret;
+    //TODO: read from json
+    return ret;
+}
+
+QString Nut::Database<Type::Model>::className()
+{
+    return {};
 }
 
 } // namespace Nut

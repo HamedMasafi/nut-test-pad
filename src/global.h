@@ -45,6 +45,8 @@ T<Model> &modelForRow(T<Type::Data> *) {
     return createModel<Table>();
 }
 
+template<template<Type _Type> class T>
+using RowPointer = QSharedPointer<T<Data>>;
 
 template<template<Type _Type> class T>
 QSharedPointer<T<Data>> createRow() {

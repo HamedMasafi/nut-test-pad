@@ -212,7 +212,8 @@ public:
     Table(Database<Type::Model> *parent, const char *name);
 
     virtual QString className() const = 0;
-    QJsonObject toJson() const ;
+    QJsonObject toJson() const;
+
     AbstractFieldPhrase *field(const QString &name) const;
 
     friend class DatasetBase;

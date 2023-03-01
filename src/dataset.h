@@ -42,7 +42,7 @@ public:
 template <template<Type> class T>
 class Dataset : public DatasetBase
 {
-    QList<T<Type::Data>> _list;
+    QList<Nut::RowPointer<T>> _list;
     Database<Type::Data> *_parentDatabase;
     Database<Type::Model> *_parentDatabaseModel;
 
@@ -73,7 +73,10 @@ public:
         auto t = T<Type::Data>::staticClassName();
         return Query<T>(_parentDatabase, _parentDatabaseModel, _model);
     }
-    void append(T<Type::Data> *row) {
+//    void append(T<Type::Data> *row) {
+//        _list.append(row);
+//    }
+    void append(const Nut::RowPointer<T> &row) {
         _list.append(row);
     }
 };

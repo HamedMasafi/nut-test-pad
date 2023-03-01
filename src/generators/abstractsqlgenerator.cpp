@@ -76,7 +76,26 @@ QString AbstractSqlGenerator::masterDatabaseName(QString databaseName)
 QString AbstractSqlGenerator::createTable(TableModel *table)
 {
     Q_UNUSED(table)
+
     return QString();
+}
+
+
+QString AbstractSqlGenerator::createTable(TableModel *table, const QString &tableName)
+{
+    QStringList columnSql;
+
+    auto fields = table->fields();
+    for (auto &f: fields) {
+        QString declare = fieldDeclare(f);
+        if (declare.isEmpty())
+            return QString();
+        columnSql << declare;
+    }
+
+    auto sql = QStringLiteral("CREATE TABLE %1 \n(%2)")
+                   .arg(tableName, columnSql.join(QStringLiteral(",\n")));
+    return sql;
 }
 
 QString AbstractSqlGenerator::saveRecord(TableRow *t, QString tableName)
@@ -181,9 +200,9 @@ QStringList AbstractSqlGenerator::diffDatabase(const DatabaseModel &lastModel,
     for (const auto &t: newModel.tables())
         _names << t->name();
 
-    for (const auto &t: _names) {
-        auto oldTable = lastModel.tableByName(t);
-        auto newTable = newModel.tableByName(t);
+    for (const auto &t: std::as_const(_names)) {
+        auto oldTable = lastModel.tableByTableName(t);
+        auto newTable = newModel.tableByTableName(t);
         QStringList sql = diffTable(oldTable, newTable);
         if (!sql.isEmpty())
             ret << sql;

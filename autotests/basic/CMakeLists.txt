@@ -17,5 +17,6 @@ target_include_directories(BasicTest PRIVATE ../../src)
 target_link_libraries(BasicTest
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Test
+    Qt${QT_VERSION_MAJOR}::Sql
     Nut
 )

@@ -13,6 +13,17 @@
 //    void * p = malloc(size);
 //    return p;
 //}
+void BasicTest::insert()
+{
+    DBDatabase db;
+    db.setDriver("QSQLITE");
+    db.setDatabaseName("data.dat");
+    QVERIFY(db.open());
+
+    auto user = Nut::createRow<User>();
+    db.users.append(user);
+}
+
 void BasicTest::modelTest() {}
 
 void BasicTest::changedTest()
@@ -46,14 +57,18 @@ void BasicTest::checkExpressions()
 
     auto q4 = DBModel.users.id == DBModel.users.id;
 
-    Nut::SqliteGenerator gen;
-    auto where = gen.createConditionalPhrase(q3.data);
+//    Nut::SqliteGenerator gen;
+//    auto where = gen.createConditionalPhrase(q3.data);
 //    QCOMPARE(where, "([table20].id = '4' AND [table10].point = '1,2')");
 }
 
 void BasicTest::join()
 {
     DBDatabase db;
+    db.setDriver("QSQLITE");
+    db.setDatabaseName("data.dat");
+    QVERIFY(db.open());
+
     auto q = db.posts.query()
                  .join(DBModel.posts.user)
                  .orderBy(!DBModel.posts.id)
