@@ -1,5 +1,6 @@
 #include "databasedata.h"
 #include "core/globalstorage.h"
+#include "dataset.h"
 #include "databasemigratestorage.h"
 #include "generators/sqlitegenerator.h"
 #include "databasemodel.h"
@@ -285,12 +286,14 @@ void Database<Type::Data>::setDriver(const QString &newDriver)
 
 int Nut::Database<Type::Data>::saveChanges()
 {
-
+    for (auto i = d->tables.begin(); i != d->tables.end(); i++) {
+        i.value()->save();
+    }
 }
 
-void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *row)
+void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *table)
 {
-
+    d->tables.insert(name, table);
 }
 
 

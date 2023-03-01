@@ -38,6 +38,8 @@ public:
 
     //    virtual TableRow *createTable() const = 0;
     //    virtual TableModel *createModel() const = 0;
+
+    virtual int save() {}
 };
 
 template <template<Type> class T>

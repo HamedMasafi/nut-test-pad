@@ -22,6 +22,7 @@ public:
     QString password;
     QString connectionName;
     QString driver;
+    QMap<QString, Nut::DatasetBase *> tables;
 
     AbstractSqlGenerator *generator{nullptr};
     QSqlDatabase db;
@@ -63,7 +64,7 @@ public:
     int saveChanges();
 
 private:
-    void addTableset(const QString &name, Nut::DatasetBase *row);
+    void addTableset(const QString &name, Nut::DatasetBase *table);
 protected:
     virtual Database<Type::Model> &model() const = 0;
 
