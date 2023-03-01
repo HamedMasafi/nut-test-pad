@@ -286,9 +286,11 @@ void Database<Type::Data>::setDriver(const QString &newDriver)
 
 int Nut::Database<Type::Data>::saveChanges()
 {
+    int n{0};
     for (auto i = d->tables.begin(); i != d->tables.end(); i++) {
-        i.value()->save();
+        n += i.value()->save();
     }
+    return n;
 }
 
 void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *table)
