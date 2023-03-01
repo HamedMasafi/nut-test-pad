@@ -2,6 +2,7 @@
 
 #include "global.h"
 #include "query.h"
+#include "database/databasedata.h"
 #include <QList>
 #include <QObject>
 
@@ -58,7 +59,7 @@ public:
         : DatasetBase(nullptr, &Nut::createModel<_Database>(), name, T<Type::Data>::staticClassName())
         , _parentDatabase{parent}
     {
-        Q_UNUSED(name)
+        parent->addTableset(name, this);
         _parentDatabaseModel = &Nut::createModel<_Database>();
     }
 

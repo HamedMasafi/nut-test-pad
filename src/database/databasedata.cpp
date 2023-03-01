@@ -283,5 +283,15 @@ void Database<Type::Data>::setDriver(const QString &newDriver)
     d->driver = newDriver;
 }
 
+int Nut::Database<Type::Data>::saveChanges()
+{
+
+}
+
+void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *row)
+{
+
+}
+
 
 } // namespace Nut

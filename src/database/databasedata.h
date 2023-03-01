@@ -8,7 +8,7 @@
 namespace Nut {
 
 class AbstractSqlGenerator;
-
+class DatasetBase;
 class DatabaseData : public QSharedData
 {
 public:
@@ -60,9 +60,15 @@ public:
     QString driver() const;
     void setDriver(const QString &newDriver);
 
+    int saveChanges();
+
+private:
+    void addTableset(const QString &name, Nut::DatasetBase *row);
 protected:
     virtual Database<Type::Model> &model() const = 0;
 
+    template <template<Type> class T>
+    friend class Dataset;
     friend class DatabaseData;
 };
 
