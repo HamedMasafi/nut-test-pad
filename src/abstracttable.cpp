@@ -44,6 +44,38 @@ AbstractFieldPhrase *AbstractTableModel::field(const QString &name) const
     return nullptr;
 }
 
+const QMap<QString, AbstractFieldPhrase *> &MockTableModel::fields() const
+{
+    return _fields;
+}
+
+const QMap<QString, ForeignKeyModelBase *> &MockTableModel::foreignKeys() const
+{
+    return _foreignKeys;
+}
+
+QJsonObject MockTableModel::toJson() const
+{
+    return {};
+}
+
+void MockTableModel::fromJson(const QJsonObject &json)
+{
+    auto className = json.value("className").toString();
+    auto tableName = json.value("tableName").toString();
+    auto fieldsObject  =json.value("fields").toObject();
+    for (auto v : fieldsObject) {
+        auto field = new AbstractFieldPhrase(tableName, v.toObject());
+
+        _fields.insert(field->name(), field);
+    }
+}
+
+QString MockTableModel::className() const
+{
+    return _className;
+}
+
 //QJsonObject AbstractModel::toJson()
 //{
 //    auto _fields = fields();

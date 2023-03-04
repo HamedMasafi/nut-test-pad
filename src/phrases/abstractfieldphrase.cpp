@@ -28,14 +28,27 @@ namespace Nut
 AbstractFieldPhrase::AbstractFieldPhrase(PhraseData *d) : data(d)
 { }
 
+AbstractFieldPhrase::AbstractFieldPhrase(const QString &tableName, const QJsonObject &json) : data{new PhraseData}
+{
+    data->tableName = tableName.toUtf8().data();
+    data->isPrimaryKey = json.value("isKey").toBool();
+    data->len = json.value("len").toInt();
+    data->maxLen = json.value("maxlen").toInt();
+    data->fieldName = json.value("columnName").toString().toStdString().data();
+    auto parts = json.value("autoIncrement").toString().split(",");
+    if (parts.size() == 2)
+        data->autoIncrement = std::make_pair(parts.at(0).toInt(), parts.at(1).toInt());
+
+}
+
 AbstractFieldPhrase::AbstractFieldPhrase(const char *fieldName)
     : data(new PhraseData("", fieldName))
 {
 
 }
 
-AbstractFieldPhrase::AbstractFieldPhrase(const char *className,
-                                         const char *fieldName)
+AbstractFieldPhrase::AbstractFieldPhrase(const QString &className,
+                                         const QString &fieldName)
     :data(new PhraseData(className, fieldName))
 {
 }
@@ -158,7 +171,7 @@ AbstractFieldPhrase AbstractFieldPhrase::operator !()
 
 const char *AbstractFieldPhrase::name() const
 {
-    return data->fieldName;
+    return data->fieldName.toUtf8().data();
 }
 
 QString AbstractFieldPhrase::tableName() const
@@ -204,6 +217,32 @@ bool AbstractFieldPhrase::allowNull() const
 bool AbstractFieldPhrase::isUnique() const
 {
     return data->isUnique;
+}
+
+QJsonObject AbstractFieldPhrase::toJson() const
+{
+    QJsonObject fieldObject;
+    fieldObject.insert("isKey", isPrimaryKey());
+    fieldObject.insert("autoIncrement",
+                       QStringLiteral("%1,%2")
+                           .arg(autoIncrementStart())
+                           .arg(autoIncrementStep()));
+    fieldObject.insert("len", len());
+    fieldObject.insert("maxlen", maxLen());
+    fieldObject.insert("columnName", name());
+    return fieldObject;
+}
+
+void AbstractFieldPhrase::fromJson(const QString &tableName, const QJsonObject &json)
+{
+    data->tableName = tableName.toUtf8().data();
+    data->isPrimaryKey = json.value("isKey").toBool();
+    data->len = json.value("len").toInt();
+    data->maxLen = json.value("maxlen").toInt();
+    data->fieldName = json.value("columnName").toString().toStdString().data();
+    auto parts = json.value("autoIncrement").toString().split(",");
+    if (parts.size() == 2)
+        data->autoIncrement = std::make_pair(parts.at(0).toInt(), parts.at(1).toInt());
 }
 
 } // namespace Nut

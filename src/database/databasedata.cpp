@@ -102,7 +102,11 @@ bool DatabaseData::updateDatabase()
     auto currentModel = parent->model();
     auto databaseModel = getLastModelFromDatabase();
     auto diff = generator->diffDatabase(databaseModel, currentModel);
-    diff << changeLogsCreationSql();
+
+    if (!databaseModel.tables().size())
+        diff << changeLogsCreationSql();
+
+    qDebug() << diff;
     if (!db.transaction())
         return false;
     for (auto &sql: diff) {
@@ -168,17 +172,16 @@ Database<Model> DatabaseData::getLastModelFromDatabase()
     if (!q.next())
         return {};
 
-    Database<Model> ret;
     QJsonDocument doc = QJsonDocument::fromJson(q.value("data").toString().toUtf8());
     if (!doc.isObject())
         return {};
 
-    ret.fromJsonModel(doc.object());
-    return ret;
+    return Database<Model>::fromJsonModel(doc.object());
 }
 
 void DatabaseData::storeModelInDatabase(const Database<Model> &model)
 {
+
     QJsonDocument doc = QJsonDocument(model.jsonModel());
     auto sql= QStringLiteral("INSERT INTO __changeLogs (data, version) VALUES ('%1', 0)").arg(doc.toJson());
     db.exec(sql);
@@ -233,7 +236,8 @@ bool Nut::Database<Type::Data>::open()
     if (!d->open())
         return false;
 
-    d->updateDatabase();
+    if (!d->updateDatabase())
+        return false;
 
     return true;
 }

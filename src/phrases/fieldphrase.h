@@ -51,7 +51,10 @@ public:
         //        static_assert(count("MaxLen", args...) <= -100, "max len more than once");
         //        static_assert(contains<MaxLen, Types...>::value, "max len more than once");
 
-        if (!pick<const char *>("Name", &data->fieldName, args...))
+        char *tmpName;
+        if (pick<char *>("Name", &tmpName, args...))
+            data->fieldName = tmpName;
+        else
             data->fieldName = name;
 
         pick<int>("MaxLen", &data->maxLen, args...);

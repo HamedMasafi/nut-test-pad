@@ -10,9 +10,13 @@ namespace Nut {
 QJsonObject Nut::Database<Type::Model>::jsonModel() const
 {
     QJsonObject model;
+
+    QJsonObject tablesObject;
     for (auto i = _tables.begin(); i != _tables.end(); ++i) {
-        model.insert((*i)->name(), (*i)->toJson());
+        tablesObject.insert((*i)->name(), (*i)->toJson());
     }
+
+    model.insert("tables", tablesObject);
     return model;
 }
 
@@ -61,7 +65,14 @@ Database<Model> &Nut::Database<Type::Model>::model() const
 Database<Model> Nut::Database<Type::Model>::fromJsonModel(const QJsonObject &json)
 {
     Database<Model> ret;
-    //TODO: read from json
+    auto tablesObject = json.value("tables").toObject();
+
+    for (auto v: tablesObject) {
+        auto t = new MockTableModel;
+
+        t->fromJson(v.toObject());
+        ret._tables.append(t);
+    }
     return ret;
 }
 

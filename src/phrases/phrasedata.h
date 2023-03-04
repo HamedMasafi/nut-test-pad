@@ -88,8 +88,8 @@ public:
     enum Type { Field, WithVariant, WithOther, WithoutOperand };
 
     QString tableName;
-    const char *className;
-    const char *fieldName;
+    QString className;
+    QString fieldName;
 
     Type type;
 
@@ -112,7 +112,7 @@ public:
     mutable QAtomicInt ref;
 
     PhraseData();
-    PhraseData(const char *className, const char *fieldName);
+    PhraseData(QString className, QString fieldName);
     PhraseData(PhraseData *l, Condition o);
     PhraseData(PhraseData *l, Condition o, PhraseData *r);
     PhraseData(PhraseData *l, Condition o, QVariant r);

@@ -36,9 +36,11 @@ namespace Nut
         : AbstractFieldPhrase("", name) \
     { \
         using namespace ModelDeclartion; \
-        static_assert(no_unique<PrimaryKey, Types...>::value <= 1, \
-                      "More than one PrimaryKey()"); \
-        if (!pick<const char *>("Name", &data->fieldName, args...)) \
+        static_assert(no_unique<PrimaryKey, Types...>::value <= 1, "More than one PrimaryKey()"); \
+        char *tmpName; \
+        if (pick<char *>("Name", &tmpName, args...)) \
+            data->fieldName = tmpName; \
+        else \
             data->fieldName = name; \
         pick<int>("MaxLen", &data->maxLen, args...); \
         pick<int>("Len", &data->len, args...); \
@@ -60,8 +62,9 @@ class NUT_EXPORT AbstractFieldPhrase
 public:
     PhraseData *data;
     explicit AbstractFieldPhrase(PhraseData *d);
+    AbstractFieldPhrase(const QString &tableName, const QJsonObject &json);
     AbstractFieldPhrase(const char *fieldName);
-    AbstractFieldPhrase(const char *className, const char *fieldName);
+    AbstractFieldPhrase(const QString &className, const QString &fieldName);
     AbstractFieldPhrase(const AbstractFieldPhrase &other);
     AbstractFieldPhrase(AbstractFieldPhrase &&other);
 
@@ -76,6 +79,9 @@ public:
     int autoIncrementStep() const;
     bool allowNull() const;
     bool isUnique() const;
+
+    QJsonObject toJson() const;
+    void fromJson(const QString &tableName, const QJsonObject &json);
 
     virtual ~AbstractFieldPhrase();
 
@@ -136,7 +142,10 @@ protected:
         //        static_assert(count("MaxLen", args...) <= -100, "max len more than once");
         //        static_assert(contains<MaxLen, Types...>::value, "max len more than once");
 
-        if (!pick<const char *>("Name", &data->fieldName, args...))
+        char *tmpName;
+        if (pick<char *>("Name", &tmpName, args...))
+            data->fieldName = tmpName;
+        else
             data->fieldName = name;
 
         pick<int>("MaxLen", &data->maxLen, args...);

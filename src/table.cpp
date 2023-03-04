@@ -7,7 +7,9 @@
 
 namespace Nut {
 
-Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name):_parentDatabase(parent) // : AbstractTableModel(parent, name), _name(name)
+Table<Type::Model>::Table(Database<Type::Model> *parent, const char *name)
+    : _parentDatabase(parent)
+    , _name(name) // : AbstractTableModel(parent, name), _name(name)
 {
     qDebug() << "my name is" << name;
 }
@@ -60,6 +62,9 @@ QJsonObject Table<Type::Model>::toJson() const
     QJsonObject o;
     o.insert("fields", fieldsObject);
     o.insert("foreignKeys", foreignKeysObject);
+    o.insert("className", className());
+    o.insert("tableName", name());
+
     return o;
 }
 
@@ -106,7 +111,7 @@ bool operator==(const TableModel &l, const TableModel &r)
 
 AbstractFieldPhrase *Nut::Table<Type::Model>::primaryField() const
 {
-    for (const auto &f:_fields)
+    for (const auto &f : _fields)
         if (f->isPrimaryKey())
             return f;
     return nullptr;
@@ -120,7 +125,7 @@ Nut::Table<Type::Model>::Table(const char *name) : _name{name}
 FieldBase *Table<Type::Data>::primaryField()
 {
     if (!_primaryField)
-        for (const auto &f: _fields)
+        for (const auto &f : std::as_const(_fields))
             if (f->isPrimary()) {
                 _primaryField = f;
                 break;
@@ -128,5 +133,31 @@ FieldBase *Table<Type::Data>::primaryField()
     return _primaryField;
 }
 
+void Nut::Table<Type::Model>::fromJson(const QJsonObject &json)
+{
+    auto className = json.value("className").toString();
+    auto tableName = json.value("tableName").toString();
+    auto fieldsObject  =json.value("fields").toObject();
+    for (auto v : fieldsObject) {
+        QString name;
+        AbstractFieldPhrase *field;
+        auto o = v.toObject();
+
+        field->data->isPrimaryKey = o.value("isKey").toBool();
+        field->data->len = o.value("len").toInt();
+        field->data->maxLen = o.value("maxlen").toInt();
+        field->data->fieldName = o.value("columnName").toString().toStdString().data();
+
+        //        fieldObject.insert("autoIncrement",
+        //                           QStringLiteral("%1,%2")
+        //                               .arg((*i)->autoIncrementStart())
+        //                               .arg((*i)->autoIncrementStep()));
+        //        fieldObject.insert("len", (*i)->len());
+        //        fieldObject.insert("maxlen", (*i)->maxLen());
+        //        fieldObject.insert("columnName", (*i)->name());
+
+        _fields.insert(name, field);
+    }
+}
 
 } // namespace Nut

@@ -29,21 +29,21 @@ PhraseData::PhraseData()
       ref(1)
 { }
 
-PhraseData::PhraseData(const char *className, const char *fieldName)
+PhraseData::PhraseData(QString className, QString fieldName)
     : className(className), fieldName(fieldName), type(Field),
       operatorCond(NotAssign), left(nullptr), right(nullptr),
       operand(), isNot(false), ref(1)
 { }
 
 PhraseData::PhraseData(PhraseData *l, PhraseData::Condition o)
-    : className(nullptr), fieldName(nullptr), type(WithoutOperand),
+    : className(), fieldName(), type(WithoutOperand),
       operatorCond(o), left(l), right(nullptr), isNot(false), ref(1)
 {
     l->ref.ref();
 }
 
 PhraseData::PhraseData(PhraseData *l, PhraseData::Condition o, PhraseData *r)
-    : className(nullptr), fieldName(nullptr), type(WithOther), operatorCond(o),
+    : className(), fieldName(), type(WithOther), operatorCond(o),
       left(l), right(r), isNot(false), ref(1)
 {
     l->ref.ref();
@@ -51,7 +51,7 @@ PhraseData::PhraseData(PhraseData *l, PhraseData::Condition o, PhraseData *r)
 }
 
 PhraseData::PhraseData(PhraseData *l, PhraseData::Condition o, QVariant r)
-    : className(nullptr), fieldName(nullptr), type(WithVariant),
+    : className(), fieldName(), type(WithVariant),
       operatorCond(o), left(l), right(nullptr), operand(r), isNot(false),
       ref(1)
 { }
@@ -79,8 +79,7 @@ PhraseData &PhraseData::operator =(PhraseData &other)
 
 QString PhraseData::toString() const
 {
-    return QStringLiteral("[%1].%2")
-        .arg(tableName, QString::fromUtf8(fieldName));
+    return QStringLiteral("[%1].%2").arg(tableName, fieldName);
 }
 
 void PhraseData::cleanUp()

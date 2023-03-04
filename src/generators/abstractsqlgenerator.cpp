@@ -773,7 +773,7 @@ QString AbstractSqlGenerator::insertCommand(const QString &tableName,
         if (!values.isEmpty())
             values.append(QStringLiteral(", "));
 
-        fieldNames.append(escapeFieldName(QString::fromUtf8(d->left->fieldName)));
+        fieldNames.append(escapeFieldName(d->left->fieldName));
         values.append(escapeValue(d->operand));
     }
     return QStringLiteral("INSERT INTO %1 (%2) VALUES (%3);").arg(tableName, fieldNames, values);

@@ -213,6 +213,7 @@ public:
 
     virtual QString className() const = 0;
     QJsonObject toJson() const;
+    void fromJson(const QJsonObject &json);
 
     AbstractFieldPhrase *field(const QString &name) const;
 
@@ -256,6 +257,7 @@ public:
     {
         return T<Type::Model>::toJson();
     }
+    void fromJson(const QJsonObject &json) override { return T<Type::Model>::fromJson(json); }
     virtual QString name() const override{
         return _name;
     }
