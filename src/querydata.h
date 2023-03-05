@@ -4,6 +4,8 @@
 #include "phrases/conditionalphrase.h"
 #include "phrases/phraselist.h"
 
+#include <QSqlQuery>>
+
 namespace Nut {
 
 template<Nut::Type T>
@@ -22,6 +24,7 @@ struct NUT_EXPORT QueryData : public QSharedData
     QList<ForeignKeyModelBase *> joins;
     PhraseList fields;
     QString generateSelectCommand();
+    QSqlQuery exec(const QString &sql);
 
     QString sql;
     int take{-1};

@@ -141,8 +141,19 @@ QueryMethodSelf::orderBy(const PhraseList &ph)
 }
 
 QueryMethod(QList<typename Query<T>::DataType>)::toList() {
-    qDebug() << "select cmd=" << d->generateSelectCommand();
-    return QList<DataType>();
+    auto sql = d->generateSelectCommand();
+    qDebug() << "select cmd=" << sql;
+    auto q = d->exec(sql);
+
+    if (!q.size())
+        return QList<DataType>();
+
+    QList<DataType> ret;
+
+    while (q.next()) {
+
+    }
+    return ret;
 }
 
 QueryMethod(QString)::sqlCommand() const

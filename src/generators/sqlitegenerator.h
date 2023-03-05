@@ -30,7 +30,7 @@ namespace Nut {
 class NUT_EXPORT SqliteGenerator : public AbstractSqlGenerator
 {
 public:
-    explicit SqliteGenerator(Database<Type::Model> *parent = nullptr);
+//    explicit SqliteGenerator(Database<Type::Model> *parent = nullptr);
     explicit SqliteGenerator(Database<Type::Data> *parent);
 
     QString fieldType(AbstractFieldPhrase *field) override;

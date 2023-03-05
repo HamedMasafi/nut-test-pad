@@ -13,6 +13,7 @@ class ForeignKeyModelBase;
 
 class AbstractTableModel
 {
+protected:
     QString _name;
 public:
     AbstractTableModel() = default;
@@ -22,7 +23,7 @@ public:
     virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() const = 0;
     virtual QJsonObject toJson() const = 0;
     virtual void fromJson(const QJsonObject &json) = 0;
-    QString name() const;
+    virtual QString name() const;
     virtual QString className() const = 0;
     AbstractFieldPhrase *primaryField() const;
 
@@ -35,12 +36,14 @@ class MockTableModel : public AbstractTableModel
     QMap<QString, AbstractFieldPhrase *> _fields;
     QMap<QString, ForeignKeyModelBase *> _foreignKeys;
     QString _className;
+    QString _tableName;
 public:
-    const QMap<QString, AbstractFieldPhrase *> &fields() const;
-    const QMap<QString, ForeignKeyModelBase *> &foreignKeys() const;
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject &json);
-    QString className() const;
+    const QMap<QString, AbstractFieldPhrase *> &fields() const override;
+    const QMap<QString, ForeignKeyModelBase *> &foreignKeys() const override;
+    QJsonObject toJson() const override;
+    void fromJson(const QJsonObject &json) override;
+    QString className() const override;
+    QString name() const override;
 
     friend class Database<Model>;
 };

@@ -1,13 +1,19 @@
 
 #include "query.h"
-#include "database.h"
+#include "database/databasedata.h"
 #include "generators/abstractsqlgenerator.h"
+#include "qsqlquery.h"
 
 namespace Nut {
 QString QueryData::generateSelectCommand() {
     auto gen = database->generator();
     sql = gen->selectCommand(this);
     return sql;
+}
+
+QSqlQuery QueryData::exec(const QString &sql)
+{
+    return database->d->db.exec(sql);
 }
 
 

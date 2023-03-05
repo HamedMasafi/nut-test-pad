@@ -63,6 +63,8 @@ public:
 
     int saveChanges();
 
+    QSqlQuery exec(const QString &sql);
+
 private:
     void addTableset(const QString &name, Nut::DatasetBase *table);
 protected:
@@ -71,6 +73,8 @@ protected:
     template <template<Type> class T>
     friend class Dataset;
     friend class DatabaseData;
+    friend class QueryData;
+    friend class AbstractSqlGenerator;
 };
 
 } // namespace Nut

@@ -21,11 +21,11 @@ public:
     Field(QString, name);
     Field(QString, lastName, AllowNull(true));
 
-    Field(int, pn, ColumnName("pn"), Len(8));
-    Field(QPoint, point);
-    Field(QPoint, pt3, AllowNull(true));
-//    Field(QString, ps, ColumnName("salam"), MaxLen(100), AllowNull(true));
-    Property<QString, AllowNull> ps{this, "ps", AllowNull(true)};
+//    Field(int, pn, ColumnName("pn"), Len(8));
+//    Field(QPoint, point);
+//    Field(QPoint, pt3, AllowNull(true));
+////    Field(QString, ps, ColumnName("salam"), MaxLen(100), AllowNull(true));
+//    Property<QString, AllowNull> ps{this, "ps", AllowNull(true)};
 
 //    Property2<QString, _Type> ps2{this, "ps2"};
 //    FieldB<QString, _Type> salam{this, "D", 2};

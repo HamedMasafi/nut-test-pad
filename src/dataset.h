@@ -39,7 +39,9 @@ public:
     //    virtual TableRow *createTable() const = 0;
     //    virtual TableModel *createModel() const = 0;
 
-    virtual int save() {}
+    virtual int save() {
+        return 0;
+    }
 };
 
 template <template<Type> class T>
@@ -81,6 +83,16 @@ public:
 //    }
     void append(const Nut::RowPointer<T> &row) {
         _list.append(row);
+    }
+
+    int save() override {
+        int ret{0};
+
+        auto model = static_cast<TableModel *>(&createModel());
+        for (auto &i: _list) {
+            ret += i->save(_parentDatabase, model);
+        }
+        return ret;
     }
 };
 

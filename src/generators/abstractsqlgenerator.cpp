@@ -27,7 +27,8 @@
 
 #include "abstractsqlgenerator.h"
 #include "core/sqlserializer.h"
-#include "database.h"
+#include "database/databasedata.h"
+#include "database/databasemodel.h"
 #include "querydata.h"
 #include "table.h"
 
@@ -58,11 +59,13 @@ bool AbstractSqlGenerator::isNumeric(const QMetaType::Type &type)
            || type == QMetaType::LongLong || type == QMetaType::ULongLong;
 }
 
-AbstractSqlGenerator::AbstractSqlGenerator(Nut::Database<Nut::Type::Model> *parent)
+AbstractSqlGenerator::AbstractSqlGenerator(Database<Type::Data> *parent)
     : QObject(/*parent*/)
 {
-    if (parent)
+    if (parent) {
         _database = parent;
+        _databaseModel = &_database->model();
+    }
 
     _serializer = new SqlSerializer;
 }
@@ -480,7 +483,7 @@ QString AbstractSqlGenerator::join(const QStringList &list, QStringList *order)
 QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
-    auto model = _database->tableByName(t->className());
+    auto model = _databaseModel->tableByName(t->className());
 
     auto keyField = model->primaryField();
 
@@ -491,6 +494,9 @@ QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
     QStringList values;
 
     QSet<QString> props = t->changedFields();
+    if (!props.size())
+        return {};
+
     QString changedPropertiesText = QString();
     for (auto &f : props) {
         if (f == key)
@@ -503,8 +509,7 @@ QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
         changedPropertiesText.append(escapeFieldName(f));
     }
     sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
-              .arg(tableName, changedPropertiesText, values.join(QStringLiteral(", ")));
-
+              .arg(model->name(), changedPropertiesText, values.join(QStringLiteral(", ")));
 
     return sql;
 }
@@ -512,7 +517,7 @@ QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
 QString AbstractSqlGenerator::updateRecord(TableRow *t, QString tableName)
 {
     QString sql = QString();
-    auto model = _database->tableByName(t->className());
+    auto model = _databaseModel->tableByName(t->className());
 //    auto model = Nut::modelForRow(t); // _database->model().tableByName(tableName);
     QString key =model->primaryField()->name();
     QStringList values;
@@ -643,7 +648,7 @@ QString AbstractSqlGenerator::selectCommand(const QString &tableName,
     Q_UNUSED(take)
     QString selectText;
 
-    auto model = _database->tableByName(tableName);
+    auto model = _databaseModel->tableByName(tableName);
 
     for (auto const &f: model->fields()) {
         selectText.append(",");

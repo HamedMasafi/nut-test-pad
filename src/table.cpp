@@ -1,6 +1,11 @@
 
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QSqlQuery>
+#include <QSqlError>
+
+#include "database/databasedata.h"
+#include "generators/abstractsqlgenerator.h"
 
 #include "table.h"
 #include "phrases/abstractfieldphrase.h"
@@ -48,6 +53,8 @@ QJsonObject Table<Type::Model>::toJson() const
         fieldObject.insert("len", (*i)->len());
         fieldObject.insert("maxlen", (*i)->maxLen());
         fieldObject.insert("columnName", (*i)->name());
+        fieldObject.insert("allowNull", (*i)->allowNull());
+        fieldObject.insert("isUnique", (*i)->isUnique());
 
         fieldsObject.insert(i.key(), fieldObject);
     }
@@ -66,16 +73,6 @@ QJsonObject Table<Type::Model>::toJson() const
     o.insert("tableName", name());
 
     return o;
-}
-
-QVariant Table<Type::Data>::key() const
-{
-    return _fields.value(keyField)->toVariant();
-}
-
-void Table<Type::Data>::setKey(const QVariant &value)
-{
-    _fields.value(keyField)->fromVariant(value);
 }
 
 //const QMap<QString, AbstractFieldPhrase *> &Table<Type::Model>::fields() const
@@ -158,6 +155,32 @@ void Nut::Table<Type::Model>::fromJson(const QJsonObject &json)
 
         _fields.insert(name, field);
     }
+}
+
+int Nut::Table<Type::Data>::save(Database<Data> *db, TableModel *model)
+{
+    //Q_D(Table);
+    auto sql = db->generator()->saveRecord(this, this->className());
+    QSqlQuery q = db->exec(sql);
+
+    if (q.lastError().type() != QSqlError::NoError)
+        qDebug() << "Error: " << q.lastError().text() << sql;
+    if(status() == RowStatus::Added && model->isPrimaryKeyAutoIncrement()){
+        setFieldValue(model->primaryField()->name(), q.lastInsertId());
+    }
+
+//    foreach(AbstractTableSet *ts, d->childTableSets)
+//        ts->save(db);
+    _status = RowStatus::FetchedFromDB;
+
+    return q.numRowsAffected();
+}
+
+bool Nut::Table<Type::Model>::isPrimaryKeyAutoIncrement() const
+{
+    return std::any_of(_fields.begin(), _fields.end(), [](AbstractFieldPhrase *f) {
+        return f->isPrimaryKey() && f->isAutoIncrement();
+    });
 }
 
 } // namespace Nut

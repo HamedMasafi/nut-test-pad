@@ -69,7 +69,7 @@ public:
     AbstractFieldPhrase(AbstractFieldPhrase &&other);
 
     virtual QMetaType::Type metaTypeId() const;
-    const char *name() const;
+    QString name() const;
     QString tableName() const;
     int maxLen() const;
     int len() const;

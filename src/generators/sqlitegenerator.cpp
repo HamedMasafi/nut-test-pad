@@ -23,12 +23,12 @@
 
 namespace Nut {
 
-SqliteGenerator::SqliteGenerator(Database<Model> *parent)
-    : AbstractSqlGenerator(parent)
-{}
+//SqliteGenerator::SqliteGenerator(Database<Model> *parent)
+//    : AbstractSqlGenerator(parent)
+//{}
 
 SqliteGenerator::SqliteGenerator(Database<Data> *parent)
-    : AbstractSqlGenerator(nullptr)
+    : AbstractSqlGenerator(parent)
 {}
 
 QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)

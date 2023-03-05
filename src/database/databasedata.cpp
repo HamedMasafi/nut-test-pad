@@ -42,53 +42,6 @@ bool DatabaseData::open()
     db.setPassword(password);
 
     return db.open();
-
-    if (driver.startsWith(QStringLiteral("qsqlite"), Qt::CaseInsensitive)
-        && !QFile::exists(databaseName)) {
-        //Force to execute update database
-        isDatabaseNew = true;
-        update = true;
-    }
-    bool ok = db.open();
-
-    if (!ok) {
-        qWarning("Could not connect to database, error = %s",
-                 db.lastError().text().toLocal8Bit().data());
-
-        if (db.lastError().text().contains(QStringLiteral("database \"")
-                                           + databaseName
-                                           + QStringLiteral("\" does not exist"))
-            || db.lastError().text().contains(QStringLiteral("Cannot open database"))
-            || db.lastError().text().contains(QStringLiteral("Unknown database '")
-                                              + databaseName
-                                              + QStringLiteral("'"))) {
-
-            db.close();
-            db.setDatabaseName(generator->masterDatabaseName(databaseName));
-            ok = db.open();
-            qDebug("Creating database");
-            if (ok) {
-                db.exec(QStringLiteral("CREATE DATABASE ") + databaseName);
-                db.close();
-
-                if (db.lastError().type() != QSqlError::NoError) {
-                    qWarning("Creating database error: %s",
-                             db.lastError().text().toLatin1().data());
-                    return false;
-                }
-
-                isDatabaseNew = true;
-                return open(/*update*/);
-            }
-            qWarning("Unknown error detecting change logs, %s",
-                     db.lastError().text().toLatin1().data());
-
-        }
-        return false;
-    }
-
-    //    if(update)
-    return updateDatabase();
 }
 
 bool DatabaseData::updateDatabase()
@@ -103,13 +56,16 @@ bool DatabaseData::updateDatabase()
     auto databaseModel = getLastModelFromDatabase();
     auto diff = generator->diffDatabase(databaseModel, currentModel);
 
+    if (!diff.size())
+        return true;
+
     if (!databaseModel.tables().size())
         diff << changeLogsCreationSql();
 
     qDebug() << diff;
     if (!db.transaction())
         return false;
-    for (auto &sql: diff) {
+    for (auto &sql : diff) {
         db.exec(sql);
         if (db.lastError().type() != QSqlError::NoError) {
             qDebug() << "Error updating database" << db.lastError().text();
@@ -300,6 +256,11 @@ int Nut::Database<Type::Data>::saveChanges()
 void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *table)
 {
     d->tables.insert(name, table);
+}
+
+QSqlQuery Nut::Database<Type::Data>::exec(const QString &sql)
+{
+    return d->db.exec(sql);
 }
 
 

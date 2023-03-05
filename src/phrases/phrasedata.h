@@ -105,8 +105,8 @@ public:
     int maxLen{};
     int len{};
     bool isPrimaryKey{false};
-    bool allowNull;
-    bool isUnique;
+    bool allowNull{false};
+    bool isUnique{false};
     std::pair<int, int> autoIncrement{std::make_pair(0, 0)};
 
     mutable QAtomicInt ref;

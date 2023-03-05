@@ -58,7 +58,9 @@ protected:
 
 public:
     //TODO: move to private
-    Database<Type::Model> *_database;
+    Database<Type::Data> *_database;
+    Database<Type::Model> *_databaseModel;
+
     //TODO: remove this enum
     enum CommandType{
         Select,
@@ -77,6 +79,8 @@ public:
     };
 
     explicit AbstractSqlGenerator(Database<Type::Model> *parent);
+    explicit AbstractSqlGenerator(Database<Type::Data> *database);
+
     virtual ~AbstractSqlGenerator() = default;
 
     virtual bool supportPrimaryKey(const QMetaType &type) {

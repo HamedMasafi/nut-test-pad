@@ -30,7 +30,9 @@ AbstractFieldPhrase::AbstractFieldPhrase(PhraseData *d) : data(d)
 
 AbstractFieldPhrase::AbstractFieldPhrase(const QString &tableName, const QJsonObject &json) : data{new PhraseData}
 {
-    data->tableName = tableName.toUtf8().data();
+    data->tableName = tableName;
+    data->allowNull = json.value("allowNull").toBool();
+    data->isUnique = json.value("isUnique").toBool();
     data->isPrimaryKey = json.value("isKey").toBool();
     data->len = json.value("len").toInt();
     data->maxLen = json.value("maxlen").toInt();
@@ -169,9 +171,9 @@ AbstractFieldPhrase AbstractFieldPhrase::operator !()
 }
 
 
-const char *AbstractFieldPhrase::name() const
+QString AbstractFieldPhrase::name() const
 {
-    return data->fieldName.toUtf8().data();
+    return data->fieldName;
 }
 
 QString AbstractFieldPhrase::tableName() const
@@ -235,7 +237,7 @@ QJsonObject AbstractFieldPhrase::toJson() const
 
 void AbstractFieldPhrase::fromJson(const QString &tableName, const QJsonObject &json)
 {
-    data->tableName = tableName.toUtf8().data();
+    data->tableName = tableName;
     data->isPrimaryKey = json.value("isKey").toBool();
     data->len = json.value("len").toInt();
     data->maxLen = json.value("maxlen").toInt();

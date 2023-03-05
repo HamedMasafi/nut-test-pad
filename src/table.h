@@ -175,11 +175,10 @@ template<>
 class Table<Type::Data>
 {
 protected:
-    QString keyField;
     QMap<QString, FieldBase*> _fields;
     QSet<QString> _changedFields;
     RowStatus _status{RowStatus::Added};
-    FieldBase *_primaryField;
+    FieldBase *_primaryField{};
 public:
 
     Table() = default;
@@ -190,12 +189,11 @@ public:
     void setFieldValue(const QString &name, const QVariant &value);
     QVariant fieldValue(const QString &name) const;
 
-    QVariant key() const;
-    void setKey(const QVariant &value);
-
     const QSet<QString> &changedFields() const;
     RowStatus status() const;
     FieldBase *primaryField();
+
+    int save(Database<Data> *db, TableModel *model);
 };
 
 template <>
@@ -216,6 +214,7 @@ public:
     void fromJson(const QJsonObject &json);
 
     AbstractFieldPhrase *field(const QString &name) const;
+    bool isPrimaryKeyAutoIncrement() const;
 
     friend class DatasetBase;
     friend class AbstractFieldPhrase;

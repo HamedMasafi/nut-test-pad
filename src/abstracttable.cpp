@@ -21,8 +21,33 @@ AbstractFieldPhrase *AbstractTableModel::primaryField() const
 
 bool AbstractTableModel::operator==(const AbstractTableModel &other)
 {
-    Q_UNUSED(other)
-    return false;
+    auto myFields = fields();
+    auto othersFields = other.fields();
+
+    if (myFields.size() != othersFields.size())
+        return false;
+
+    for (auto &f : myFields ) {
+        auto otherField = other.field(f->name());
+
+        if (!otherField)
+            return false;
+
+//        if (*f != *otherField)
+//            return false;
+#define CHECK(x) \
+    if (f->x() != otherField->x()) { \
+        qDebug() << #x << "is different"; \
+        return false; \
+    }
+        CHECK(allowNull)
+        CHECK(isAutoIncrement)
+        CHECK(isPrimaryKey)
+        CHECK(isUnique)
+        CHECK(len)
+        CHECK(maxLen)
+    }
+    return true;
 }
 
 bool AbstractTableModel::operator!=(const AbstractTableModel &other)
@@ -61,11 +86,11 @@ QJsonObject MockTableModel::toJson() const
 
 void MockTableModel::fromJson(const QJsonObject &json)
 {
-    auto className = json.value("className").toString();
-    auto tableName = json.value("tableName").toString();
+    _className = json.value("className").toString();
+    _name = _tableName = json.value("tableName").toString();
     auto fieldsObject  =json.value("fields").toObject();
     for (auto v : fieldsObject) {
-        auto field = new AbstractFieldPhrase(tableName, v.toObject());
+        auto field = new AbstractFieldPhrase(_tableName, v.toObject());
 
         _fields.insert(field->name(), field);
     }
@@ -74,6 +99,11 @@ void MockTableModel::fromJson(const QJsonObject &json)
 QString MockTableModel::className() const
 {
     return _className;
+}
+
+QString MockTableModel::name() const
+{
+    return _tableName;
 }
 
 //QJsonObject AbstractModel::toJson()
