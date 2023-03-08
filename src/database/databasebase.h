@@ -1,6 +1,7 @@
 #pragma once
 
 #include "global.h"
+#include "core/typehelper.h"
 
 namespace Nut {
 
@@ -9,36 +10,6 @@ class ModelBase;
 
 template<NUT_TABLE_TEMPLATE T>
 class Dataset;
-
-template<NUT_TABLE_TEMPLATE C, Type _Type>
-struct TypeHelper
-{
-    using type = void;
-};
-
-template<NUT_TABLE_TEMPLATE C>
-struct TypeHelper<C, Type::Data>
-{
-    using type = Dataset<C>;
-};
-
-template<NUT_TABLE_TEMPLATE C>
-struct TypeHelper<C, Type::Model>
-{
-    using type = ModelBase<C>;
-};
-
-template<NUT_TABLE_TEMPLATE C>
-struct TypeHelper<C, Type::FieldPhrases>
-{
-    using type = void;
-};
-
-template<NUT_TABLE_TEMPLATE C>
-struct TypeHelper<C, Type::RuntimeChecker>
-{
-    using type = void;
-};
 
 template<Nut::Type _Type>
 class Database
@@ -50,7 +21,7 @@ class Database
 #define NUT_DATABASE \
 public: \
     template<template<Nut::Type _T> class T> \
-    using Tableset = typename Nut::TypeHelper<T, _Type>::type; \
+    using DatabaseTable = typename Nut::TableSetTypeHelper<T, _Type>::type; \
     static QString staticClassName(); \
     QString className() override; \
 \
@@ -91,7 +62,7 @@ protected: \
     name<Nut::Type::Model> name##Model;
 
 #define Nut_TableSet(type, name) \
-    Tableset<type> name \
+    DatabaseTable<type> name \
     { \
         this, #name \
     }

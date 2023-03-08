@@ -4,7 +4,7 @@
 #include "phrases/conditionalphrase.h"
 #include "phrases/phraselist.h"
 
-#include <QSqlQuery>>
+#include <QSqlQuery>
 
 namespace Nut {
 

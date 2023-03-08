@@ -183,12 +183,24 @@ QStringList AbstractSqlGenerator::constraints(AbstractTableModel *table)
     return QStringList();
 }
 
-QString AbstractSqlGenerator::relationDeclare(const RelationModel *relation)
+QString AbstractSqlGenerator::relationDeclare(const ForeignKeyModelBase *relation)
 {
-    return {};
-    //TODO: fix me
-//    return QStringLiteral("FOREIGN KEY (FK_%1) REFERENCES %2(%1)")
-//        .arg(relation->localColumn, relation->slaveTable->name());
+//    QString type = fieldType(field);
+//    if (type.isEmpty())
+//        return type;
+
+//    QString ret = escapeFieldName(field->name()) + QStringLiteral(" ") + type;
+//    if (!field->allowNull())
+//        ret.append(QStringLiteral(" NOT NULL"));
+
+//    if (field->isUnique())
+//        ret.append(QStringLiteral(" UNIQUE"));
+
+    return QStringLiteral("%1 %2,FOREIGN KEY (%1) REFERENCES %3(%4)")
+        .arg(relation->name(),
+             dataTypeString(relation->metaTypeId()),
+             relation->remoteTableName(),
+             relation->remoteTablePrimaryField()->name());
 }
 
 QStringList AbstractSqlGenerator::diffDatabase(const DatabaseModel &lastModel,
@@ -288,18 +300,18 @@ QStringList AbstractSqlGenerator::diffTable(AbstractTableModel *oldTable, Abstra
             columnSql << declare;
         }
     }
-    //    for (auto &fieldName: relations) {
-    //        RelationModel *newRelation = newTable->foreignKeyByField(fieldName);
-    //        if (oldTable) {
-    //            RelationModel *oldRelation = oldTable->foreignKeyByField(fieldName);
+    for (auto &fieldName : relations) {
+        auto newRelation = newTable->foreignKey(fieldName);
+        if (oldTable) {
+            auto oldRelation = oldTable->foreignKey(fieldName);
 
-    //            auto buffer = diff(oldRelation, newRelation);
-    //            if (buffer.size())
-    //                columnSql.append(buffer);
-    //        } else {
-    //            columnSql << relationDeclare(newRelation);
-    //        }
-    //    }
+            auto buffer = diffRelation2(oldRelation, newRelation);
+            if (buffer.size())
+                columnSql.append(buffer);
+        } else {
+            columnSql << relationDeclare(newRelation);
+        }
+    }
     QString sql;
     if (oldTable) {
         sql = QStringLiteral("ALTER TABLE %1 \n%2")
@@ -356,7 +368,7 @@ QStringList AbstractSqlGenerator::diffRelation(AbstractTableModel *oldTable, Abs
     return ret;
 }
 
-QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationModel *newRel)
+QStringList AbstractSqlGenerator::diffRelation2(ForeignKeyModelBase *oldRel, ForeignKeyModelBase *newRel)
 {
     QStringList ret;
     /*
@@ -371,19 +383,19 @@ QStringList AbstractSqlGenerator::diffRelation2(RelationModel *oldRel, RelationM
                          .arg(newRelation->masterTable->name())
                          .arg(newRelation->foreignColumn);
     */
-    /*
+
     if (!oldRel)
         ret.append(
             QStringLiteral("ADD CONSTRAINT FK_%1 FOREIGN KEY (%1) "
                            "REFERENCES %2(%3)")
-                .arg(newRel->localColumn, newRel->masterTable->name(), newRel->foreignColumn));
+                .arg(newRel->name(), newRel->remoteModel()->name(), newRel->remoteTablePrimaryField()->name()));
 
     if (!newRel)
         ret.append(
             QStringLiteral("ADD CONSTRAINT FK_%1 FOREIGN KEY (%1) "
                            "REFERENCES %2(%3)")
-                .arg(oldRel->localColumn, oldRel->masterTable->name(), oldRel->foreignColumn));
-*/
+                .arg(oldRel->name(), oldRel->remoteModel()->name(), oldRel->remoteTablePrimaryField()->name()));
+
     //    if (*oldRel == *newRel)
     return ret;
 }

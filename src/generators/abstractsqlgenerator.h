@@ -93,6 +93,7 @@ public:
     }
 
     //fields
+    virtual QString dataTypeString(QMetaType::Type type) = 0;
     virtual QString fieldType(AbstractFieldPhrase *field) = 0;
     virtual QString fieldDeclare(AbstractFieldPhrase *field);
     virtual QString escapeFieldName(const QString &fieldName) const;
@@ -105,13 +106,13 @@ public:
     virtual QString createTable(TableModel *table);
     virtual QString createTable(TableModel *table, const QString &tableName);
 
-    virtual QString relationDeclare(const RelationModel *relation);
+    virtual QString relationDeclare(const ForeignKeyModelBase *relation);
 
     virtual QStringList diffDatabase(const DatabaseModel &lastModel, const DatabaseModel &newModel);
     virtual QString diffField(AbstractFieldPhrase *oldField, AbstractFieldPhrase *newField);
     virtual QStringList diffTable(AbstractTableModel *oldTable, AbstractTableModel *newTable);
     virtual QStringList diffRelation(AbstractTableModel *oldTable, AbstractTableModel *newTable);
-    virtual QStringList diffRelation2(RelationModel *oldRel, RelationModel *newRel);
+    virtual QStringList diffRelation2(ForeignKeyModelBase *oldRel, ForeignKeyModelBase *newRel);
 
     virtual QString join(const QString &mainTable,
                          const QList<ForeignKeyModelBase *> &list,

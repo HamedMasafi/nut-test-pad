@@ -18,7 +18,10 @@ protected:
 public:
     AbstractTableModel() = default;
     AbstractTableModel(Database<Type::Model> *parent, const char *name);
+    AbstractTableModel(Table<Type::Model> *parent, const char *name);
     AbstractFieldPhrase *field(const QString &name) const;
+    ForeignKeyModelBase* foreignKey(const QString &name) const;
+
     virtual const QMap<QString, AbstractFieldPhrase *> &fields() const = 0;
     virtual const QMap<QString, ForeignKeyModelBase*> &foreignKeys() const = 0;
     virtual QJsonObject toJson() const = 0;

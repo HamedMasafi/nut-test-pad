@@ -1,8 +1,10 @@
 #pragma once
 
 #include "core/changelogtable.h"
+#include "core/tablesetcontainer.h"
 #include "dataset.h"
 #include "global.h"
+
 #include <QSqlDatabase>
 
 namespace Nut {
@@ -22,7 +24,6 @@ public:
     QString password;
     QString connectionName;
     QString driver;
-    QMap<QString, Nut::DatasetBase *> tables;
 
     AbstractSqlGenerator *generator{nullptr};
     QSqlDatabase db;
@@ -38,7 +39,7 @@ public:
 };
 
 template<>
-class Database<Type::Data>
+class Database<Type::Data> : public TableSetContainer
 {
     QSharedDataPointer<DatabaseData> d;
 public:
@@ -65,8 +66,6 @@ public:
 
     QSqlQuery exec(const QString &sql);
 
-private:
-    void addTableset(const QString &name, Nut::DatasetBase *table);
 protected:
     virtual Database<Type::Model> &model() const = 0;
 

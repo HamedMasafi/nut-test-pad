@@ -2,6 +2,7 @@
 
 //#include <QtNut/query.h>
 #include "global.h"
+#include "models/foreignkeymodel.h"
 #include "phrase.h"
 #include <functional>
 #include "querydata.h"

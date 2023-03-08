@@ -61,12 +61,28 @@ AbstractTableModel::AbstractTableModel(Database<Type::Model> *parent, const char
     parent->_tables.append(this);
 }
 
+AbstractTableModel::AbstractTableModel(Table<Model> *parent, const char *name)
+{
+
+}
+
 AbstractFieldPhrase *AbstractTableModel::field(const QString &name) const
 {
     for (auto const &f : fields())
         if (f->name() == name)
             return f;
     return nullptr;
+}
+
+ForeignKeyModelBase *AbstractTableModel::foreignKey(const QString &name) const
+{
+    auto list = foreignKeys();
+    auto i = std::find_if(list.begin(), list.end(), [&name](const ForeignKeyModelBase *f) {
+        return f->name() == name;
+    });
+    if (i == list.end())
+        return nullptr;
+    return *i;
 }
 
 const QMap<QString, AbstractFieldPhrase *> &MockTableModel::fields() const

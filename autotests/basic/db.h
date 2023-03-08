@@ -15,6 +15,7 @@ public:
 
     Nut_TableSet(User, users);
     Nut_TableSet(Post, posts);
+//    DatabaseTable dd{Post, ""}
 };
 
 NUT_DECLARE_DATABASE(DB);

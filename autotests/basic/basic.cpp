@@ -27,6 +27,24 @@ void BasicTest::insert()
     db.saveChanges();
 }
 
+void BasicTest::insertWithChilds()
+{
+    DBDatabase db;
+    db.setDriver("QSQLITE");
+    db.setDatabaseName("data.dat");
+    QVERIFY(db.open());
+
+    auto user = Nut::createRow<User>();
+    user->name = "Hamed";
+    user->lastName = "Masafi";
+    db.users.append(user);
+
+    auto post = Nut::createRow<Post>();
+    post->content = "salam";
+    user->posts.append(post);
+    db.saveChanges();
+}
+
 void BasicTest::modelTest() {}
 
 void BasicTest::changedTest()

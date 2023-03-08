@@ -3,7 +3,7 @@
 #include "global.h"
 #include "phrases/fieldphrase.h"
 #include "phrases/abstractfieldphrase.h"
-#include "table.h"
+//#include "table.h"
 
 namespace Nut
 {

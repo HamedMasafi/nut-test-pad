@@ -33,6 +33,7 @@ public:
 //    explicit SqliteGenerator(Database<Type::Model> *parent = nullptr);
     explicit SqliteGenerator(Database<Type::Data> *parent);
 
+    QString dataTypeString(QMetaType::Type type) override;
     QString fieldType(AbstractFieldPhrase *field) override;
     QString fieldDeclare(AbstractFieldPhrase *field) override;
 

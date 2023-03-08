@@ -173,7 +173,7 @@ int Nut::Table<Type::Data>::save(Database<Data> *db, TableModel *model)
 //        ts->save(db);
     _status = RowStatus::FetchedFromDB;
 
-    return q.numRowsAffected();
+    return TableSetContainer::save(db) + q.numRowsAffected();
 }
 
 bool Nut::Table<Type::Model>::isPrimaryKeyAutoIncrement() const

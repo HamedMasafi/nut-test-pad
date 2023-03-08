@@ -6,6 +6,7 @@ class BasicTest : public QObject
 
 private Q_SLOTS:
     void insert();
+    void insertWithChilds();
     void modelTest();
     void changedTest();
     void className();

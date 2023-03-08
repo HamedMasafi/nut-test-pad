@@ -1,5 +1,6 @@
 set(PROJECT_SRC
     field2.cpp
+    childdataset.h childdataset.cpp
     runtimecheckers/fieldchecker.cpp
     runtimecheckers/tablechecker.cpp
     runtimecheckers/foreignkeychecker.cpp
@@ -44,6 +45,9 @@ set(PROJECT_SRC
     core/globalstorage.cpp
     core/changelogtable.h
     core/changelogtable.cpp
+    core/typehelper.h
+    core/tablesetcontainer.h core/tablesetcontainer.cpp
+    core/datasetbase.h core/datasetbase.cpp
     querydata.h
     namedtype.h
     phrases/abstractfieldphrase.h

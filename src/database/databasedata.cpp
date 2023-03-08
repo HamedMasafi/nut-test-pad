@@ -30,8 +30,9 @@ bool DatabaseData::open()
     bool isDatabaseNew{};
     bool update{};
 
-    connectionName = "";//QString::fromUtf8(q->metaObject()->className())
-//                     + QString::number(DatabasePrivate::lastId);
+    generateConnectionName();
+    //QString::fromUtf8(q->metaObject()->className())
+      //                     + QString::number(DatabasePrivate::lastId);
 
     db = QSqlDatabase::addDatabase(driver, connectionName);
     db.setHostName(hostName);
@@ -246,16 +247,7 @@ void Database<Type::Data>::setDriver(const QString &newDriver)
 
 int Nut::Database<Type::Data>::saveChanges()
 {
-    int n{0};
-    for (auto i = d->tables.begin(); i != d->tables.end(); i++) {
-        n += i.value()->save();
-    }
-    return n;
-}
-
-void Nut::Database<Type::Data>::addTableset(const QString &name, DatasetBase *table)
-{
-    d->tables.insert(name, table);
+    return TableSetContainer::save(this);
 }
 
 QSqlQuery Nut::Database<Type::Data>::exec(const QString &sql)

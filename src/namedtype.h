@@ -163,6 +163,15 @@ struct no_unique<T, UU...> : std::integral_constant<size_t, is_unique<T, UU...>:
         explicit constexpr name() : NamedParam(#name, true) {}                                            \
     }
 
+#define NamedParamSubClassString(name) \
+    class name : public NamedParam \
+    { \
+    public: \
+        explicit constexpr name(const char *value) \
+            : NamedParam("Name", value) \
+        {} \
+    };
+
 class AutoIncrement : public NamedParam
 {
 public:
@@ -185,6 +194,7 @@ NamedParamSubClassVoid(PrimaryKey);
 NamedParamSubClass(MaxLen, int);
 NamedParamSubClass(Len, int);
 NamedParamSubClass(AllowNull, bool);
+NamedParamSubClassString(RelationName);
 
 } // namespace Model
 } // namespace Nut

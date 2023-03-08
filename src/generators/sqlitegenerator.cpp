@@ -31,9 +31,9 @@ SqliteGenerator::SqliteGenerator(Database<Data> *parent)
     : AbstractSqlGenerator(parent)
 {}
 
-QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)
+QString SqliteGenerator::dataTypeString(QMetaType::Type type)
 {
-    switch (field->metaTypeId()) {
+    switch (type) {
     case QMetaType::Bool:
         return QStringLiteral("BOOLEAN");
     case QMetaType::QBitArray:
@@ -99,15 +99,23 @@ QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)
         //            dbType.append(" PRIMARY KEY AUTOINCREMENT");
 
     case QMetaType::QString:
-        if (field->len())
-            return QStringLiteral("VARCHAR(%1)").arg(field->len());
-        else
-            return QStringLiteral("TEXT");
+        return QStringLiteral("TEXT");
     default:
         //        qWarning("The type (%s) does not supported",
         //                 QMetaType::typeName(field->type));
         return QString();
     }
+}
+
+QString SqliteGenerator::fieldType(AbstractFieldPhrase *field)
+{
+    if (field->metaTypeId() == QMetaType::QString) {
+        if (field->len())
+            return QStringLiteral("VARCHAR(%1)").arg(field->len());
+        else
+            return QStringLiteral("TEXT");
+    }
+    return dataTypeString(field->metaTypeId());
 }
 
 QString SqliteGenerator::fieldDeclare(AbstractFieldPhrase *field)

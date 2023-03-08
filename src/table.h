@@ -1,16 +1,15 @@
 #pragma once
 
+#include "core/tablesetcontainer.h"
 #include "global.h"
 #include "field2.h"
 #include "models/fieldmodel.h"
 #include "foreignkey.h"
 #include "models/foreignkeymodel.h"
-#include "runtimecheckers/fieldchecker.h"
-#include "runtimecheckers/foreignkeychecker.h"
 #include <QJsonObject>
-
 #include "core/tablebase.h"
 #include "phrase.h"
+#include "core/typehelper.h"
 
 #define NUT_FORWARD_DECLARE_TABLE(name)                                                            \
     template<Nut::Type _Type>                                                                 \
@@ -30,57 +29,63 @@ class FieldBase;
 class FieldModelBase;
 class ForeignKeyModelBase;
 
-template <typename T, int _Type, typename... Types>
-struct PropertyTypeHelper {
+
+//template <typename T, int _Type, typename... Types>
+//struct PropertyTypeHelper {
+//    using type = void;
+//};
+
+//template <typename T, typename... Types>
+//struct PropertyTypeHelper<T, Type::Data, Types...> {
+//    //    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
+//    using type
+//        = ::Nut::Field<T, containsType<PrimaryKey, Types...>, containsType<AllowNull, Types...>>;
+//};
+
+//template <typename T, typename... Types>
+//struct PropertyTypeHelper<T, Type::Model, Types...> {
+//    using type = ::Nut::FieldPhrase<T>;
+//};
+
+//template <NUT_TABLE_TEMPLATE T, typename KeyType, Nut::Type _Type>
+//struct ForeignKeyTypeHelper {
+//    using type = void;
+//};
+
+//template<NUT_TABLE_TEMPLATE T, typename KeyType>
+//struct ForeignKeyTypeHelper<T, KeyType, Type::Data> {
+//    using type = Nut::ForeignKey<T, KeyType>;
+//};
+
+//template<NUT_TABLE_TEMPLATE T, typename KeyType>
+//struct ForeignKeyTypeHelper<T, KeyType, Type::Model> {
+//    using type = Nut::ForeignKeyModel<T, KeyType>;
+//};
+
+template<NUT_TABLE_TEMPLATE T>
+class ModelBase;
+
+template<NUT_TABLE_TEMPLATE T>
+class Dataset;
+template<NUT_TABLE_TEMPLATE T>
+class ChildDataset;
+
+template<NUT_TABLE_TEMPLATE C, Type _Type>
+struct ChildTableSetTypeHelper
+{
     using type = void;
 };
 
-template <typename T, typename... Types>
-struct PropertyTypeHelper<T, Type::Data, Types...> {
-//    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
-    using type
-        = ::Nut::Field<T, containsType<PrimaryKey, Types...>, containsType<AllowNull, Types...>>;
+template<NUT_TABLE_TEMPLATE C>
+struct ChildTableSetTypeHelper<C, Type::Data>
+{
+    using type = ChildDataset<C>;
 };
 
-template <typename T, typename... Types>
-struct PropertyTypeHelper<T, Type::Model, Types...> {
-    using type = ::Nut::FieldPhrase<T>;
-};
-
-template <typename T, typename... Types>
-struct PropertyTypeHelper<T, Type::FieldPhrases, Types...> {
-    using type = void;
-};
-
-template <typename T, typename... Types>
-struct PropertyTypeHelper<T, Type::RuntimeChecker, Types...> {
-    using type = ::Nut::FieldChecker<T>;
-};
-
-
-template <NUT_TABLE_TEMPLATE T, typename KeyType, Nut::Type _Type>
-struct ForeignKeyTypeHelper {
-    using type = void;
-};
-
-template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, Type::Data> {
-    using type = Nut::ForeignKey<T, KeyType>;
-};
-
-template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, Type::Model> {
-    using type = Nut::ForeignKeyModel<T, KeyType>;
-};
-
-template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, Type::FieldPhrases> {
-    using type = void;
-};
-
-template<NUT_TABLE_TEMPLATE T, typename KeyType>
-struct ForeignKeyTypeHelper<T, KeyType, Type::RuntimeChecker> {
-    using type = Nut::ForeignKeyChecker<T, KeyType>;
+template<NUT_TABLE_TEMPLATE C>
+struct ChildTableSetTypeHelper<C, Type::Model>
+{
+    using type = ModelBase<C>;
 };
 
 template<typename T, Type _Type, typename... Types>
@@ -105,20 +110,14 @@ struct Property2<T, Type::Model, Types...>// : public ::Nut::FieldModel<T>
         //: ::Nut::FieldModel<T>(parent, name, args...)
     {}
 };
-template<typename T, typename... Types>
-struct Property2<T, Type::FieldPhrases, Types...> {
-    using type = ::Nut::FieldModel<T>;
-};
-template<typename T, typename... Types>
-struct Property2<T, Type::RuntimeChecker, Types...> {
-    using type = ::Nut::FieldChecker<T>;
-};
 
 #define NUT_TABLE \
     template<typename T, typename... Types> \
     using Property = typename Nut::PropertyTypeHelper<T, _Type, Types...>::type; \
     template<NUT_TABLE_TEMPLATE T, typename KeyType> \
     using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type; \
+    template<template<Nut::Type _T> class T> \
+    using DatabaseTable = typename Nut::ChildTableSetTypeHelper<T, _Type>::type; \
 \
 public: \
     Nut::Table<Nut::Type::Model> *model() const; \
@@ -159,6 +158,8 @@ private:
     }
 
 #define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
+#define ChildTableSet(type, name, ...)  DatabaseTable<type> name{this, #name, __VA_ARGS__}
+//#define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
 #define ForeignKey(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}
 
 
@@ -172,7 +173,7 @@ public:
 };
 
 template<>
-class Table<Type::Data>
+class Table<Type::Data> : public TableSetContainer
 {
 protected:
     QMap<QString, FieldBase*> _fields;
@@ -245,6 +246,15 @@ public:
             f->data->className = name;
         }
     }
+    template<NUT_TABLE_TEMPLATE C,
+             typename KeyType = int,
+             typename KeyField = typename ForeignKeyTypeHelper<C, KeyType, Type::Model>::type>
+    ModelBase(C<Type::Model> *parent, const char *name, KeyField)
+        : AbstractTableModel(parent, name)
+        , T<Type::Model>(name)
+        , _name{name}
+    {}
+
     virtual QString className() const override { return T<Type::Data>::staticClassName(); }
     const QMap<QString, AbstractFieldPhrase *> &fields() const override{
         return T<Type::Model>::_fields;

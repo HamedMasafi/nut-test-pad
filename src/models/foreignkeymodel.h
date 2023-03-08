@@ -26,6 +26,8 @@ public:
     Nut::AbstractFieldPhrase *remoteTablePrimaryField() const;
     Table<Type::Model> *localModel() const;
     AbstractTableModel *remoteModel();
+
+    virtual QMetaType::Type metaTypeId() const = 0;
 };
 
 template <NUT_TABLE_TEMPLATE T, typename KeyType>
@@ -53,6 +55,10 @@ public:
         return m;
     }*/
 
+    virtual QMetaType::Type metaTypeId() const override
+    {
+        return static_cast<QMetaType::Type>(qMetaTypeId<KeyType>());
+    }
 };
 
 } // namespace Nut

@@ -1,11 +1,15 @@
 #ifndef SAMPLETABLE_H
 #define SAMPLETABLE_H
 
+#include "database.h"
 #include <field2.h>
 #include <table.h>
-
+#include "post.h"
 #include <QPoint>
 
+//NUT_FORWARD_DECLARE_TABLE(Post)
+
+//class Post;
 using namespace Nut;
 using namespace Nut::ModelDeclartion;
 NUT_DEFINE_TABLE(User)
@@ -20,6 +24,11 @@ public:
 
     Field(QString, name);
     Field(QString, lastName, AllowNull(true));
+
+//    ChildTableSet(Post, posts);
+    QList<Post<Nut::Model>> _list;
+    DatabaseTable<Post> posts{this, "", RelationName("users")};
+//    Nut_TableSet(Post, posts);
 
 //    Field(int, pn, ColumnName("pn"), Len(8));
 //    Field(QPoint, point);
