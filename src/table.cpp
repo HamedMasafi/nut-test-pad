@@ -31,13 +31,17 @@ void Table<Type::Data>::setFieldValue(const QString &name, const QVariant &value
 {
     if (_fields.contains(name))
         _fields.value(name)->fromVariant(value);
+    else if (_foreignKeys.contains(name))
+        _foreignKeys.value(name)->fromVariant(value);
 }
 
 QVariant Table<Type::Data>::fieldValue(const QString &name) const
 {
-    if (!_fields.contains(name))
-        return QVariant();
-    return _fields.value(name)->toVariant();
+    if (_fields.contains(name))
+        return _fields.value(name)->toVariant();
+    if (_foreignKeys.contains(name))
+        return _foreignKeys.value(name)->toVariant();
+    return QVariant();
 }
 
 QJsonObject Table<Type::Model>::toJson() const

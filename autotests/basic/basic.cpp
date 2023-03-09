@@ -13,6 +13,27 @@
 //    void * p = malloc(size);
 //    return p;
 //}
+void BasicTest::checkDeclartions()
+{
+    using namespace Nut;
+    using namespace Nut::ModelDeclartion;
+    Nut::PropertyTypeHelper<int, Nut::Type::Data, PrimaryKey(), AllowNull()>::type f(nullptr, nullptr);
+
+    QCOMPARE(f.isPrimary(), true);
+}
+
+void BasicTest::checkPrimary()
+{
+    QCOMPARE(DBModel.posts.id.isPrimaryKey(), true);
+    QCOMPARE(DBModel.posts.content.isPrimaryKey(), false);
+
+    auto post = Nut::createRow<Post>();
+    QCOMPARE(post->id.isPrimary(), true);
+    QCOMPARE(post->content.isPrimary(), false);
+//    QCOMPARE(DBModel.posts.user.isPrimaryKey(), true);
+//    QCOMPARE(DBModel.posts.id.isPrimaryKey(), true);
+}
+
 void BasicTest::insert()
 {
     DBDatabase db;
@@ -25,6 +46,8 @@ void BasicTest::insert()
     user->lastName = "Masafi";
     db.users.append(user);
     db.saveChanges();
+
+//    DBModel.users.posts.primaryField();
 }
 
 void BasicTest::insertWithChilds()

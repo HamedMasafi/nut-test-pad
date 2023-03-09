@@ -87,12 +87,36 @@ struct contains<T, First, Types...> {
                                   (std::is_same<T, First>::value ? true : contains<T, Types...>::value);
 };
 
+template<typename... Types>
+class Picker
+{
+    constexpr const static int _size = sizeof...(Types);
+    NamedParam array[_size];// {args...};
+//    std::vector<NamedParam> array;
+
+public:
+    constexpr explicit Picker(Types &...args)
+        : array{args...}
+    {
+    };
+
+    template<typename T>
+    bool pick(const char *name, T *buffer)
+    {
+        for (auto &a: array)
+            if (!strcmp(a.name, name)) {
+                *buffer = get<T>(a);
+                return true;
+            }
+        return false;
+    }
+};
 
 template<typename T, typename... Types>
 bool pick(const char *name, T *buffer, Types &...args)
 {
-//    NamedParam array2[] {args...};
-//    constexpr int size = sizeof...(args);
+    //    NamedParam array2[] {args...};
+    //    constexpr int size = sizeof...(args);
 
     std::vector<NamedParam> array = {args...};
     for (auto &a: array)
@@ -103,17 +127,37 @@ bool pick(const char *name, T *buffer, Types &...args)
     return false;
 }
 
-template<typename... Types>
-bool pick(const char *name, Types &...args)
+template<typename T, typename... Types>
+T pick(Types &...args)
 {
     std::vector<NamedParam> array = {args...};
     for (auto &a: array)
-        if (!strcmp(a.name, name)) {
+        if (std::is_same<typeof(a), T>::value) {
+            return *static_cast<T*>(&a);
+        }
+    return T{};
+}
+
+template<typename... Types>
+bool pick(const char *name, Types &...args)
+{
+    NamedParam array[] {args...};
+    int size = sizeof...(args);
+
+    for (int i = 0; i < size; i++)
+        if (!strcmp(array[i].name, name)) {
             return true;
         }
-
-    qDebug() << name << "not found";
     return false;
+//    NamedParam array2[] = {args...};
+//    std::vector<NamedParam> array = {args...};
+//    for (auto &a: array)
+//        if (!strcmp(a.name, name)) {
+//            return true;
+//        }
+
+//    qDebug() << name << "not found";
+//    return false;
 }
 
 template<typename T, typename... Types>
@@ -149,26 +193,33 @@ struct no_unique : std::integral_constant<size_t, 0> {};
 template <typename T, typename... UU>
 struct no_unique<T, UU...> : std::integral_constant<size_t, is_unique<T, UU...>::value + no_unique<UU...>::value> {};
 
-#define NamedParamSubClass(name, type)                                                             \
-    class name : public NamedParam                                                                 \
-    {                                                                                              \
-    public:                                                                                        \
-        explicit constexpr name(const type &value) : NamedParam(#name, value) {}                             \
+#define NamedParamSubClass(name, type) \
+    class name : public NamedParam \
+    { \
+    public: \
+        explicit constexpr name(const type &value) \
+            : NamedParam(#name, value) \
+        {} \
     }
 
-#define NamedParamSubClassVoid(name)                                                               \
-    class name : public NamedParam                                                     \
-    {                                                                                              \
-    public:                                                                                        \
-        explicit constexpr name() : NamedParam(#name, true) {}                                            \
+#define NamedParamSubClassVoid(name) \
+    class name : public NamedParam \
+    { \
+    public: \
+        explicit constexpr name() \
+            : NamedParam(#name, true) \
+        {} \
     }
 
 #define NamedParamSubClassString(name) \
     class name : public NamedParam \
     { \
     public: \
+        explicit constexpr name() \
+            : NamedParam(#name, nullptr) \
+        {} \
         explicit constexpr name(const char *value) \
-            : NamedParam("Name", value) \
+            : NamedParam(#name, value) \
         {} \
     };
 

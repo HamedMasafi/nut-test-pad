@@ -523,6 +523,7 @@ QString AbstractSqlGenerator::insertRecord(TableRow *t, QString tableName)
     sql = QStringLiteral("INSERT INTO %1 (%2) VALUES (%3)")
               .arg(model->name(), changedPropertiesText, values.join(QStringLiteral(", ")));
 
+    qDebug() << sql;
     return sql;
 }
 

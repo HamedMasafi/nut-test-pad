@@ -10,6 +10,7 @@ class ChildDataset : public DatasetBase
     QList<Nut::RowPointer<T>> _list;
     Table<Type::Data> *_parentDatabase;
     Database<Type::Model> *_parentDatabaseModel;
+    QString _relationName;
 
 public:
     template<Type _T>
@@ -17,8 +18,8 @@ public:
         : DatasetBase(parent, name, Nut::createModel<T>())
     {}
 
-    template<NUT_TABLE_TEMPLATE _Database>
-    ChildDataset(_Database<Type::Data> *parent, const char *name, ...)
+    template<NUT_TABLE_TEMPLATE _Database, typename... Types>
+    constexpr ChildDataset(_Database<Type::Data> *parent, const char *name, Types... args)
         : DatasetBase(parent, &Nut::createModel<_Database>(), name, T<Type::Data>::staticClassName())
         , _parentDatabase{parent}
     {
@@ -27,6 +28,18 @@ public:
         }
         parent->addTableset(name, parent, this);
         //        _parentDatabaseModel = &Nut::createModel<_Database>();
+        NamedParam array[] = {args...};
+        int size = sizeof...(args);
+
+//        auto rel = pick<RelationName>(args...);
+        Picker p{args...};
+        const char *tmpName{};
+        if (p.template pick<const char *>("RelationName", &tmpName))
+            _relationName = tmpName;
+        else
+            assert("No relation name");
+
+        qDebug() << "Rela=" << tmpName;
     }
 
     T<Type::Data> *createTable() const { return new T<Type::Data>(); }
@@ -49,6 +62,7 @@ public:
 
         auto model = static_cast<TableModel *>(&createModel());
         for (auto &i : _list) {
+            i->setFieldValue(_relationName, _parentDatabase->primaryField()->toVariant());
             ret += i->save(database, model);
         }
         return ret;

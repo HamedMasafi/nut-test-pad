@@ -100,9 +100,10 @@ class Field<T, _IsPrimary, true> : public Field<T, _IsPrimary, false>
 //    T _value;
     bool _isNull;
 public:
-    template<typename ...Types>
+    template<typename... Types>
     constexpr inline Field(TableRow *parent, const char *name, ...)
         : Field<T, _IsPrimary, false>(parent, name)
+        , _isNull{true}
     {
     }
 

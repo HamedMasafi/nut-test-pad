@@ -10,6 +10,7 @@
 #include "core/tablebase.h"
 #include "phrase.h"
 #include "core/typehelper.h"
+#include "namedtype.h"
 
 #define NUT_FORWARD_DECLARE_TABLE(name)                                                            \
     template<Nut::Type _Type>                                                                 \
@@ -67,23 +68,24 @@ class ModelBase;
 
 template<NUT_TABLE_TEMPLATE T>
 class Dataset;
-template<NUT_TABLE_TEMPLATE T>
+
+template<template<Type> class T>
 class ChildDataset;
 
-template<NUT_TABLE_TEMPLATE C, Type _Type>
+template<NUT_TABLE_TEMPLATE C, Type _Type, typename... Types>
 struct ChildTableSetTypeHelper
 {
     using type = void;
 };
 
-template<NUT_TABLE_TEMPLATE C>
-struct ChildTableSetTypeHelper<C, Type::Data>
+template<NUT_TABLE_TEMPLATE C, typename... Types>
+struct ChildTableSetTypeHelper<C, Type::Data, Types...>
 {
     using type = ChildDataset<C>;
 };
 
-template<NUT_TABLE_TEMPLATE C>
-struct ChildTableSetTypeHelper<C, Type::Model>
+template<NUT_TABLE_TEMPLATE C, typename... Types>
+struct ChildTableSetTypeHelper<C, Type::Model, Types...>
 {
     using type = ModelBase<C>;
 };
@@ -116,8 +118,8 @@ struct Property2<T, Type::Model, Types...>// : public ::Nut::FieldModel<T>
     using Property = typename Nut::PropertyTypeHelper<T, _Type, Types...>::type; \
     template<NUT_TABLE_TEMPLATE T, typename KeyType> \
     using ForeignKeyProperty = typename Nut::ForeignKeyTypeHelper<T, KeyType, _Type>::type; \
-    template<template<Nut::Type _T> class T> \
-    using DatabaseTable = typename Nut::ChildTableSetTypeHelper<T, _Type>::type; \
+    template<template<Nut::Type _T> class T, typename... Types> \
+    using DatabaseTable = typename Nut::ChildTableSetTypeHelper<T, _Type, Types...>::type; \
 \
 public: \
     Nut::Table<Nut::Type::Model> *model() const; \
@@ -177,6 +179,7 @@ class Table<Type::Data> : public TableSetContainer
 {
 protected:
     QMap<QString, FieldBase*> _fields;
+    QMap<QString, ForeignKeyBase*> _foreignKeys;
     QSet<QString> _changedFields;
     RowStatus _status{RowStatus::Added};
     FieldBase *_primaryField{};
@@ -185,6 +188,7 @@ public:
     Table() = default;
 
     friend class FieldBase;
+    friend class ForeignKeyBase;
     virtual QString className() const = 0;
 
     void setFieldValue(const QString &name, const QVariant &value);
