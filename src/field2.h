@@ -14,6 +14,9 @@ struct DBNullType {};
 
 extern DBNullType DBNull;
 
+template<typename T, typename... Types>
+class Field2;
+
 class FieldBase {
     TableRow *_parent;
     QString _name;
@@ -28,6 +31,113 @@ public:
     virtual bool isPrimary() = 0;
 };
 
+
+class PrimaryKeyFieldBase {
+protected:
+    static constexpr bool _isPrimary{true};
+public:
+    constexpr bool isPrimary() { return true; }
+};
+
+class NoPrimaryKeyFieldBase {
+protected:
+    static constexpr bool _isPrimary{false};
+public:
+    constexpr bool isPrimary() { return false; }
+};
+
+template<typename T, typename... Types>
+class NoAllowNullFieldBase {
+public:
+    constexpr bool isPrimary() { return false; }
+
+
+};
+
+template<typename T, typename... Types>
+class AllowNullFieldBase {
+public:
+    constexpr bool isPrimary() { return true; }
+
+    Field2<T, Types...> &operator=(const DBNullType &);
+    Field2<T, Types...> &operator=(const std::nullptr_t &);
+
+    bool operator==(const DBNullType &);
+    bool operator==(const std::nullptr_t &);
+    inline bool isNull() const { return _isNull; }
+    void setNull();
+
+private:
+    bool _isNull;
+};
+
+
+template<bool is, typename... Types>
+struct PrimaryKeyBaseChooser{
+    using type = void;
+};
+
+template<typename... Types>
+struct PrimaryKeyBaseChooser<false, Types...>
+{
+    using type = NoPrimaryKeyFieldBase;
+};
+
+template<typename... Types>
+struct PrimaryKeyBaseChooser<true, Types...>
+{
+    using type = PrimaryKeyFieldBase;
+};
+
+template<bool is, typename T, typename... Types>
+struct AllowNullBaseChooser
+{
+    using type = void;
+};
+
+template<typename T, typename... Types>
+struct AllowNullBaseChooser<false, T, Types...>
+{
+    using type = NoAllowNullFieldBase<T, Types...>;
+};
+
+template<typename T, typename... Types>
+struct AllowNullBaseChooser<true, T, Types...>
+{
+    using type = AllowNullFieldBase<T, Types...>;
+};
+
+template<typename T, typename... Types>
+class Field2 : public FieldBase
+    , public PrimaryKeyBaseChooser<ModelDeclartion::containsType<ModelDeclartion::PrimaryKey, Types...>, Types...>::type
+    , public AllowNullBaseChooser<ModelDeclartion::containsType<ModelDeclartion::AllowNull, Types...>, T, Types...>::type
+{
+public:
+    Field2(TableRow *parent, const char *name, Types... args)
+        : FieldBase(parent, name)
+    {}
+
+    Field2<T, Types...> &operator=(const T &value)
+    {
+        this->setChanged();
+        _value = value;
+        return *this;
+    }
+
+    operator T() { return _value; }
+    T value() const { return _value; }
+    bool operator==(const T &value) { return _value == value; }
+
+    QVariant toVariant() const override {
+        return QVariant(_value);
+    }
+    void fromVariant(const QVariant& value) override {
+        _value = value.value<T>();
+    }
+private:
+    T _value;
+};
+
 using namespace Nut::ModelDeclartion;
 
 template <typename T, bool _IsPrimary, bool _AllowNull = true>
@@ -40,12 +150,15 @@ class Field<T, _IsPrimary, false> : public FieldBase
 {
 protected:
     T _value;
+    const int IsPrimary{true};
 
 public:
-    template<typename ...Types>
-    constexpr inline Field(TableRow *parent, const char *name, ...)
+    template<typename... Types>
+    constexpr inline Field(TableRow *parent, const char *name, Types... args)
         : FieldBase(parent, name)
+        , IsPrimary{Nut::containsType<PrimaryKey, Types...>}
     {
+        qDebug() << "Is primary" << name << _IsPrimary << Nut::containsType<PrimaryKey, Types...>;
     }
 
     bool isPrimary() override { return _IsPrimary; }
@@ -105,6 +218,7 @@ public:
         : Field<T, _IsPrimary, false>(parent, name)
         , _isNull{true}
     {
+        qDebug() << "Is primary" << name << _IsPrimary;
     }
 
     bool isPrimary() override { return _IsPrimary; }

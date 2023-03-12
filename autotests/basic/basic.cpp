@@ -13,13 +13,59 @@
 //    void * p = malloc(size);
 //    return p;
 //}
+
+class NoBase{
+public:
+    void no(){}
+};
+class PrimaryKeyBase{
+public:
+    void foo(){}
+};
+
+template<bool is>
+struct Base{
+    using type = NoBase;
+};
+
+template<>
+struct Base<true>{
+    using type = PrimaryKeyBase;
+};
+
+
+template<typename... Types>
+    class FieldTest : public Base<Nut::containsType<PrimaryKey, Types...>>::type
+{
+public:
+    FieldTest(Types...args){
+
+    }
+    void f2(){}
+};
 void BasicTest::checkDeclartions()
 {
+    FieldTest fp{PrimaryKey()};
+    fp.foo();
     using namespace Nut;
     using namespace Nut::ModelDeclartion;
-    Nut::PropertyTypeHelper<int, Nut::Type::Data, PrimaryKey(), AllowNull()>::type f(nullptr, nullptr);
+    auto row = Nut::createRow<Post>();
+    Nut::PropertyTypeHelper<int, Nut::Type::Data, PrimaryKey, AllowNull>::type f(row.data(), nullptr);
+    Nut::PropertyTypeHelper<int, Nut::Type::Data>::type f3(row.data(),
+                                                          nullptr,
+                                                          PrimaryKey(),
+                                                          AllowNull(true));
 
+    Nut::Field<int, true, false> f2(row.data(), nullptr);
+
+    auto s = std::is_same<PrimaryKey, decltype(PrimaryKey())>::value;
+    QCOMPARE(s, true);
+    QCOMPARE(f3.isPrimary(), true);
+    QCOMPARE(f2.isPrimary(), true);
     QCOMPARE(f.isPrimary(), true);
+
+    auto n =  no_unique<PrimaryKey, PrimaryKey, AllowNull>::value;
+    QCOMPARE(n, 1);
 }
 
 void BasicTest::checkPrimary()

@@ -3,6 +3,7 @@
 #include "global.h"
 #include "phrase.h"
 #include "field2.h"
+#include "namedtype.h"
 
 namespace Nut {
 
@@ -46,7 +47,7 @@ template <typename T, typename... Types>
 struct PropertyTypeHelper<T, Type::Data, Types...> {
     //    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
     using type
-        = ::Nut::Field<T, contains<PrimaryKey, Types...>::value, containsType<AllowNull, Types...>>;
+        = Nut::Field<T, no_unique<PrimaryKey, Types...>::value, no_unique<AllowNull, Types...>::value>;
 };
 
 template <typename T, typename... Types>

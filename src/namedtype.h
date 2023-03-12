@@ -1,5 +1,5 @@
-#ifndef NUT_NAMED_TYPE_H
-#define NUT_NAMED_TYPE_H
+#pragma once
+
 #include <bits/move.h>
 #include <stdarg.h>
 #include <tuple>
@@ -250,4 +250,3 @@ NamedParamSubClassString(RelationName);
 } // namespace Model
 } // namespace Nut
 
-#endif // NUT_NAMED_TYPE_H
