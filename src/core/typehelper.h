@@ -46,8 +46,8 @@ struct PropertyTypeHelper {
 template <typename T, typename... Types>
 struct PropertyTypeHelper<T, Type::Data, Types...> {
     //    static_assert(Model::count<AllowNull, Types...> ==0 , "is zero");
-    using type
-        = Nut::Field<T, no_unique<PrimaryKey, Types...>::value, no_unique<AllowNull, Types...>::value>;
+    using type = Nut::Field<T, Types...>;
+    //        = Nut::Field<T, no_unique<PrimaryKey, Types...>::value, no_unique<AllowNull, Types...>::value>;
 };
 
 template <typename T, typename... Types>

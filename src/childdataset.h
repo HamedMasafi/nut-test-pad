@@ -23,6 +23,7 @@ public:
         : DatasetBase(parent, &Nut::createModel<_Database>(), name, T<Type::Data>::staticClassName())
         , _parentDatabase{parent}
     {
+        using namespace Nut::ModelDeclartion;
         if constexpr (std::is_base_of<Database<Data>, _Database<Data>>::value) {
             _parentDatabase = parent;
         }

@@ -241,6 +241,9 @@ public:
     {}
 };
 
+template <typename T>
+class ColumnType{};
+
 NamedParamSubClassVoid(PrimaryKey);
 NamedParamSubClass(MaxLen, int);
 NamedParamSubClass(Len, int);

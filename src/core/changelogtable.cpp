@@ -1,3 +1,3 @@
-#include "changelogtable.h"
+//#include "changelogtable.h"
 
-NUT_IMPLEMENT_TABLE(ChangeLogTable)
+//NUT_IMPLEMENT_TABLE(ChangeLogTable)

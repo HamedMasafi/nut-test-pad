@@ -14,10 +14,13 @@ public:
     Post() = default;
     Post(const char *) {}
 
-    Field(int, id, AutoIncrement(10, 10), PrimaryKey());
-    Field(QString, content);
+    //    Field(int, id, AutoIncrement(10, 10), PrimaryKey());
+    //    Field(QString, content);
 
     ForeignKey(User, int, user);
+
+    Property<int> id{this, ColumnType<int>(), AutoIncrement(10, 10), PrimaryKey()};
+    Property<QString, AllowNull> content{this, ColumnType<QString>(), AllowNull(true)};
 };
 
 NUT_DECLARE_TABLE(Post)

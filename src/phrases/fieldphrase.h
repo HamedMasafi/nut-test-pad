@@ -28,8 +28,14 @@
 namespace Nut
 {
 
-template<typename T>
-class FieldPhrase : public AbstractFieldPhrase
+template<class T>
+class FieldPhraseSpecialMethods
+{
+
+};
+
+template<typename T, typename... Types>
+class FieldPhrase : public AbstractFieldPhrase, public FieldPhraseSpecialMethods<T>
 {
 public:
     NUT_DECLARE_METATYPE_ID(T)
@@ -38,9 +44,8 @@ public:
         AbstractFieldPhrase(className, s)
     {}
 
-    template<typename... Types>
-    constexpr FieldPhrase(TableModel *parent, const char *name, Types... args)
-        : AbstractFieldPhrase("", name)
+    constexpr FieldPhrase(TableModel *parent, ModelDeclartion::ColumnType<T>&&, Types... args)
+        : AbstractFieldPhrase("", "name")
     {
         using namespace ModelDeclartion;
 //        d = new FieldModelData();
@@ -54,15 +59,15 @@ public:
         char *tmpName;
         if (pick<char *>("Name", &tmpName, args...))
             data->fieldName = tmpName;
-        else
-            data->fieldName = name;
+//        else
+//            data->fieldName = name;
 
         pick<int>("MaxLen", &data->maxLen, args...);
         pick<int>("Len", &data->len, args...);
         pick<std::pair<int, int> >("AutoIncrement", &data->autoIncrement, args...);
         pick<bool>("PrimaryKey", &data->isPrimaryKey, args...);
 
-        addToParent(name, parent);
+        addToParent(tmpName, parent);
 
     }
 
@@ -72,13 +77,13 @@ public:
     ConditionalPhrase operator ==(const QVariant &other);
 };
 
-template<typename T>
-Q_OUTOFLINE_TEMPLATE AssignmentPhrase FieldPhrase<T>::operator =(const QVariant &other) {
+template<typename T, typename... Types>
+Q_OUTOFLINE_TEMPLATE AssignmentPhrase FieldPhrase<T, Types...>::operator =(const QVariant &other) {
     return AssignmentPhrase(this, other);
 }
 
-template<typename T>
-Q_OUTOFLINE_TEMPLATE ConditionalPhrase FieldPhrase<T>::operator ==(const QVariant &other) {
+template<typename T, typename... Types>
+Q_OUTOFLINE_TEMPLATE ConditionalPhrase FieldPhrase<T, Types...>::operator ==(const QVariant &other) {
     return ConditionalPhrase(this, PhraseData::Equal, other);
 }
 

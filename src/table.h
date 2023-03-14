@@ -98,7 +98,7 @@ struct Property2 {
 template<typename T, typename... Types>
 struct Property2<T, Type::Data, Types...> //: public ::Nut::Field<T, Model::containsType<AllowNull, Types...>>
 {
-    using type = ::Nut::Field<T, containsType<AllowNull, Types...>>;
+    using type = ::Nut::Field<T, Types...>;//containsType<AllowNull, Types...>>;
 
     Property2(TableRow *parent, const char *name, Types... args)
     // : ::Nut::Field<T, Model::containsType<AllowNull, Types...>>(parent, name, args...)
@@ -159,7 +159,8 @@ private:
     } \
     }
 
-#define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
+#define __TYPE(t) Nut::ColumnType<t>()
+#define Field(type, name, ...)  Property<type> name{this, __TYPE(type), __VA_ARGS__}
 #define ChildTableSet(type, name, ...)  DatabaseTable<type> name{this, #name, __VA_ARGS__}
 //#define Field(type, name, ...)  Property<type> name{this, #name, __VA_ARGS__}
 #define ForeignKey(type, keyType, name) ForeignKeyProperty<type, keyType> name{this, #name}

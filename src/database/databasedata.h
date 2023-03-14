@@ -4,6 +4,7 @@
 #include "core/tablesetcontainer.h"
 #include "dataset.h"
 #include "global.h"
+#include "table.h"
 
 #include <QSqlDatabase>
 

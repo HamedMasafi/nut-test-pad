@@ -175,7 +175,7 @@ bool DatabaseData::createDatabase()
 
 QString DatabaseData::changeLogsCreationSql()
 {
-    return generator->createTable(&ChangeLogTableModel2, "__changeLogs");
+    return "";// generator->createTable(&ChangeLogTableModel2, "__changeLogs");
 }
 
 AbstractSqlGenerator *Database<Type::Data>::generator()

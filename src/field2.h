@@ -1,5 +1,4 @@
-#ifndef FIELD2_H
-#define FIELD2_H
+#pragma once
 
 #include <QDebug>
 #include <QObject>
@@ -15,7 +14,7 @@ struct DBNullType {};
 extern DBNullType DBNull;
 
 template<typename T, typename... Types>
-class Field2;
+class Field;
 
 class FieldBase {
     TableRow *_parent;
@@ -47,30 +46,41 @@ public:
 };
 
 template<typename T, typename... Types>
-class NoAllowNullFieldBase {
+class AllowNullFieldBaseBase {
 public:
-    constexpr bool isPrimary() { return false; }
+    operator T() { return _value; }
+    T value() const { return _value; }
+    bool operator==(const T &value) { return _value == value; }
+    void setValue(const T &value) { _value = value; }
 
-
+protected:
+    T _value;
 };
 
 template<typename T, typename... Types>
-class AllowNullFieldBase {
+class NoAllowNullFieldBase : public AllowNullFieldBaseBase<T, Types...>
+{
 public:
-    constexpr bool isPrimary() { return true; }
-
-    Field2<T, Types...> &operator=(const DBNullType &);
-    Field2<T, Types...> &operator=(const std::nullptr_t &);
-
-    bool operator==(const DBNullType &);
-    bool operator==(const std::nullptr_t &);
-    inline bool isNull() const { return _isNull; }
-    void setNull();
-
-private:
-    bool _isNull;
+    constexpr bool isPrimaryImpl() { return false; }
 };
 
+template<typename T, typename... Types>
+class AllowNullFieldBase : public AllowNullFieldBaseBase<T, Types...>
+{
+public:
+    constexpr bool isPrimaryImpl() { return true; }
+
+    Field<T, Types...> &operator=(const DBNullType &);
+    Field<T, Types...> &operator=(const std::nullptr_t &);
+
+    bool operator==(const DBNullType &) { return _isNull; }
+    bool operator==(const std::nullptr_t &) { return _isNull; }
+    inline bool isNull() const { return _isNull; }
+    void setNull() { _isNull = true; }
+
+protected:
+    bool _isNull;
+};
 
 template<bool is, typename... Types>
 struct PrimaryKeyBaseChooser{
@@ -108,36 +118,41 @@ struct AllowNullBaseChooser<true, T, Types...>
 };
 
 template<typename T, typename... Types>
-class Field2 : public FieldBase
+class Field : public FieldBase
     , public PrimaryKeyBaseChooser<ModelDeclartion::containsType<ModelDeclartion::PrimaryKey, Types...>, Types...>::type
     , public AllowNullBaseChooser<ModelDeclartion::containsType<ModelDeclartion::AllowNull, Types...>, T, Types...>::type
 {
 public:
-    Field2(TableRow *parent, const char *name, Types... args)
-        : FieldBase(parent, name)
+
+    template<NUT_TABLE_TEMPLATE _ParentClass>
+    Field(_ParentClass<Data> *parent, ModelDeclartion::ColumnType<T>&&, Types... args)
+        : FieldBase(parent, "name")
     {}
 
-    Field2<T, Types...> &operator=(const T &value)
+    Field(const T &t, Types... args)
+        : FieldBase(nullptr, "")
+    {}
+
+    Field<T, Types...> &operator=(const T &value)
     {
         this->setChanged();
-        _value = value;
+//        _value = value;
+        this->setValue(value);
         return *this;
     }
-
-    operator T() { return _value; }
-    T value() const { return _value; }
-    bool operator==(const T &value) { return _value == value; }
-
     QVariant toVariant() const override {
-        return QVariant(_value);
+        return QVariant(this->value());
     }
     void fromVariant(const QVariant& value) override {
-        _value = value.value<T>();
+//        _value = value.value<T>();
+        this->setValue(value.value<T>());
     }
-private:
-    T _value;
-};
+    virtual bool isPrimary() override{
+        return this->isPrimaryImpl();
+    }
 
+};
+/*
 using namespace Nut::ModelDeclartion;
 
 template <typename T, bool _IsPrimary, bool _AllowNull = true>
@@ -277,9 +292,9 @@ FieldMethod(void, true)::setNull()
 {
     _isNull = true;
 }
-
-template <typename T, bool _IsPrimary>
-QDebug operator<<(QDebug debug, const Field<T, true> &f)
+*/
+template<typename T, typename...Types>
+QDebug operator<<(QDebug debug, const Field<T, Types...> &f)
 {
     if (f.isNull())
         return debug << "NULL";
@@ -287,13 +302,5 @@ QDebug operator<<(QDebug debug, const Field<T, true> &f)
         return debug << f.value();
 }
 
-template <typename T, bool _IsPrimary>
-QDebug operator<<(QDebug debug, const Field<T, false> &f)
-{
-    return debug << f.value();
-}
-
-
 } // namespace Nut
 
-#endif // FIELD2_H
